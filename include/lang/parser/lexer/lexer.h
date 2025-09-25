@@ -24,8 +24,9 @@ const char *KEYWORDS[] = {
     "DEFAULT" // Used in definitions to set the default value of a field
 };
 
-typedef struct {
+typedef struct token {
     enum TOKEN_TYPE type;
+    struct token* next;
     char *value;
     int line;
     int column;

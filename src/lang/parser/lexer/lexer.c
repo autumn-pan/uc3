@@ -52,6 +52,9 @@ void skip_whitespace(Lexer* lexer)
     }
 }
 
+//////////////////////////////////////////////////////////////
+/// Tokenization
+//////////////////////////////////////////////////////////////
 
 Token* next_token(Lexer* lexer)
 {
@@ -74,6 +77,24 @@ Token* next_token(Lexer* lexer)
     }
 }
 
+TokenStream* tokenize(Lexer* lexer)
+{
+    TokenStream* token_stream = (TokenStream*)(malloc(sizeof(TokenStream)));
+
+    Token* token = next_token(lexer);
+    while(token)
+    {
+        append_token(token_stream, token);
+        token = next_token(lexer);
+    }
+
+    return token_stream;
+}
+
+//////////////////////////////////////////////////////////////
+/// Token Stream and Utils
+//////////////////////////////////////////////////////////////
+
 TokenStream* init_tokenstream()
 {
     TokenStream* token_stream = (TokenStream*)(malloc(sizeof(TokenStream)));
@@ -81,4 +102,36 @@ TokenStream* init_tokenstream()
     token_stream->tail = NULL;
     token_stream->size = 0;
     return token_stream;
+}
+
+void append_token(TokenStream* ts, Token* token)
+{
+    token->next = NULL;
+    if (ts->head == NULL) { // Empty list
+        ts->head = token;
+        ts->tail = token;
+    } else {
+        ts->tail->next = token;
+        ts->tail = token;
+    }
+    // Track list size
+    ts->size++;
+}
+
+void tokenstream_pop_head(TokenStream* ts)
+{
+    if(!ts->head) 
+        return;
+
+    if(ts->head->next)
+    {
+        ts->head = ts->head->next;
+    }
+    else
+    {
+        ts->head = NULL;
+        ts->tail = NULL;
+    }
+
+    ts->size--;
 }
