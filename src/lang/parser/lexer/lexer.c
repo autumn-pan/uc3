@@ -78,6 +78,20 @@ Token* next_token(Lexer* lexer)
         {
             return init_token(KEYWORD, str, lexer->line, lexer->column);
         }
+        else
+        {
+            return init_token(IDENTIFIER, str, lexer->line, lexer->column);
+        }
+    }
+
+    // Check if the string is a number
+    while(peek(lexer) < 10)
+    {
+        strcat(str, advance(lexer));
+    }
+    if(peek(lexer) != '.')
+    {
+        return init_token(INT_LITERAL, str, lexer->line, lexer->column);
     }
 }
 
