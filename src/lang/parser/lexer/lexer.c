@@ -16,6 +16,10 @@ Lexer* init_lexer(const char *src) {
     return lexer;
 };
 
+//////////////////////////////////////////////////////////////
+/// String Utils
+//////////////////////////////////////////////////////////////
+
 bool is_alphabetical(char c)
 {
     if ((c >= 65 && c <=90) || (c >= 97 && c <=122)) // Checks for lowercase, then uppercase
