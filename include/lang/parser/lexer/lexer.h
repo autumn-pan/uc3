@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 enum TOKEN_TYPE
 {
     KEYWORD,
@@ -30,6 +32,12 @@ typedef struct {
 } Token;
 
 typedef struct {
+    Token* head;
+    Token* tail;
+    uint32_t size;
+} TokenStream;
+
+typedef struct {
     const char *src;  // Pointer to source code
     int length;          // Length of source code
     int pos;        // Current index in source
@@ -37,3 +45,8 @@ typedef struct {
     int column;          // Column number for debugging
 } Lexer;
 
+char peek(Lexer* lexer);
+char advance();
+Lexer* init_lexer();
+Token* init_token(enum TOKEN_TYPE type, char *value, int line, int column);
+Token* next_token(Lexer *lexer);
