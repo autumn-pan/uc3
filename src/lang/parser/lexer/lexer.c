@@ -41,21 +41,6 @@ char * to_string(const char character)
     return str;
 }
 
-bool is_alphabetical(char c)
-{
-    if ((c >= 65 && c <=90) || (c >= 97 && c <=122)) // Checks for lowercase, then uppercase
-        return true;
-    // If it is neither, return false
-    return false;
-}
-
-bool is_alphanumerical(char c)
-{
-    if((c >= 65 && c <=90) || (c >= 48 && c <= 57) || (c >= 97 && c <= 122)) // Checks if it is a capital letter, digit, or lowercase letter
-        return true; 
-    return false;
-}
-
 bool in_array(const char *arr[], const char *key, uint8_t size)
 {
     // For every string of the array
@@ -132,10 +117,10 @@ Token* next_token(Lexer* lexer)
         return NULL;
 
     // Check if the next token is a string
-    if(is_alphabetical(next_char))
+    if(isalpha(next_char))
     {
         strcat(str, to_string(lexer->src[lexer->pos])); 
-        while(is_alphanumerical(peek(lexer)))
+        while(isalnum(peek(lexer)))
         {
             strcat(str, to_string(advance(lexer))); 
         }
@@ -174,7 +159,6 @@ TokenStream* tokenize(Lexer* lexer)
     while(token)
     {
         append_token(token_stream, token);
-        printf("\n Token: %s", token->value);
         token = next_token(lexer);
     }
 
