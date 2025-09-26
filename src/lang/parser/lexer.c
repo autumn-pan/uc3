@@ -1,4 +1,4 @@
-#include "lang/parser/lexer/lexer.h"
+#include "lang/parser/lexer.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
