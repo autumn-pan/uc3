@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -33,7 +34,8 @@ Lexer* init_lexer(const char *src) {
 //////////////////////////////////////////////////////////////
 char * to_string(const char character)
 {
-    static char str[2];
+    char *str = malloc(2);
+    if (str == NULL) return NULL; 
     str[0] = character;
     str[1] = '\0';
     return str;
@@ -66,9 +68,19 @@ bool in_array(const char *arr[], const char *key, uint8_t size)
     return false;
 }
 
+bool is_whitespace(Lexer *lexer)
+{
+    char c = lexer->src[lexer->pos+1];
+    // Check if it is a space, tab, or newline
+    if(c == ' ' || c == '\t' || c == '\n')
+        return true;
+    // If not, return false
+    return false;
+}
+
 void skip_whitespace(Lexer* lexer)
 {
-    while(lexer->src[lexer->pos] == ' ' || lexer->src[lexer->pos] == '\t')
+    while(is_whitespace(lexer))
     {
         advance(lexer);
     }
@@ -81,7 +93,7 @@ void skip_whitespace(Lexer* lexer)
 Token* init_token(enum TOKEN_TYPE, char* str, uint32_t line, uint32_t col)
 {
     Token* token = (Token*)(malloc(sizeof(Token)));
-    token->value = str;
+    strcpy(token->value, str);
     token->next = NULL;
     token->line = line;
     token->column = col;
@@ -93,6 +105,7 @@ char peek(Lexer* lexer)
         return '\0';
 
     char c = lexer->src[lexer->pos+1];
+
     return c;
 }
 
@@ -102,7 +115,6 @@ char advance(Lexer* lexer)
         return '\0';
 
     char c = lexer->src[++lexer->pos];
-
     return c;
 }
 
@@ -111,7 +123,7 @@ Token* next_token(Lexer* lexer)
     skip_whitespace(lexer);
 
     // The value of the next token, as a string
-    char* str;
+    char str[32] = "";
 
     // This will suggest the token type of the next token
     char next_char = peek(lexer);
@@ -122,12 +134,9 @@ Token* next_token(Lexer* lexer)
     // Check if the next token is a string
     if(is_alphabetical(next_char))
     {
-        strcat(str, to_string(advance(lexer))); 
-
+        strcat(str, to_string(lexer->src[lexer->pos])); 
         while(is_alphanumerical(peek(lexer)))
         {
-            printf("\n char");
-            fflush(stdout);
             strcat(str, to_string(advance(lexer))); 
         }
 
@@ -142,11 +151,12 @@ Token* next_token(Lexer* lexer)
     }
 
     // Check if the string is a number
-    if(next_char < 10)
+    if(isdigit(next_char))
     {
-        while(peek(lexer) < 10)
+        strcat(str, to_string(advance(lexer)));
+
+        while(isdigit(peek(lexer)))
         {
-            printf("\n%c", peek(lexer));
             strcat(str, to_string(advance(lexer)));
         }
         return init_token(INT_LITERAL, str, lexer->line, lexer->column);

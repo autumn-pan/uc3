@@ -22,7 +22,7 @@ extern const char *KEYWORDS[];
 typedef struct token {
     enum TOKEN_TYPE type;
     struct token* next;
-    char *value;
+    char value[64];
     int line;
     int column;
 } Token;
@@ -51,4 +51,5 @@ TokenStream* init_tokenstream();
 void append_token(TokenStream* ts, Token* token);
 void tokenstream_pop_head(TokenStream* ts);
 
+char * to_string(const char character);
 #endif
