@@ -1,6 +1,18 @@
-#include "lexer.h"
+#include "lang/parser/lexer/lexer.h"
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+const char *KEYWORDS[] = {
+    "DEFINE", // Define a module
+    "CONFIG", // Configure a module
+    "ENABLED", // Whether or not a module is enabled
+    "FIELD", // A custom field of any type created in module definition, allows for customization
+    "DEPENDENCIES", // Defines what modules must exist for a certain module to work
+    "NOTE", // A short string associated with modules for simple descriptions or notes
+    "DEFAULT" // Used in definitions to set the default value of a field
+};
 
 Lexer* init_lexer(const char *src) {
     Lexer *lexer = (Lexer *)malloc(sizeof(Lexer)); 
@@ -19,6 +31,13 @@ Lexer* init_lexer(const char *src) {
 //////////////////////////////////////////////////////////////
 /// String Utils
 //////////////////////////////////////////////////////////////
+char * to_string(const char character)
+{
+    static char str[2];
+    str[0] = character;
+    str[1] = '\0';
+    return str;
+}
 
 bool is_alphabetical(char c)
 {
@@ -35,13 +54,12 @@ bool is_alphanumerical(char c)
     return false;
 }
 
-bool in_array(const char **arr, const char *key)
+bool in_array(const char *arr[], const char *key, uint8_t size)
 {
     // For every string of the array
-    for(int i = 0; arr[i] != '\0'; i++) 
+    for(int i = 0; i < size; i++) 
     {
-        // Compare each value with the key
-        if(strcmp((const char *)arr[i], key) == 0)
+        if(strcmp(arr[i], key) == 0)
             return true; //If they are equal, return true
     }
     // If no string matches, return false
@@ -50,9 +68,9 @@ bool in_array(const char **arr, const char *key)
 
 void skip_whitespace(Lexer* lexer)
 {
-    while(lexer->src[lexer->pos] == " " || lexer->src[lexer->pos] == "\t")
+    while(lexer->src[lexer->pos] == ' ' || lexer->src[lexer->pos] == '\t')
     {
-        lexer->pos++;
+        advance(lexer);
     }
 }
 
@@ -60,21 +78,60 @@ void skip_whitespace(Lexer* lexer)
 /// Tokenization
 //////////////////////////////////////////////////////////////
 
-Token* next_token(Lexer* lexer)
+Token* init_token(enum TOKEN_TYPE, char* str, uint32_t line, uint32_t col)
 {
+    Token* token = (Token*)(malloc(sizeof(Token)));
+    token->value = str;
+    token->next = NULL;
+    token->line = line;
+    token->column = col;
+}
+
+char peek(Lexer* lexer)
+{
+    if(!lexer || lexer->pos+1 >= lexer->length)
+        return '\0';
+
+    char c = lexer->src[lexer->pos+1];
+    return c;
+}
+
+char advance(Lexer* lexer)
+{
+    if(!lexer || lexer->pos+1 >= lexer->length)
+        return '\0';
+
+    char c = lexer->src[++lexer->pos];
+
+    return c;
+}
+
+Token* next_token(Lexer* lexer)
+{    
     skip_whitespace(lexer);
 
-    // Check if the next token is a string
+    // The value of the next token, as a string
     char* str;
-    if(is_alphabetical(peek(lexer)))
+
+    // This will suggest the token type of the next token
+    char next_char = peek(lexer);
+
+    if(!next_char)
+        return NULL;
+
+    // Check if the next token is a string
+    if(is_alphabetical(next_char))
     {
-        strcat(str, advance(lexer));
+        strcat(str, to_string(advance(lexer))); 
+
         while(is_alphanumerical(peek(lexer)))
         {
-            strcat(str, advance(lexer)); 
+            printf("\n char");
+            fflush(stdout);
+            strcat(str, to_string(advance(lexer))); 
         }
 
-        if(in_array(KEYWORDS, str))
+        if(in_array(KEYWORDS, str, 7))
         {
             return init_token(KEYWORD, str, lexer->line, lexer->column);
         }
@@ -85,14 +142,17 @@ Token* next_token(Lexer* lexer)
     }
 
     // Check if the string is a number
-    while(peek(lexer) < 10)
+    if(next_char < 10)
     {
-        strcat(str, advance(lexer));
-    }
-    if(peek(lexer) != '.')
-    {
+        while(peek(lexer) < 10)
+        {
+            printf("\n%c", peek(lexer));
+            strcat(str, to_string(advance(lexer)));
+        }
         return init_token(INT_LITERAL, str, lexer->line, lexer->column);
     }
+
+    return NULL;
 }
 
 TokenStream* tokenize(Lexer* lexer)
@@ -100,9 +160,11 @@ TokenStream* tokenize(Lexer* lexer)
     TokenStream* token_stream = (TokenStream*)(malloc(sizeof(TokenStream)));
 
     Token* token = next_token(lexer);
+    
     while(token)
     {
         append_token(token_stream, token);
+        printf("\n Token: %s", token->value);
         token = next_token(lexer);
     }
 

@@ -1,3 +1,6 @@
+#ifndef LEXER_H
+#define LEXER_H
+
 #include <stdint.h>
 
 enum TOKEN_TYPE
@@ -14,15 +17,7 @@ enum TOKEN_TYPE
     RBRACE
 };
 
-const char *KEYWORDS[] = {
-    "DEFINE", // Define a module
-    "CONFIG", // Configure a module
-    "ENABLED", // Whether or not a module is enabled
-    "FIELD", // A custom field of any type created in module definition, allows for customization
-    "DEPENDENCIES", // Defines what modules must exist for a certain module to work
-    "NOTE", // A short string associated with modules for simple descriptions or notes
-    "DEFAULT" // Used in definitions to set the default value of a field
-};
+extern const char *KEYWORDS[];
 
 typedef struct token {
     enum TOKEN_TYPE type;
@@ -47,7 +42,13 @@ typedef struct {
 } Lexer;
 
 char peek(Lexer* lexer);
-char advance();
-Lexer* init_lexer();
-Token* init_token(enum TOKEN_TYPE type, char *value, int line, int column);
+char advance(Lexer* lexer);
+Lexer* init_lexer(const char* str);
+Token* init_token(enum TOKEN_TYPE type, char *value, uint32_t line, uint32_t column);
 Token* next_token(Lexer *lexer);
+TokenStream* tokenize(Lexer* lexer);
+TokenStream* init_tokenstream();
+void append_token(TokenStream* ts, Token* token);
+void tokenstream_pop_head(TokenStream* ts);
+
+#endif
