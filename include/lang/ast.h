@@ -11,8 +11,10 @@ typedef enum
     HEADER,
     DEFINITION,
     CONFIGURATION,
+    FIELD,
+    DEFAULT,
     INT_LITERAL,
-    STRING_LITERAL
+    STRING_LITERAL,
 } AST_TYPE;
 
 typedef struct node
@@ -43,4 +45,8 @@ typedef struct
 {
     char* component_dependencies[PROJECT_HEADER_MAX_CHILDREN];
 } ProjectHeader_t;
+
+
+BinaryASTNode_t* init_ast(AST_TYPE type, char* value);
+
 #endif

@@ -19,6 +19,7 @@ enum TOKEN_TYPE
 
 extern const char *KEYWORDS[];
 
+
 typedef struct token {
     enum TOKEN_TYPE type;
     struct token* next;
@@ -30,6 +31,8 @@ typedef struct token {
 typedef struct {
     Token* head;
     Token* tail;
+    Token* ptr;
+    uint8_t ptr_position;
     uint32_t size;
 } TokenStream;
 

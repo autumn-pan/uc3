@@ -5,5 +5,7 @@
 typedef struct 
 {
     TokenStream* ts;
+    char* value;
 } Parser_t;
+
 #endif
