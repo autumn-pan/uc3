@@ -19,18 +19,17 @@ Parser_t* init_parser(TokenStream* ts)
 
 Token *get_next_token(Parser_t *p) {
     if (p->pos < p->len - 1) {
-        p->pos++;
-        p->ptr = p->ptr->next;
-        return p->ptr;
+        return p->ptr->next;
     }
     return NULL;
 }
 
-bool match(Parser_t *p, enum TOKEN_TYPE type) {
+char* match(Parser_t *p, enum TOKEN_TYPE type) {
     if (p->pos < p->len && p->ptr->type == type) {
+        char* tmp = p->ptr->value;
         p->pos++;
         p->ptr = p->ptr->next;
-        return true;
+        return  tmp;
     }
     return false;
 }
@@ -39,6 +38,7 @@ bool match(Parser_t *p, enum TOKEN_TYPE type) {
 bool match_value(Parser_t *p, char *value) {
     if (p->pos < p->len && strcmp(p->ptr->value, value) == 0) {
         p->pos++;
+        p->ptr = p->ptr->next;
         return true;
     }
 
@@ -47,7 +47,24 @@ bool match_value(Parser_t *p, char *value) {
 
 BinaryASTNode_t* parse_field(Parser_t* parser)
 {
-    return NULL;
+    if(!match_value(parser, "FIELD"))
+        return NULL;
+    
+    char* node_identifier;
+    if(!(node_identifier = match(parser, IDENTIFIER)))
+        return NULL;
+
+    if(!match_value(parser, "DEFAULT"))
+        return NULL;
+
+    char* val;
+    if(!(val = match(parser, INT_LITERAL)))
+        return NULL;
+    
+    BinaryASTNode_t* node = init_ast(FIELD, node_identifier);
+    node->children[0] = init_ast(INT, val);
+
+    return node;
 }
 
 BinaryASTNode_t* parse_statement(Parser_t* parser)

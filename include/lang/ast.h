@@ -14,7 +14,7 @@ typedef enum
     FIELD,
     DEFAULT,
     INT,
-    STRONG,
+    STRING,
 } AST_TYPE;
 
 typedef struct node
