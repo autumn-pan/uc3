@@ -4,8 +4,15 @@
 
 typedef struct 
 {
+    int pos;
+    int len;
     TokenStream* ts;
-    char* value;
+    
+    Token* ptr;
 } Parser_t;
+
+
+Parser_t* init_parser(TokenStream* ts);
+BinaryASTNode_t* parse_statement(Parser_t* parser);
 
 #endif

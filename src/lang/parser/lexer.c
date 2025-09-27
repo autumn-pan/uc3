@@ -32,13 +32,10 @@ Lexer* init_lexer(const char *src) {
 //////////////////////////////////////////////////////////////
 /// String Utils
 //////////////////////////////////////////////////////////////
-char * to_string(const char character)
+void cat_char(char* str, char c)
 {
-    char *str = malloc(2);
-    if (str == NULL) return NULL; 
-    str[0] = character;
-    str[1] = '\0';
-    return str;
+    char temp[2] = {c, '\0'};
+    strcat(str, temp);
 }
 
 bool in_array(const char *arr[], const char *key, uint8_t size)
@@ -83,6 +80,8 @@ Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line, uint32_t col)
     token->line = line;
     token->column = col;
     token->type = type;
+
+    return token;
 }
 
 char peek(Lexer* lexer)
@@ -120,10 +119,10 @@ Token* next_token(Lexer* lexer)
     // Check if the next token is a string
     if(isalpha(next_char))
     {
-        strcat(str, to_string(lexer->src[lexer->pos])); 
+        cat_char(str, (lexer->src[lexer->pos])); 
         while(isalnum(peek(lexer)))
         {
-            strcat(str, to_string(advance(lexer))); 
+            cat_char(str, (advance(lexer))); 
         }
 
         if(in_array(KEYWORDS, str, 7))
@@ -139,25 +138,26 @@ Token* next_token(Lexer* lexer)
     // Check if the string is a number
     if(isdigit(next_char))
     {
-        strcat(str, to_string(advance(lexer)));
+        cat_char(str, (advance(lexer)));
 
         while(isdigit(peek(lexer)))
         {
-            strcat(str, to_string(advance(lexer)));
+            cat_char(str, (advance(lexer)));
         }
         return init_token(INT_LITERAL, str, lexer->line, lexer->column);
     }
 
     // Check if the next token is a bracket
+    char temp[2] = {next_char, '\0'};
     if(next_char == '{')
     {
         advance(lexer);
-        return init_token(LBRACE, to_string(next_char), lexer->line, lexer->column);
+        return init_token(LBRACE, temp, lexer->line, lexer->column);
     }
     else if(next_char == '}')
     {
         advance(lexer);
-        return init_token(RBRACE, to_string(next_char), lexer->line, lexer->column);
+        return init_token(RBRACE, temp, lexer->line, lexer->column);
     }
     
     return NULL;

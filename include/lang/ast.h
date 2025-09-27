@@ -13,8 +13,8 @@ typedef enum
     CONFIGURATION,
     FIELD,
     DEFAULT,
-    INT_LITERAL,
-    STRING_LITERAL,
+    INT,
+    STRONG,
 } AST_TYPE;
 
 typedef struct node
@@ -28,7 +28,6 @@ typedef struct node
         bool boolean;
         int integer;
         float floating_point;
-        void;
     } data;
 } BinaryASTNode_t;
 

@@ -17,7 +17,9 @@ BinaryASTNode_t* init_ast(AST_TYPE type, char* value)
         case INT_LITERAL:
             ast->data.integer = atoi(value);
             break;
-        case STRING_LITERAL:
+        case STR_LITERAL:
+            ast->data.str = value;
+        default:
             ast->data.str = value;
     }
 }

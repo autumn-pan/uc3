@@ -31,8 +31,6 @@ typedef struct token {
 typedef struct {
     Token* head;
     Token* tail;
-    Token* ptr;
-    uint8_t ptr_position;
     uint32_t size;
 } TokenStream;
 

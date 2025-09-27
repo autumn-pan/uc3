@@ -2,7 +2,7 @@
 #include "lang/parser/lexer.h"
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdio.h>
 Parser_t* init_parser(TokenStream* ts)
 {
     Parser_t *parser = (Parser_t*)(malloc(sizeof(Parser_t)));
@@ -11,58 +11,50 @@ Parser_t* init_parser(TokenStream* ts)
     
     parser->ts = ts;
 
-    
-    parser->ts->ptr = parser->ts->head;
-    parser->ts->ptr_position = 0;
+    parser->pos = 0;
+    parser->ptr = ts->head;
 
-    parser->value = parser->ts->ptr->value;
     return parser;
 }
 
-void advance_parser(Parser_t* parser)
-{
-    parser->ts->ptr = parser->ts->ptr->next;
+Token *get_next_token(Parser_t *p) {
+    if (p->pos < p->len - 1) {
+        p->pos++;
+        p->ptr = p->ptr->next;
+        return p->ptr;
+    }
+    return NULL;
+}
 
-    parser->ts->ptr_position++;
-    parser->value = parser->ts->ptr->value;
+bool match(Parser_t *p, enum TOKEN_TYPE type) {
+    if (p->pos < p->len && p->ptr->type == type) {
+        p->pos++;
+        p->ptr = p->ptr->next;
+        return true;
+    }
+    return false;
+}
+
+// Match value function
+bool match_value(Parser_t *p, char *value) {
+    if (p->pos < p->len && strcmp(p->ptr->value, value) == 0) {
+        p->pos++;
+        return true;
+    }
+
+    return false;
 }
 
 BinaryASTNode_t* parse_field(Parser_t* parser)
 {
-    if(strcmp(parser->value, "FIELD") != 0)
-        return NULL;
-
-    BinaryASTNode_t* node = (BinaryASTNode_t*)(malloc(sizeof(BinaryASTNode_t)));
-    advance_parser(parser);
-    if(parser->ts->ptr->type != IDENTIFIER)
-    {
-        // Error: compiler should crash at this point
-        return NULL;
-    }
-
-    advance_parser(parser);
-    if(strcmp(parser->value, "DEFAULT") != 0)
-    {
-        // Error: defaults are required for UC3 definitions
-        return NULL;
-    }
-
-    if(parser->ts->ptr->type != INT_LITERAL)
-    {
-        // Error: compiler should crash at this point
-        return NULL;
-    }
-
-    node->data.str = parser->value;
-    node->type = FIELD;
-    node->children[0] = init_ast(DEFAULT, parser->ts->ptr->value);
-
-    return node;
+    return NULL;
 }
 
 BinaryASTNode_t* parse_statement(Parser_t* parser)
 {
     BinaryASTNode_t* node = NULL;
-    if(node = parse_field(parser) != NULL)
+    if((node = parse_field(parser)) != NULL)
         return node;
+
+    return NULL;
 }
