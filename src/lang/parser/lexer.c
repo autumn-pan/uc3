@@ -52,7 +52,7 @@ bool in_array(const char *arr[], const char *key, uint8_t size)
 
 bool is_whitespace(Lexer *lexer)
 {
-    char c = lexer->src[lexer->pos+1];
+    char c = lexer->src[lexer->pos];
     // Check if it is a space, tab, or newline
     if(c == ' ' || c == '\t' || c == '\n')
         return true;
@@ -96,10 +96,8 @@ char peek(Lexer* lexer)
 
 char advance(Lexer* lexer)
 {
-    if(!lexer || lexer->pos+1 >= lexer->length)
-        return '\0';
-
-    char c = lexer->src[++lexer->pos];
+    char c = lexer->src[lexer->pos];
+    lexer->pos++;
     return c;
 }
 
@@ -107,54 +105,46 @@ Token* next_token(Lexer* lexer)
 {    
     skip_whitespace(lexer);
 
+
     // The value of the next token, as a string
     char str[32] = "";
 
     // This will suggest the token type of the next token
-    char next_char = peek(lexer);
-
-    if(!next_char)
-        return NULL;
+    char current_char = lexer->src[lexer->pos];
 
     // Check if the next token is a string
-    if(isalpha(next_char))
+    if(isalpha(lexer->src[lexer->pos]) || lexer->src[lexer->pos] == '_')
     {
-        cat_char(str, (lexer->src[lexer->pos])); 
-        while(isalnum(peek(lexer)))
+        while(isalnum(lexer->src[lexer->pos]) || lexer->src[lexer->pos] == '_')
         {
             cat_char(str, (advance(lexer))); 
         }
-
         if(in_array(KEYWORDS, str, 7))
-        {
             return init_token(KEYWORD, str, lexer->line, lexer->column);
-        }
-        else
-        {
-            return init_token(IDENTIFIER, str, lexer->line, lexer->column);
-        }
+        return init_token(IDENTIFIER, str, lexer->line, lexer->column);
     }
 
     // Check if the string is a number
-    if(isdigit(next_char))
+    if(isdigit(lexer->src[lexer->pos])) //Checks for a numeric literal
     {
-        cat_char(str, (advance(lexer)));
-
-        while(isdigit(peek(lexer)))
+        while(isdigit(lexer->src[lexer->pos])) //Initiates the first component of the literal
         {
             cat_char(str, (advance(lexer)));
         }
-        return init_token(INT_LITERAL, str, lexer->line, lexer->column);
+
+        printf("\n success");
+        fflush(stdout);
+        return init_token(INT_LITERAL, str, lexer->line, lexer->column); // Return int literal
     }
 
     // Check if the next token is a bracket
-    char temp[2] = {next_char, '\0'};
-    if(next_char == '{')
+    char temp[2] = {current_char, '\0'};
+    if(current_char == '{')
     {
         advance(lexer);
         return init_token(LBRACE, temp, lexer->line, lexer->column);
     }
-    else if(next_char == '}')
+    else if(current_char == '}')
     {
         advance(lexer);
         return init_token(RBRACE, temp, lexer->line, lexer->column);

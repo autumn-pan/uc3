@@ -6,7 +6,7 @@
 
 int main()
 {
-    Lexer* lexer = init_lexer("FIELD hi DEFAULT 1");
+    Lexer* lexer = init_lexer("FIELD hi DEFAULT 128");
     TokenStream* ts = tokenize(lexer);
 
     Token* token = ts->head;

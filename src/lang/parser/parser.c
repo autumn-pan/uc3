@@ -12,6 +12,7 @@ Parser_t* init_parser(TokenStream* ts)
     parser->ts = ts;
 
     parser->pos = 0;
+    parser->len = ts->size;
     parser->ptr = ts->head;
 
     return parser;
@@ -36,6 +37,8 @@ char* match(Parser_t *p, enum TOKEN_TYPE type) {
 
 // Match value function
 bool match_value(Parser_t *p, char *value) {
+    printf("\n %s", p->ptr->value);
+    fflush(stdout);
     if (p->pos < p->len && strcmp(p->ptr->value, value) == 0) {
         p->pos++;
         p->ptr = p->ptr->next;
@@ -49,7 +52,7 @@ BinaryASTNode_t* parse_field(Parser_t* parser)
 {
     if(!match_value(parser, "FIELD"))
         return NULL;
-    
+
     char* node_identifier;
     if(!(node_identifier = match(parser, IDENTIFIER)))
         return NULL;
