@@ -75,13 +75,14 @@ void skip_whitespace(Lexer* lexer)
 /// Tokenization
 //////////////////////////////////////////////////////////////
 
-Token* init_token(enum TOKEN_TYPE, char* str, uint32_t line, uint32_t col)
+Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line, uint32_t col)
 {
     Token* token = (Token*)(malloc(sizeof(Token)));
     strcpy(token->value, str);
     token->next = NULL;
     token->line = line;
     token->column = col;
+    token->type = type;
 }
 
 char peek(Lexer* lexer)
@@ -147,6 +148,18 @@ Token* next_token(Lexer* lexer)
         return init_token(INT_LITERAL, str, lexer->line, lexer->column);
     }
 
+    // Check if the next token is a bracket
+    if(next_char == '{')
+    {
+        advance(lexer);
+        return init_token(LBRACE, to_string(next_char), lexer->line, lexer->column);
+    }
+    else if(next_char == '}')
+    {
+        advance(lexer);
+        return init_token(RBRACE, to_string(next_char), lexer->line, lexer->column);
+    }
+    
     return NULL;
 }
 

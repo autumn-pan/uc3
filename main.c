@@ -4,13 +4,13 @@
 
 int main()
 {
-    Lexer* lexer = init_lexer("hiii hello 123 bye");
+    Lexer* lexer = init_lexer("DEFINE juice{}");
     TokenStream* ts = tokenize(lexer);
 
     Token* token = ts->head;
     while(token)
     {
-        printf("\nToken: %s", token->value),
+        printf("\nToken, %i: %s", token->type, token->value),
         token = token->next;
     }
     return 0;

@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "stdint.h": "c",
-        "stdlib.h": "c"
-    }
+        "stdlib.h": "c",
+        "stdbool.h": "c",
+        "ast.h": "c",
+        "cstdlib": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }
