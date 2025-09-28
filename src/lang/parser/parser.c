@@ -37,9 +37,7 @@ char* match(Parser_t *p, enum TOKEN_TYPE type) {
 
 // Match value function
 bool match_value(Parser_t *p, char *value) {
-    printf("\n %s", p->ptr->value);
-    fflush(stdout);
-    if (p->pos < p->len && strcmp(p->ptr->value, value) == 0) {
+    if (p->pos < p->len && strcmp(p->ptr->value, value) == 0 && p->ptr) {
         p->pos++;
         p->ptr = p->ptr->next;
         return true;
@@ -118,6 +116,7 @@ BlockASTNode_t* parse_block(Parser_t* parser)
         return NULL;
     }
 
+
     char* block_identifier;
     if(!(block_identifier = match(parser, IDENTIFIER)))
         return NULL;
@@ -126,6 +125,9 @@ BlockASTNode_t* parse_block(Parser_t* parser)
         return NULL;
 
     BlockASTNode_t* node = init_block_ast(type, block_identifier);
+
+    if(!node)
+        return NULL;
 
     // Parse each statement within a definition
     BinaryASTNode_t* child;
@@ -143,5 +145,29 @@ BlockASTNode_t* parse_block(Parser_t* parser)
         node->num_children++;
     }
 
+    if(parser->ptr->type == RBRACE)
+    {
+        parser->pos++;
+        parser->ptr = parser->ptr->next;
+    }
+
     return node;
+}
+
+
+// Returns a project tree
+ProjectRoot_t* parse(Parser_t* parser)
+{
+    ProjectRoot_t* root = init_root();
+
+    while(1)
+    {
+        BlockASTNode_t* block = parse_block(parser);
+
+        if(!block)
+            break;
+
+        root_append_block(root, block);
+    }
+    return root;
 }

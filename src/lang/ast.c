@@ -1,6 +1,6 @@
 #include "lang/ast.h"
 #include <stdlib.h>
-
+#include <stdio.h>
 
 BinaryASTNode_t* init_ast(AST_TYPE type, char* value)
 {
@@ -30,7 +30,7 @@ BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier)
 ProjectRoot_t* init_root()
 {
     ProjectRoot_t* root = (ProjectRoot_t*)(malloc(sizeof(ProjectRoot_t)));
-    root->nodes = (BlockASTNode_t**)(malloc(0));
+    root->nodes = (BlockASTNode_t**)(calloc(0, sizeof(BlockASTNode_t*)));
     root->num_nodes = 0;
 
     return root;
@@ -39,7 +39,7 @@ ProjectRoot_t* init_root()
 void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block)
 {
     root->num_nodes++;
-    root = (ProjectRoot_t*)(realloc(root, root->num_nodes * sizeof(ProjectRoot_t)));
 
+    root->nodes = (BlockASTNode_t**)(realloc(root->nodes, root->num_nodes * sizeof(BlockASTNode_t*)));
     root->nodes[root->num_nodes - 1] = block;
 }

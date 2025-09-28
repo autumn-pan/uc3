@@ -23,26 +23,8 @@ int main()
     }
 
     Parser_t* parser = init_parser(ts);
-    BlockASTNode_t* node = parse_block(parser);
-    if(!node)
-    {
-        printf("\nNode is NULL");
-        return 0;
-    }
-    
-    fflush(stdout);
-    printf("\n");
-    if(!node->children[0])
-    {
-        printf("\nNode has no children!");
-        return 0;
-    }
+    ProjectRoot_t* root = parse(parser);
 
-    printf("\n\nRoot: ");
-    ProjectRoot_t* root = init_root();
-    root_append_block(root, node);
-
-    printf(root->nodes[0]->identifier);
-
-
+    printf(root->nodes[0]->children[0]->data.str);
+    printf(root->nodes[1]->identifier);
 }
