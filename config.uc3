@@ -1,1 +1,5 @@
 DEFINE block
+{
+    SUBSYSTEM very_important_subsystem
+    FIELD yummy DEFAULT 128
+}

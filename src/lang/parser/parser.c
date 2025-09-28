@@ -130,5 +130,18 @@ BlockASTNode_t* parse_block(Parser_t* parser)
     // Parse each statement within a definition
     BinaryASTNode_t* child;
 
+    while(parser->ptr->type != RBRACE && parser->ptr->type != EOF)
+    {
+        child = parse_statement(parser);
+
+        if(!child)
+        {
+            return NULL;
+        }
+
+        node->children[node->num_children] = child;
+        node->num_children++;
+    }
+
     return node;
 }
