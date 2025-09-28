@@ -78,3 +78,43 @@ BinaryASTNode_t* parse_statement(Parser_t* parser)
 
     return NULL;
 }
+
+BlockASTNode_t* parse_definition(Parser_t* parser)
+{
+    if(!match_value(parser, "DEFINE"))
+        return NULL;
+
+    char* block_identifier;
+    if(!(block_identifier = match(parser, IDENTIFIER)))
+        return NULL;
+    
+    if(!match(parser, LBRACE))
+        return NULL;
+
+    BlockASTNode_t* node = init_block_ast(DEFINITION, block_identifier);
+
+    // Parse each statement within a definition
+    BinaryASTNode_t* child;
+    int child_index = 0;
+
+    while(parser->ptr->type != RBRACE && parser->ptr->type != EOF)
+    {
+        child = parse_statement(parser);
+
+        if(!child)
+            return NULL;
+
+        node->children[child_index] = child;
+    }
+
+    return node;
+}
+
+BlockASTNode_t* parse_block(Parser_t* parser)
+{
+    BlockASTNode_t* node = NULL;
+    if((node = parse_definition(parser)) != NULL)
+        return node;
+
+    return NULL;
+}

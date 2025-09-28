@@ -14,5 +14,6 @@ typedef struct
 
 Parser_t* init_parser(TokenStream* ts);
 BinaryASTNode_t* parse_statement(Parser_t* parser);
+BlockASTNode_t* parse_block(Parser_t* parser);
 
 #endif

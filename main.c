@@ -3,10 +3,11 @@
 #include <stdio.h>
 #include <string.h>
 #include "lang/ast.h"
+#include <stdlib.h>
 
 int main()
 {
-    Lexer* lexer = init_lexer("FIELD hi DEFAULT 128");
+    Lexer* lexer = init_lexer("DEFINE block {}");
     TokenStream* ts = tokenize(lexer);
 
     Token* token = ts->head;
@@ -17,13 +18,13 @@ int main()
     }
 
     Parser_t* parser = init_parser(ts);
-    BinaryASTNode_t* node = parse_statement(parser);
+    BlockASTNode_t* node = parse_block(parser);
     if(!node)
     {
         printf("\nNode is NULL");
         return 0;
     }
     fflush(stdout);
-    printf(node->data.str);
-    return 0;
+    printf("\n");
+    printf(node->identifier);
 }

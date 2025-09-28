@@ -24,12 +24,13 @@ BinaryASTNode_t* init_ast(AST_TYPE type, char* value)
     }
 }
 
-BlockASTNode_t* init_block_ast(AST_TYPE type)
+BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier)
 {
     BlockASTNode_t* block = (BlockASTNode_t*)(malloc(sizeof(BlockASTNode_t)));
     if(!block)
         return NULL;
 
+    block->identifier = identifier;
     block->type = type;
     return block;
 }

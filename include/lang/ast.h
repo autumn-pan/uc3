@@ -35,7 +35,7 @@ typedef struct node
 typedef struct
 {
     AST_TYPE type;
-    char identifier[32];
+    char* identifier;
     BinaryASTNode_t* children[AST_MAX_CHILDREN];
 } BlockASTNode_t;
 
@@ -47,5 +47,6 @@ typedef struct
 
 
 BinaryASTNode_t* init_ast(AST_TYPE type, char* value);
+BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier);
 
 #endif
