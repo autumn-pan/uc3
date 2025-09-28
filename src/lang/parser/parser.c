@@ -79,10 +79,21 @@ BinaryASTNode_t* parse_statement(Parser_t* parser)
     return NULL;
 }
 
-BlockASTNode_t* parse_definition(Parser_t* parser)
+BlockASTNode_t* parse_block(Parser_t* parser)
 {
-    if(!match_value(parser, "DEFINE"))
+    AST_TYPE type;
+    if(match_value(parser, "DEFINE"))
+    {
+        type = DEFINITION;
+    }
+    else if(match_value(parser, "CONFIG"))
+    {
+        type = CONFIGURATION;
+    }
+    else
+    {
         return NULL;
+    }
 
     char* block_identifier;
     if(!(block_identifier = match(parser, IDENTIFIER)))
@@ -91,7 +102,7 @@ BlockASTNode_t* parse_definition(Parser_t* parser)
     if(!match(parser, LBRACE))
         return NULL;
 
-    BlockASTNode_t* node = init_block_ast(DEFINITION, block_identifier);
+    BlockASTNode_t* node = init_block_ast(type, block_identifier);
 
     // Parse each statement within a definition
     BinaryASTNode_t* child;
@@ -108,13 +119,4 @@ BlockASTNode_t* parse_definition(Parser_t* parser)
     }
 
     return node;
-}
-
-BlockASTNode_t* parse_block(Parser_t* parser)
-{
-    BlockASTNode_t* node = NULL;
-    if((node = parse_definition(parser)) != NULL)
-        return node;
-
-    return NULL;
 }

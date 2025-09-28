@@ -7,7 +7,7 @@
 
 int main()
 {
-    Lexer* lexer = init_lexer("DEFINE block {}");
+    Lexer* lexer = init_lexer("CONFIG block {FIELD field DEFAULT 16}");
     TokenStream* ts = tokenize(lexer);
 
     Token* token = ts->head;
@@ -24,7 +24,9 @@ int main()
         printf("\nNode is NULL");
         return 0;
     }
+    
     fflush(stdout);
     printf("\n");
-    printf(node->identifier);
+    printf(node->children[0]->data.str);
+    printf("\ntype: %i", node->type);
 }
