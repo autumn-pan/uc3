@@ -26,3 +26,20 @@ BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier)
     block->num_children = 0;
     return block;
 }
+
+ProjectRoot_t* init_root()
+{
+    ProjectRoot_t* root = (ProjectRoot_t*)(malloc(sizeof(ProjectRoot_t)));
+    root->nodes = (BlockASTNode_t**)(malloc(0));
+    root->num_nodes = 0;
+
+    return root;
+}
+
+void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block)
+{
+    root->num_nodes++;
+    root = (ProjectRoot_t*)(realloc(root, root->num_nodes * sizeof(ProjectRoot_t)));
+
+    root->nodes[root->num_nodes - 1] = block;
+}

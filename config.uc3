@@ -1,5 +1,14 @@
+
 DEFINE block
 {
     SUBSYSTEM very_important_subsystem
-    FIELD yummy DEFAULT 128
+    FIELD yummy 
+        DEFAULT 128
+}
+
+DEFINE other_block
+{
+    SUBSYSTEM not_important_subsystem
+    FIELD yummy 
+        DEFAULT 128
 }

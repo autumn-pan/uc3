@@ -38,8 +38,11 @@ int main()
         return 0;
     }
 
-    printf(node->children[0]->data.str);
-    printf("\ntype: %i", node->type);
+    printf("\n\nRoot: ");
+    ProjectRoot_t* root = init_root();
+    root_append_block(root, node);
+
+    printf(root->nodes[0]->identifier);
 
 
 }

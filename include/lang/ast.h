@@ -48,8 +48,16 @@ typedef struct
     char* component_dependencies[PROJECT_HEADER_MAX_CHILDREN];
 } ProjectHeader_t;
 
+typedef struct 
+{
+    BlockASTNode_t** nodes;
+    int num_nodes;
+} ProjectRoot_t;
+
 
 BinaryASTNode_t* init_ast(AST_TYPE type, char* value);
 BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier);
+ProjectRoot_t* init_root();
+void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block);
 
 #endif
