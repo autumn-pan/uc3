@@ -8,8 +8,12 @@
 
 int main()
 {
-    Lexer* lexer = init_lexer("CONFIG block {SUBSYSTEM block_system FIELD field DEFAULT 16}");
+    char* source = read("config.uc3");
+    printf(source);
+    Lexer* lexer = init_lexer(source);
     TokenStream* ts = tokenize(lexer);
+
+    printf(source);
 
     Token* token = ts->head;
     while(token)
@@ -28,9 +32,14 @@ int main()
     
     fflush(stdout);
     printf("\n");
+    if(!node->children[0])
+    {
+        printf("\nNode has no children!");
+        return 0;
+    }
+
     printf(node->children[0]->data.str);
     printf("\ntype: %i", node->type);
 
 
-    printf(read("hi"));
 }

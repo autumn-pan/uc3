@@ -15,7 +15,8 @@ enum TOKEN_TYPE
     BOOL_LITERAL,
     LBRACE,
     RBRACE,
-    EOF
+    EOF,
+    EOL
 };
 
 extern const char *KEYWORDS[];

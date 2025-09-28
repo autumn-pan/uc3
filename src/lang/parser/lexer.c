@@ -12,8 +12,7 @@ const char *KEYWORDS[] = {
     "FIELD", // A custom field of any type created in module definition, allows for customization
     "DEPENDENCIES", // Defines what modules must exist for a certain module to work
     "NOTE", // A short string associated with modules for simple descriptions or notes
-    "DEFAULT", // Used in definitions to set the default value of a field
-    "NAME"
+    "DEFAULT" // Used in definitions to set the default value of a field
 };
 
 Lexer* init_lexer(const char *src) {
@@ -120,6 +119,8 @@ Token* next_token(Lexer* lexer)
         {
             cat_char(str, (advance(lexer))); 
         }
+        printf("\nstring: %s", str);
+        fflush(stdout);
         if(in_array(KEYWORDS, str, 7))
             return init_token(KEYWORD, str, lexer->line, lexer->column);
         return init_token(IDENTIFIER, str, lexer->line, lexer->column);
@@ -153,10 +154,9 @@ Token* next_token(Lexer* lexer)
     
     return NULL;
 }
-
 TokenStream* tokenize(Lexer* lexer)
 {
-    TokenStream* token_stream = (TokenStream*)(malloc(sizeof(TokenStream)));
+    TokenStream* token_stream = init_tokenstream();
 
     Token* token = next_token(lexer);
     
@@ -179,12 +179,14 @@ TokenStream* init_tokenstream()
     token_stream->head = NULL;
     token_stream->tail = NULL;
     token_stream->size = 0;
+
     return token_stream;
 }
 
 void append_token(TokenStream* ts, Token* token)
 {
     token->next = NULL;
+
     if (ts->head == NULL) { // Empty list
         ts->head = token;
         ts->tail = token;

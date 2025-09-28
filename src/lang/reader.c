@@ -20,7 +20,7 @@ char* read(char* file_name)
     }
 
     fread(buffer, 1, file_size, file);
-    buffer[file_size+1] = '\0';
+    buffer[file_size] = '\0';
     fclose(file);
     
     return buffer;
