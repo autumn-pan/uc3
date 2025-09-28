@@ -42,6 +42,12 @@ typedef struct
     uint8_t num_children;
 } BlockASTNode_t;
 
+typedef struct 
+{
+    char** children;
+    int num_children;
+} ListASTNode_t;
+
 // Defines the intrinsic components for a project. UC3 will refuse to compile if any modules are missing.
 typedef struct 
 {
@@ -58,6 +64,8 @@ typedef struct
 BinaryASTNode_t* init_ast(AST_TYPE type, char* value);
 BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier);
 ProjectRoot_t* init_root();
+ListASTNode_t* init_ast_list();
+void ast_list_append(ListASTNode_t* list, char* str);
 void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block);
 
 #endif

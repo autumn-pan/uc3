@@ -139,17 +139,33 @@ Token* next_token(Lexer* lexer)
         return init_token(INT_LITERAL, str, lexer->line, lexer->column); // Return int literal
     }
 
-    // Check if the next token is a bracket
+    // Check if the next token is a miscellaneous token
+    enum TOKEN_TYPE misc_token_type = UNDEFINED;
+
     char temp[2] = {current_char, '\0'};
-    if(current_char == '{')
+    switch(current_char)
     {
-        advance(lexer);
-        return init_token(LBRACE, temp, lexer->line, lexer->column);
+        case '{':
+            misc_token_type = LBRACE;
+            advance(lexer);
+            break;
+        case '}':
+            misc_token_type = RBRACE;
+            advance(lexer);
+            break;
+        case '[':
+            misc_token_type = LSQBRACE;
+            advance(lexer);
+            break;
+        case ']':
+            misc_token_type = RSQBRACE;
+            advance(lexer);
+            break;
     }
-    else if(current_char == '}')
+
+    if(misc_token_type != UNDEFINED)
     {
-        advance(lexer);
-        return init_token(RBRACE, temp, lexer->line, lexer->column);
+        return init_token(misc_token_type, temp, lexer->line, lexer->column);
     }
     
     return NULL;

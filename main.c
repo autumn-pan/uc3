@@ -9,7 +9,6 @@
 int main()
 {
     char* source = read("config.uc3");
-    printf(source);
     Lexer* lexer = init_lexer(source);
     TokenStream* ts = tokenize(lexer);
 

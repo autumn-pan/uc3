@@ -36,6 +36,23 @@ ProjectRoot_t* init_root()
     return root;
 }
 
+ListASTNode_t* init_ast_list()
+{
+    ListASTNode_t* list = (ListASTNode_t*)(malloc(sizeof(ListASTNode_t)));
+    list->children = (char**)(calloc(0, sizeof(char*)));
+    list->num_children = 0;
+
+    return list;
+}
+
+void ast_list_append(ListASTNode_t* list, char* str)
+{
+    list->num_children++;
+
+    list->children = (char**)(realloc(list->children, list->num_children * sizeof(char*)));
+    list->children[list->num_children - 1] = str;
+}
+
 void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block)
 {
     root->num_nodes++;

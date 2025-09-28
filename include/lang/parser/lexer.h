@@ -16,7 +16,10 @@ enum TOKEN_TYPE
     LBRACE,
     RBRACE,
     EOF,
-    EOL
+    EOL,
+    LSQBRACE,
+    RSQBRACE,
+    UNDEFINED
 };
 
 extern const char *KEYWORDS[];

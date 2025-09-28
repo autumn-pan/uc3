@@ -88,6 +88,11 @@ BinaryASTNode_t* parse_subsystem(Parser_t* parser)
     return node;
 }
 
+ListASTNode_t* parse_list(Parser_t* parser)
+{
+
+}
+
 BinaryASTNode_t* parse_statement(Parser_t* parser)
 {
     BinaryASTNode_t* node = NULL;
