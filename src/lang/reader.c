@@ -1,0 +1,27 @@
+#include "lang/reader.h"
+
+char* read(char* file_name)
+{
+    FILE* file = fopen(file_name, "r");
+    if(!file)
+        return NULL;
+
+    // find file size
+    fseek(file, 0, SEEK_END);
+    uint64_t file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+
+    char *buffer = (char *)malloc(file_size + 1);
+
+    if(!buffer)
+    {
+        fclose(file);
+        return NULL;
+    }
+
+    fread(buffer, 1, file_size, file);
+    buffer[file_size+1] = '\0';
+    fclose(file);
+    
+    return buffer;
+}

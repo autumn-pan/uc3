@@ -4,6 +4,7 @@
 #include <string.h>
 #include "lang/ast.h"
 #include <stdlib.h>
+#include "lang/reader.h"
 
 int main()
 {
@@ -29,4 +30,7 @@ int main()
     printf("\n");
     printf(node->children[0]->data.str);
     printf("\ntype: %i", node->type);
+
+
+    printf(read("hi"));
 }
