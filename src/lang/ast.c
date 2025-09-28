@@ -12,16 +12,7 @@ BinaryASTNode_t* init_ast(AST_TYPE type, char* value)
     }
 
     // Set AST data based on the AST type
-    switch(type)
-    {
-        case INT_LITERAL:
-            ast->data.integer = atoi(value);
-            break;
-        case STR_LITERAL:
-            ast->data.str = value;
-        default:
-            ast->data.str = value;
-    }
+    ast->data.str = value;
 }
 
 BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier)
@@ -32,5 +23,6 @@ BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier)
 
     block->identifier = identifier;
     block->type = type;
+    block->num_children = 0;
     return block;
 }

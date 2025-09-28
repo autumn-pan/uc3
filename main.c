@@ -7,7 +7,7 @@
 
 int main()
 {
-    Lexer* lexer = init_lexer("CONFIG block {FIELD field DEFAULT 16}");
+    Lexer* lexer = init_lexer("CONFIG block {SUBSYSTEM block_system FIELD field DEFAULT 16}");
     TokenStream* ts = tokenize(lexer);
 
     Token* token = ts->head;

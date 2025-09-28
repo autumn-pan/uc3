@@ -64,9 +64,27 @@ BinaryASTNode_t* parse_field(Parser_t* parser)
     if(!(val = match(parser, INT_LITERAL)))
         return NULL;
     
+
     BinaryASTNode_t* node = init_ast(FIELD, node_identifier);
+
+    if(!node)
+        return NULL;
+
     node->children[0] = init_ast(INT, val);
 
+    return node;
+}
+
+BinaryASTNode_t* parse_subsystem(Parser_t* parser)
+{
+    if(!match_value(parser, "SUBSYSTEM"))
+        return NULL;
+
+    char* node_identifier;
+    if(!(node_identifier = match(parser, IDENTIFIER)))
+        return NULL;
+
+    BinaryASTNode_t* node = init_ast(SUBSYSTEM, node_identifier);
     return node;
 }
 
@@ -74,6 +92,8 @@ BinaryASTNode_t* parse_statement(Parser_t* parser)
 {
     BinaryASTNode_t* node = NULL;
     if((node = parse_field(parser)) != NULL)
+        return node;
+    else if((node = parse_subsystem(parser)) != NULL)
         return node;
 
     return NULL;
@@ -106,16 +126,19 @@ BlockASTNode_t* parse_block(Parser_t* parser)
 
     // Parse each statement within a definition
     BinaryASTNode_t* child;
-    int child_index = 0;
 
     while(parser->ptr->type != RBRACE && parser->ptr->type != EOF)
     {
         child = parse_statement(parser);
+        fflush(stdout);
 
         if(!child)
+        {
             return NULL;
+        }
 
-        node->children[child_index] = child;
+        node->children[node->num_children] = child;
+        node->num_children++;
     }
 
     return node;

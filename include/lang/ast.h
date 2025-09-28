@@ -10,7 +10,9 @@ typedef enum
 {
     HEADER,
     DEFINITION,
+    SUBSYSTEM_DEFINITION,
     CONFIGURATION,
+    SUBSYSTEM,
     FIELD,
     DEFAULT,
     INT,
@@ -37,6 +39,7 @@ typedef struct
     AST_TYPE type;
     char* identifier;
     BinaryASTNode_t* children[AST_MAX_CHILDREN];
+    uint8_t num_children;
 } BlockASTNode_t;
 
 // Defines the intrinsic components for a project. UC3 will refuse to compile if any modules are missing.
