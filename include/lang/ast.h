@@ -25,7 +25,8 @@ typedef enum
     DEFAULT, // Defines the default value for a FIELD. Defaults are required and non-optional.
     INT, // Integer data type
     STRING, // String data type
-    IDENTIFIER // Refers to another subsystem or variable
+    IDENTIFIER, // Refers to another subsystem or variable
+    DEPENDENCY // Declares which components or subsystems a component needs. Analogous with KConfig depends_on
 } AST_TYPE;
 
 typedef struct node
