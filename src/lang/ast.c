@@ -11,16 +11,16 @@ ASTNode_t* init_ast(AST_TYPE type, char* value)
         return NULL;
     }
 
-    ast->children = (void**)(calloc(0, sizeof(void*)));
+    ast->children = (ASTNode_t**)(calloc(0, sizeof(ASTNode_t*)));
     // Set AST data based on the AST type
     ast->data.str = value;
 }
 
 
-void ast_append(ASTNode_t* node, void* child)
+void ast_append(ASTNode_t* node, ASTNode_t* child)
 {
     node->num_children++;
 
-    node->children = (void**)(realloc(node->children, node->num_children * sizeof(void*)));
+    node->children = (ASTNode_t**)(realloc(node->children, node->num_children * sizeof(ASTNode_t*)));
     node->children[node->num_children - 1] = child;
 }
