@@ -4,6 +4,11 @@ DEFINE block
     SUBSYSTEM very_important_subsystem
     FIELD yummy 
         DEFAULT 128
+    DEPENDENCIES
+    [
+        subsystem_base
+        subsystem_helper
+    ]
 }
 
 DEFINE other_block

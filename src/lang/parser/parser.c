@@ -25,21 +25,36 @@ Token *get_next_token(Parser_t *p) {
     return NULL;
 }
 
+bool advance_parser(Parser_t* parser)
+{
+    if (parser->pos < parser->len && parser->ptr) 
+    {
+        parser->pos++;
+        parser->ptr = parser->ptr->next;
+
+        if(!parser->ptr)
+            return false;
+
+        return true;
+    }
+    return false;
+}
+
 char* match(Parser_t *p, enum TOKEN_TYPE type) {
     if (p->pos < p->len && p->ptr->type == type) {
         char* tmp = p->ptr->value;
-        p->pos++;
-        p->ptr = p->ptr->next;
-        return  tmp;
+
+        advance_parser(p);
+        return tmp;
     }
-    return false;
+    return NULL;
 }
 
 // Match value function
 bool match_value(Parser_t *p, char *value) {
     if (p->pos < p->len && strcmp(p->ptr->value, value) == 0 && p->ptr) {
-        p->pos++;
-        p->ptr = p->ptr->next;
+
+        advance_parser(p);
         return true;
     }
 
@@ -88,6 +103,87 @@ ASTNode_t* parse_subsystem(Parser_t* parser)
     return node;
 }
 
+// Check if a token can be placed in a list. 
+// Only identifiers and literals are allowed in lists.
+bool is_list_compatible(Token* token)
+{
+    if(!token)
+        return false;
+
+    if(token->type == IDENTIFIER || token->type == INT_LITERAL || token->type == STR_LITERAL)
+        return true;
+
+    return false;
+}
+
+
+ASTNode_t* parse_list(Parser_t* parser)
+{
+    if(!match(parser, LSQBRACE))
+        return NULL;
+
+    if(!parser->ptr)
+        return NULL;
+    
+    ASTNode_t* node = init_ast(LIST, "LIST");
+
+
+    while(is_list_compatible(parser->ptr) && parser->ptr->type != EOF && parser->ptr)
+    {
+        Token* token = parser->ptr;
+
+        if(!parser->ptr)
+            return NULL;
+
+        AST_TYPE type = PLACEHOLDER;
+        // Convert token type to AST type
+        switch(token->type)
+        {
+            case(STR_LITERAL):
+                type = STRING;
+                break;
+            case(INT_LITERAL):
+                type = INT;
+                break;
+            case(IDENTIFIER):
+                type = IDEN;
+                break;
+        }
+
+        if(type == PLACEHOLDER)
+            return NULL;
+
+        ASTNode_t* child = init_ast(type, token->value);
+        if(!child)
+            return NULL;
+
+        ast_append(node, child);
+
+        advance_parser(parser);
+    }
+    if(match(parser, RSQBRACE) == NULL)
+        return NULL;
+
+    return node;
+}
+
+ASTNode_t* parse_dependency(Parser_t* parser)
+{
+    if(!match_value(parser, "DEPENDENCIES"))
+        return NULL;
+
+    ASTNode_t* node = init_ast(DEPENDENCY_TOKEN, "");
+
+    ASTNode_t* list = parse_list(parser);
+
+    if(!list || !node)
+        return NULL;
+
+    ast_append(node, list);
+
+    return node;
+}
+
 ASTNode_t* parse_statement(Parser_t* parser)
 {
     ASTNode_t* node = NULL;
@@ -95,8 +191,11 @@ ASTNode_t* parse_statement(Parser_t* parser)
         return node;
     else if((node = parse_subsystem(parser)) != NULL)
         return node;
+    else if((node = parse_dependency(parser)) != NULL)
+        return node;
 
-
+    printf("\nReturning NULL");
+    fflush(stdout);
     return NULL;
 }
 

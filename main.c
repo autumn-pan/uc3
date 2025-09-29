@@ -18,12 +18,12 @@ int main()
     while(token)
     {
         printf("\nToken, %i: %s", token->type, token->value),
+        fflush(stdout);
         token = token->next;
     }
 
     Parser_t* parser = init_parser(ts);
     ASTNode_t* root = parse(parser);
 
-    printf(root->children[0]->children[0]->data.str);
-    printf(root->children[1]->children[0]->data.str);
+    printf(root->children[0]->children[2]->children[0]->children[0]->data.str);
 }
