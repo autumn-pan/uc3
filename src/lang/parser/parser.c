@@ -116,27 +116,28 @@ bool is_list_compatible(Token* token)
     return false;
 }
 
-
+// Parse a list into an AST subtree
 ASTNode_t* parse_list(Parser_t* parser)
 {
     if(!match(parser, LSQBRACE))
         return NULL;
-
-    if(!parser->ptr)
-        return NULL;
     
+    // Init root
     ASTNode_t* node = init_ast(LIST, "LIST");
 
-
+    // append everything within the list as children of the list node
     while(is_list_compatible(parser->ptr) && parser->ptr->type != EOF && parser->ptr)
     {
         Token* token = parser->ptr;
 
+        // If the end of the tokenstream is hit early, quit
         if(!parser->ptr)
             return NULL;
 
         AST_TYPE type = PLACEHOLDER;
+
         // Convert token type to AST type
+        // TODO: consolidate types or create simpler conversions
         switch(token->type)
         {
             case(STR_LITERAL):
@@ -150,9 +151,11 @@ ASTNode_t* parse_list(Parser_t* parser)
                 break;
         }
 
+        // Quit if the type is unrecognized for whatever reason
         if(type == PLACEHOLDER)
             return NULL;
 
+        // Append the child to the list root
         ASTNode_t* child = init_ast(type, token->value);
         if(!child)
             return NULL;
@@ -161,12 +164,15 @@ ASTNode_t* parse_list(Parser_t* parser)
 
         advance_parser(parser);
     }
+
+    // Ensure that the lit is closed appropriately
     if(match(parser, RSQBRACE) == NULL)
         return NULL;
 
     return node;
 }
 
+// Parse a dependency list
 ASTNode_t* parse_dependency(Parser_t* parser)
 {
     if(!match_value(parser, "DEPENDENCIES"))

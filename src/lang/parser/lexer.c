@@ -17,7 +17,7 @@ const char *KEYWORDS[] = {
 };
 
 Lexer* init_lexer(const char *src) {
-    Lexer *lexer = (Lexer *)malloc(sizeof(Lexer)); 
+    Lexer *lexer = malloc(sizeof(Lexer)); 
     lexer->src = src;
     lexer->length = strlen(src);
 
@@ -75,7 +75,7 @@ void skip_whitespace(Lexer* lexer)
 
 Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line, uint32_t col)
 {
-    Token* token = (Token*)(malloc(sizeof(Token)));
+    Token* token = (malloc(sizeof(Token)));
     strcpy(token->value, str);
     token->next = NULL;
     token->line = line;
@@ -193,7 +193,7 @@ TokenStream* tokenize(Lexer* lexer)
 
 TokenStream* init_tokenstream()
 {
-    TokenStream* token_stream = (TokenStream*)(malloc(sizeof(TokenStream)));
+    TokenStream* token_stream = (malloc(sizeof(TokenStream)));
     token_stream->head = NULL;
     token_stream->tail = NULL;
     token_stream->size = 0;
