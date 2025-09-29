@@ -2,61 +2,42 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-BinaryASTNode_t* init_ast(AST_TYPE type, char* value)
+ASTNode_t* init_ast(AST_TYPE type, char* value)
 {
-    BinaryASTNode_t* ast = (BinaryASTNode_t*)(malloc(sizeof(BinaryASTNode_t)));
+    ASTNode_t* ast = (ASTNode_t*)(malloc(sizeof(ASTNode_t)));
 
     if(!ast)
     {
         return NULL;
     }
 
+    ast->children = (void**)(calloc(0, sizeof(void*)));
     // Set AST data based on the AST type
     ast->data.str = value;
 }
 
-BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier)
-{
-    BlockASTNode_t* block = (BlockASTNode_t*)(malloc(sizeof(BlockASTNode_t)));
-    if(!block)
-        return NULL;
-
-    block->identifier = identifier;
-    block->type = type;
-    block->num_children = 0;
-    return block;
-}
 
 ProjectRoot_t* init_root()
 {
     ProjectRoot_t* root = (ProjectRoot_t*)(malloc(sizeof(ProjectRoot_t)));
-    root->nodes = (BlockASTNode_t**)(calloc(0, sizeof(BlockASTNode_t*)));
+    root->nodes = (ASTNode_t**)(calloc(0, sizeof(ASTNode_t*)));
     root->num_nodes = 0;
 
     return root;
 }
 
-ListASTNode_t* init_ast_list()
+void ast_append(ASTNode_t* node, void* child)
 {
-    ListASTNode_t* list = (ListASTNode_t*)(malloc(sizeof(ListASTNode_t)));
-    list->children = (char**)(calloc(0, sizeof(char*)));
-    list->num_children = 0;
+    node->num_children++;
 
-    return list;
+    node->children = (void**)(realloc(node->children, node->num_children * sizeof(void*)));
+    node->children[node->num_children - 1] = child;
 }
 
-void ast_list_append(ListASTNode_t* list, char* str)
-{
-    list->num_children++;
-
-    list->children = (char**)(realloc(list->children, list->num_children * sizeof(char*)));
-    list->children[list->num_children - 1] = str;
-}
-
-void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block)
+void root_append_block(ProjectRoot_t* root, ASTNode_t* block)
 {
     root->num_nodes++;
 
-    root->nodes = (BlockASTNode_t**)(realloc(root->nodes, root->num_nodes * sizeof(BlockASTNode_t*)));
+    root->nodes = (ASTNode_t**)(realloc(root->nodes, root->num_nodes * sizeof(ASTNode_t*)));
     root->nodes[root->num_nodes - 1] = block;
 }

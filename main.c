@@ -24,6 +24,7 @@ int main()
     Parser_t* parser = init_parser(ts);
     ProjectRoot_t* root = parse(parser);
 
-    printf(root->nodes[0]->children[0]->data.str);
-    printf(root->nodes[1]->identifier);
+    printf(((ASTNode_t*)(root->nodes[0]->children[0]))->data.str);
+    printf(((ASTNode_t*)(root->nodes[1]->children[0]))->data.str);
+
 }

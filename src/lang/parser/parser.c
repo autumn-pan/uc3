@@ -46,7 +46,7 @@ bool match_value(Parser_t *p, char *value) {
     return false;
 }
 
-BinaryASTNode_t* parse_field(Parser_t* parser)
+ASTNode_t* parse_field(Parser_t* parser)
 {
     if(!match_value(parser, "FIELD"))
         return NULL;
@@ -63,17 +63,17 @@ BinaryASTNode_t* parse_field(Parser_t* parser)
         return NULL;
     
 
-    BinaryASTNode_t* node = init_ast(FIELD, node_identifier);
+    ASTNode_t* node = init_ast(FIELD, node_identifier);
 
     if(!node)
         return NULL;
 
-    node->children[0] = init_ast(INT, val);
+    ast_append(node, init_ast(INT, val));
 
     return node;
 }
 
-BinaryASTNode_t* parse_subsystem(Parser_t* parser)
+ASTNode_t* parse_subsystem(Parser_t* parser)
 {
     if(!match_value(parser, "SUBSYSTEM"))
         return NULL;
@@ -82,7 +82,7 @@ BinaryASTNode_t* parse_subsystem(Parser_t* parser)
     if(!(node_identifier = match(parser, IDENTIFIER)))
         return NULL;
 
-    BinaryASTNode_t* node = init_ast(SUBSYSTEM, node_identifier);
+    ASTNode_t* node = init_ast(SUBSYSTEM, node_identifier);
 
 
     return node;
@@ -93,9 +93,9 @@ ListASTNode_t* parse_list(Parser_t* parser)
 
 }
 
-BinaryASTNode_t* parse_statement(Parser_t* parser)
+ASTNode_t* parse_statement(Parser_t* parser)
 {
-    BinaryASTNode_t* node = NULL;
+    ASTNode_t* node = NULL;
     if((node = parse_field(parser)) != NULL)
         return node;
     else if((node = parse_subsystem(parser)) != NULL)
@@ -105,7 +105,7 @@ BinaryASTNode_t* parse_statement(Parser_t* parser)
     return NULL;
 }
 
-BlockASTNode_t* parse_block(Parser_t* parser)
+ASTNode_t* parse_block(Parser_t* parser)
 {
     AST_TYPE type;
     if(match_value(parser, "DEFINE"))
@@ -121,7 +121,6 @@ BlockASTNode_t* parse_block(Parser_t* parser)
         return NULL;
     }
 
-
     char* block_identifier;
     if(!(block_identifier = match(parser, IDENTIFIER)))
         return NULL;
@@ -129,13 +128,13 @@ BlockASTNode_t* parse_block(Parser_t* parser)
     if(!match(parser, LBRACE))
         return NULL;
 
-    BlockASTNode_t* node = init_block_ast(type, block_identifier);
+    ASTNode_t* node = init_ast(type, block_identifier);
 
     if(!node)
         return NULL;
 
     // Parse each statement within a definition
-    BinaryASTNode_t* child;
+    ASTNode_t* child;
 
     while(parser->ptr->type != RBRACE && parser->ptr->type != EOF)
     {
@@ -146,8 +145,7 @@ BlockASTNode_t* parse_block(Parser_t* parser)
             return NULL;
         }
 
-        node->children[node->num_children] = child;
-        node->num_children++;
+        ast_append(node, child);
     }
 
     if(parser->ptr->type == RBRACE)
@@ -167,7 +165,7 @@ ProjectRoot_t* parse(Parser_t* parser)
 
     while(1)
     {
-        BlockASTNode_t* block = parse_block(parser);
+        ASTNode_t* block = parse_block(parser);
 
         if(!block)
             break;

@@ -19,10 +19,12 @@ typedef enum
     STRING,
 } AST_TYPE;
 
-typedef struct node
+typedef struct
 {
     AST_TYPE type;
-    struct node* children[2];
+    void** children;
+    int num_children;
+
     union 
     {
         char* str;
@@ -31,16 +33,10 @@ typedef struct node
         int integer;
         float floating_point;
     } data;
-} BinaryASTNode_t;
+} ASTNode_t;
 
 // Larger, n-ary AST nodes that are capable of holding n children. Used specifically for blocks
-typedef struct
-{
-    AST_TYPE type;
-    char* identifier;
-    BinaryASTNode_t* children[AST_MAX_CHILDREN];
-    uint8_t num_children;
-} BlockASTNode_t;
+
 
 typedef struct 
 {
@@ -56,16 +52,16 @@ typedef struct
 
 typedef struct 
 {
-    BlockASTNode_t** nodes;
+    ASTNode_t** nodes;
     int num_nodes;
 } ProjectRoot_t;
 
 
-BinaryASTNode_t* init_ast(AST_TYPE type, char* value);
-BlockASTNode_t* init_block_ast(AST_TYPE type, char* identifier);
+ASTNode_t* init_ast(AST_TYPE type, char* value);
 ProjectRoot_t* init_root();
 ListASTNode_t* init_ast_list();
-void ast_list_append(ListASTNode_t* list, char* str);
-void root_append_block(ProjectRoot_t* root, BlockASTNode_t* block);
+void ast_append(ASTNode_t* list, void* str);
+
+void root_append_block(ProjectRoot_t* root, ASTNode_t* block);
 
 #endif

@@ -13,8 +13,8 @@ typedef struct
 
 
 Parser_t* init_parser(TokenStream* ts);
-BinaryASTNode_t* parse_statement(Parser_t* parser);
-BlockASTNode_t* parse_block(Parser_t* parser);
+ASTNode_t* parse_statement(Parser_t* parser);
+ASTNode_t* parse_block(Parser_t* parser);
 ProjectRoot_t* parse(Parser_t* parser);
 
 #endif
