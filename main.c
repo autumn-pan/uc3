@@ -22,9 +22,9 @@ int main()
     }
 
     Parser_t* parser = init_parser(ts);
-    ProjectRoot_t* root = parse(parser);
+    ASTNode_t* root = parse(parser);
 
-    printf(((ASTNode_t*)(root->nodes[0]->children[0]))->data.str);
-    printf(((ASTNode_t*)(root->nodes[1]->children[0]))->data.str);
+    printf(((ASTNode_t*)(((ASTNode_t*)(root->children[0]))->children[0]))->data.str);
+    printf(((ASTNode_t*)(((ASTNode_t*)(root->children[1]))->children[0]))->data.str);
 
 }

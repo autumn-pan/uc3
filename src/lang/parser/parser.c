@@ -88,11 +88,6 @@ ASTNode_t* parse_subsystem(Parser_t* parser)
     return node;
 }
 
-ListASTNode_t* parse_list(Parser_t* parser)
-{
-
-}
-
 ASTNode_t* parse_statement(Parser_t* parser)
 {
     ASTNode_t* node = NULL;
@@ -159,9 +154,9 @@ ASTNode_t* parse_block(Parser_t* parser)
 
 
 // Returns a project tree
-ProjectRoot_t* parse(Parser_t* parser)
+ASTNode_t* parse(Parser_t* parser)
 {
-    ProjectRoot_t* root = init_root();
+    ASTNode_t* root = init_ast(ROOT, "ROOT");
 
     while(1)
     {
@@ -170,7 +165,7 @@ ProjectRoot_t* parse(Parser_t* parser)
         if(!block)
             break;
 
-        root_append_block(root, block);
+        ast_append(root, block);
     }
     return root;
 }

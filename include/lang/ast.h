@@ -8,6 +8,7 @@
 
 typedef enum
 {
+    ROOT,
     HEADER,
     DEFINITION,
     SUBSYSTEM_DEFINITION,
@@ -35,33 +36,15 @@ typedef struct
     } data;
 } ASTNode_t;
 
-// Larger, n-ary AST nodes that are capable of holding n children. Used specifically for blocks
-
-
-typedef struct 
-{
-    char** children;
-    int num_children;
-} ListASTNode_t;
-
 // Defines the intrinsic components for a project. UC3 will refuse to compile if any modules are missing.
 typedef struct 
 {
     char* component_dependencies[PROJECT_HEADER_MAX_CHILDREN];
 } ProjectHeader_t;
 
-typedef struct 
-{
-    ASTNode_t** nodes;
-    int num_nodes;
-} ProjectRoot_t;
 
 
 ASTNode_t* init_ast(AST_TYPE type, char* value);
-ProjectRoot_t* init_root();
-ListASTNode_t* init_ast_list();
 void ast_append(ASTNode_t* list, void* str);
-
-void root_append_block(ProjectRoot_t* root, ASTNode_t* block);
 
 #endif
