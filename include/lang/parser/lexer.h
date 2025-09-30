@@ -48,15 +48,13 @@ typedef struct {
     int column;          // Column number for debugging
 } Lexer;
 
-char peek(Lexer* lexer);
 char advance(Lexer* lexer);
 Lexer* init_lexer(const char* str);
 Token* init_token(enum TOKEN_TYPE type, char *value, uint32_t line, uint32_t column);
-Token* next_token(Lexer *lexer);
 TokenStream* tokenize(Lexer* lexer);
 TokenStream* init_tokenstream();
 void append_token(TokenStream* ts, Token* token);
-void tokenstream_pop_head(TokenStream* ts);
+
 
 char * to_string(const char character);
 #endif

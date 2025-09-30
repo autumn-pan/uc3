@@ -3,9 +3,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-Parser_t* init_parser(TokenStream* ts)
+
+Parser_t* init_parser(TokenStream* ts, Lexer* lexer)
 {
-    Parser_t *parser = (Parser_t*)(malloc(sizeof(Parser_t)));
+    Parser_t *parser = (malloc(sizeof(Parser_t)));
     if(!parser)
         return NULL;
     
@@ -15,6 +16,8 @@ Parser_t* init_parser(TokenStream* ts)
     parser->len = ts->size;
     parser->ptr = ts->head;
 
+    // Free the lexer, as it will no longer be used
+    free(lexer);
     return parser;
 }
 
