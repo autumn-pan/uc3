@@ -18,7 +18,8 @@
         "type_traits": "c",
         "utility": "c",
         "any": "c",
-        "complex": "c"
+        "complex": "c",
+        "symbol.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

@@ -5,6 +5,7 @@
 #define PROJECT_HEADER_MAX_CHILDREN 32
 #include <stdbool.h>
 #include "parser/lexer.h"
+#include "lang/symbol/symbol.h"
 
 /*
 A UC3 project is one that consists of a central project, with multiple subsystems.
