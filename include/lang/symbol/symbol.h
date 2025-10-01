@@ -4,12 +4,12 @@
 #include <stdbool.h>
 enum DATATYPE
 {
-    BOOLEAN,
-    INTEGER,
-    FLOAT,
-    STR,
-    CHAR,
-    TRISTATE_TYPE
+    BOOLEAN_T,
+    INTEGER_T,
+    FLOAT_T,
+    STR_T,
+    CHAR_T,
+    TRISTATE_T
 };
 
 enum TRISTATE

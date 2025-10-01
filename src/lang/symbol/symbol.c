@@ -29,13 +29,13 @@ Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool co
     // TODO: cover all datatypes
     switch(type)
     {
-        case INT:
+        case INTEGER_T:
             symbol->value.integer = atoi(value);
             break;
-        case STRING:
+        case STR_T:
             symbol->value.str = value;
             break;
-        case BOOLEAN:
+        case BOOLEAN_T:
             symbol->value.boolean = str_to_bool(value);
             break;
         default:
@@ -85,8 +85,8 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         {
             symbol_node_append(symbol_node, symbolize_ast(child));
         }
-        
-        else if(child->type == VARIABLE_DECL)
+
+        else if(child->type == VARIABLE_DECL_AST)
         {
             Symbol_t* symbol = init_symbol(
                 child->children[0]->type,  

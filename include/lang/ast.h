@@ -17,20 +17,20 @@ This is designed such that components are interchangable, leading to a highly mo
 // Types of abstract syntax tree nodes
 typedef enum
 {
-    ROOT, // The root of the entire abstract syntax tree, contains every global definition
-    HEADER, // Declares a project's required components and subsystems
-    DEFINITION, // Declares a component
-    SUBSYSTEM, // Declares a subsystem
-    CONFIGURATION, // Defunct, but configures a component
-    FIELD, // Declares a value associated with a component that can be configured
-    DEFAULT, // Defines the default value for a FIELD. Defaults are required and non-optional.
-    INT, // Integer data type
-    STRING, // String data type
-    LIST, // Stores an array of literals or identifiers
-    IDEN, // Refers to another subsystem or variable
-    DEPENDENCY, // Declares which components or subsystems a component needs. Analogous with KConfig depends_on
-    PLACEHOLDER,
-    VARIABLE_DECL,
+    ROOT_AST, // The root of the entire abstract syntax tree, contains every global definition
+    HEADER_AST, // Declares a project's required components and subsystems
+    DEFINITION_AST, // Declares a component
+    SUBSYSTEM_AST, // Declares a subsystem
+    CONFIGURATION_AST, // Defunct, but configures a component
+    FIELD_AST, // Declares a value associated with a component that can be configured
+    DEFAULT_AST, // Defines the default value for a FIELD. Defaults are required and non-optional.
+    INT_AST, // Integer data type
+    STRING_AST, // String data type
+    LIST_AST, // Stores an array of literals or identifiers
+    IDEN_AST, // Refers to another subsystem or variable
+    DEPENDENCY_AST, // Declares which components or subsystems a component needs. Analogous with KConfig depends_on
+    PLACEHOLDER_AST,
+    VARIABLE_DECL_AST,
     BLOCK
 } AST_TYPE;
 

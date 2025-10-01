@@ -127,8 +127,8 @@ Token* next_token(Lexer* lexer)
         printf("\nIn array: %i", (int)in_array(KEYWORDS, str, 8));
         fflush(stdout);
         if(in_array(KEYWORDS, str, 10))
-            return init_token(KEYWORD, str, lexer->line, lexer->column);
-        return init_token(IDENTIFIER, str, lexer->line, lexer->column);
+            return init_token(KEYWORD_TOKEN, str, lexer->line, lexer->column);
+        return init_token(IDENTIFIER_TOKEN, str, lexer->line, lexer->column);
     }
 
     // Check if the string is a number
@@ -141,34 +141,34 @@ Token* next_token(Lexer* lexer)
 
         printf("\n success");
         fflush(stdout);
-        return init_token(INT_LITERAL, str, lexer->line, lexer->column); // Return int literal
+        return init_token(INT_TOKEN, str, lexer->line, lexer->column); // Return int literal
     }
 
     // Check if the next token is a miscellaneous token
-    enum TOKEN_TYPE misc_token_type = UNDEFINED;
+    enum TOKEN_TYPE misc_token_type = NULL_TOKEN;
 
     char temp[2] = {current_char, '\0'};
     switch(current_char)
     {
         case '{':
-            misc_token_type = LBRACE;
+            misc_token_type = LBRACE_TOKEN;
             advance(lexer);
             break;
         case '}':
-            misc_token_type = RBRACE;
+            misc_token_type = RBRACE_TOKEN;
             advance(lexer);
             break;
         case '[':
-            misc_token_type = LSQBRACE;
+            misc_token_type = LSQBRACE_TOKEN;
             advance(lexer);
             break;
         case ']':
-            misc_token_type = RSQBRACE;
+            misc_token_type = RSQBRACE_TOKEN;
             advance(lexer);
             break;
     }
 
-    if(misc_token_type != UNDEFINED)
+    if(misc_token_type != NULL_TOKEN)
     {
         return init_token(misc_token_type, temp, lexer->line, lexer->column);
     }
