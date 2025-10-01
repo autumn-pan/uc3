@@ -29,5 +29,7 @@ int main()
     SymbolNode_t* symbol = symbolize_ast(root);
     Symbol_t* sym = symbol->symbols[0];
 
-       printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
+    printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
+    printf("\nIdentifier: %s", sym->identifier);
+
 }
