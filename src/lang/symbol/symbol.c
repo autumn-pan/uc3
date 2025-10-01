@@ -74,35 +74,79 @@ void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
 
 SymbolNode_t* symbolize_ast(ASTNode_t* node)
 {
+    printf("\nSymbolizer Cycle");
+    fflush(stdout);
+
     SymbolNode_t* symbol_node = init_symbol_node();
+    if(!symbol_node)
+        return NULL;
 
     int child_index = 0;
-    ASTNode_t* child = node->children[child_index];
 
+    if(child_index > node->num_children)
+    {
+        return NULL;
+    }
+
+    printf("\nFlag");
+    fflush(stdout);
+    ASTNode_t* child = node->children[child_index];
     while(child)
     {
-        if(child->type == BLOCK_AST)
+        // If the child node contains a block, the block will be its first and only child
+        if(child->num_children > 0 && child->children[0]->type == BLOCK_AST)
         {
-            SymbolNode_t* new_symbol = symbolize_ast(child);
-            if(!new_symbol)
+            printf("\n  block cycle");
+            fflush(stdout);
+            SymbolNode_t* new_symbol = symbolize_ast(child->children[0]);
+            if(new_symbol)
+                symbol_node_append(symbol_node, new_symbol);
+            else    
                 return NULL;
-                
-            symbol_node_append(symbol_node, new_symbol);
         }
-
         else if(child->type == VARIABLE_DECL_AST)
         {
-            Symbol_t* symbol = init_symbol(
-                child->children[0]->type,  
-                child->data.str,
-                child->children[0]->data.str,
-                false
-            );
+            printf("\n  variable cycle");
+            fflush(stdout);
 
-            symbol_append(symbol_node, symbol);
+            if(!child->children[0])
+            {
+                Symbol_t* symbol = init_symbol(
+                    UNKNOWN_T,  
+                    child->data.str,
+                    NULL,
+                    false
+                );    
+                if(!symbol)
+                return NULL;
+
+
+                printf("\nFlag");
+                fflush(stdout);
+                symbol_append(symbol_node, symbol);
+            }
+            else
+            {
+                Symbol_t* symbol = init_symbol(
+                    UNKNOWN_T,  
+                    child->data.str,
+                    NULL,
+                    false
+                );
+                if(!symbol)
+                return NULL;
+
+
+                printf("\nFlag");
+                fflush(stdout);
+                symbol_append(symbol_node, symbol);
+            }
+
+
         }
 
         child_index++;
+        
         child = node->children[child_index];
     }
 

@@ -13,8 +13,10 @@ ASTNode_t* init_ast(AST_TYPE type, char* value)
     }
 
     ast->children = (calloc(0, sizeof(ASTNode_t*)));
+    ast->num_children = 0;
     // Set AST data based on the AST type
     ast->data.str = value;
+    ast->type = type;
 }
 
 

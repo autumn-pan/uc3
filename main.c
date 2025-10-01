@@ -26,5 +26,8 @@ int main()
     Parser_t* parser = init_parser(ts, lexer);
     ASTNode_t* root = parse(parser);
     
-    printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
+    SymbolNode_t* symbol = symbolize_ast(root);
+    Symbol_t* sym = symbol->symbols[0];
+
+       printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
 }

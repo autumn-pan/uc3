@@ -21,6 +21,10 @@ const char *KEYWORDS[] = {
     "BOOL"
 };
 
+const char OPERATORS[] = {
+    '=', // Assignment operator
+};
+
 Lexer* init_lexer(const char *src) {
     Lexer *lexer = malloc(sizeof(Lexer)); 
     lexer->src = src;

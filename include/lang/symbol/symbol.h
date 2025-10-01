@@ -10,7 +10,8 @@ enum DATATYPE
     FLOAT_T,
     STR_T,
     CHAR_T,
-    TRISTATE_T
+    TRISTATE_T,
+    UNKNOWN_T
 };
 
 typedef enum
