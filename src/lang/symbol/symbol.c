@@ -74,19 +74,19 @@ void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
     node->children[node->num_children - 1] = child;
 }
 
+// Create a Symbol Tree that corresponds to the variables of an Abstract Syntax Tree.
 SymbolNode_t* symbolize_ast(ASTNode_t* node)
 {
+    // Initialize the root symbol
     SymbolNode_t* symbol_node = init_symbol_node();
     if(!symbol_node)
         return NULL;
 
     int child_index = 0;
 
-
-    if(child_index > node->num_children)
-    {
+    // Ensure that the child index is not out of bounds
+    if(child_index >= node->num_children)
         return NULL;
-    }
 
 
     ASTNode_t* child = node->children[child_index];
@@ -96,24 +96,24 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         if(child->num_children > 0 && child->children[0]->type == BLOCK_AST)
         {
             SymbolNode_t* new_symbol = symbolize_ast(child->children[0]);
-            if(new_symbol)
-                symbol_node_append(symbol_node, new_symbol);
-            else    
+            if(!new_symbol)
                 return NULL;
+            symbol_node_append(symbol_node, new_symbol);
+
         }
         else if(child->type == VARIABLE_DECL_AST)
         {
-            if(!child->children[0])
+            Symbol_t* symbol;
+            if(!child->children[0]) // Register undefined symbols
             {
-                Symbol_t* symbol = init_symbol(
+                symbol = init_symbol(
                     UNKNOWN_T,  
                     child->data.str,
                     NULL,
                     false
                 );    
-                symbol_append(symbol_node, symbol);
             }
-            else
+            else // Register defined symbols
             {
                 Symbol_t* symbol = init_symbol(
                     child->children[0]->type,  
@@ -121,11 +121,13 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                     child->children[0]->data.str,
                     false
                 );
-                if(!symbol)
+            }
+
+            if(!symbol)
                 return NULL;
 
-                symbol_append(symbol_node, symbol);
-            }
+            symbol_append(symbol_node, symbol);
+
         }
 
 
