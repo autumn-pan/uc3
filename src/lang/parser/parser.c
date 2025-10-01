@@ -106,6 +106,20 @@ ASTNode_t* parse_subsystem(Parser_t* parser)
     return node;
 }
 
+ASTNode_t* parse_variable_decl(Parser_t* parser)
+{
+    if(!(match_value(parser, "INT") || match_value(parser, "BOOL")))
+        return NULL;
+
+    char* identifier;
+    if(!(identifier = match(parser, IDENTIFIER)))
+        return NULL;
+
+    ASTNode_t* node = init_ast(VARIABLE_DECL, identifier);
+    // TODO: add definitions (requires operator parsing)
+    return node;
+}
+
 // Check if a token can be placed in a list. 
 // Only identifiers and literals are allowed in lists.
 bool is_list_compatible(Token* token)
@@ -194,7 +208,7 @@ ASTNode_t* parse_dependency(Parser_t* parser)
 }
 
 ASTNode_t* parse_statement(Parser_t* parser)
-{
+{   
     ASTNode_t* node = NULL;
     if((node = parse_field(parser)) != NULL)
         return node;
@@ -202,15 +216,16 @@ ASTNode_t* parse_statement(Parser_t* parser)
         return node;
     else if((node = parse_dependency(parser)) != NULL)
         return node;
+    else if((node = parse_variable_decl(parser)) != NULL)
+        return node;
 
-    printf("\nReturning NULL");
-    fflush(stdout);
     return NULL;
 }
 
 ASTNode_t* parse_block(Parser_t* parser)
 {
     AST_TYPE type;
+    ASTNode_t* node;
     if(match_value(parser, "DEFINE"))
     {
         type = DEFINITION;
@@ -231,7 +246,7 @@ ASTNode_t* parse_block(Parser_t* parser)
     if(!match(parser, LBRACE))
         return NULL;
 
-    ASTNode_t* node = init_ast(type, block_identifier);
+    node = init_ast(type, block_identifier);
 
     if(!node)
         return NULL;
@@ -268,7 +283,15 @@ ASTNode_t* parse(Parser_t* parser)
 
     while(1)
     {
-        ASTNode_t* block = parse_block(parser);
+        ASTNode_t* block;
+
+        if (block = parse_variable_decl(parser))
+        {
+            ast_append(root, block);
+            continue;
+        }
+
+        block = parse_block(parser);
 
         if(!block)
             break;

@@ -175,6 +175,7 @@ Token* next_token(Lexer* lexer)
     
     return NULL;
 }
+
 TokenStream* tokenize(Lexer* lexer)
 {
     TokenStream* token_stream = init_tokenstream();

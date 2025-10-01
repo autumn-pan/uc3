@@ -29,7 +29,9 @@ typedef enum
     LIST, // Stores an array of literals or identifiers
     IDEN, // Refers to another subsystem or variable
     DEPENDENCY, // Declares which components or subsystems a component needs. Analogous with KConfig depends_on
-    PLACEHOLDER
+    PLACEHOLDER,
+    VARIABLE_DECL,
+    BLOCK
 } AST_TYPE;
 
 typedef struct node

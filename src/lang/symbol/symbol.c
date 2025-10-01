@@ -60,9 +60,42 @@ SymbolNode_t* init_symbol_node()
 
 void symbol_append(SymbolNode_t* node, Symbol_t* child)
 {
-    node->num_children++;
+    node->num_symbols++;
 
     node->symbols = (realloc(node->symbols, node->num_symbols * sizeof(Symbol_t*)));
     node->symbols[node->num_symbols - 1] = child;
 }
 
+void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
+{
+    node->num_children++;
+
+    node->children = (realloc(node->children, node->num_children * sizeof(SymbolNode_t*)));
+    node->children[node->num_children - 1] = child;
+}
+
+SymbolNode_t* symbolize_ast(ASTNode_t* node)
+{
+    SymbolNode_t* symbol_node = init_symbol_node();
+
+    ASTNode_t* child = node->children[0];
+    while(child)
+    {
+        if(child->type == BLOCK)
+        {
+            symbol_node_append(symbol_node, symbolize_ast(child));
+        }
+        
+        else if(child->type == VARIABLE_DECL)
+        {
+            Symbol_t* symbol = init_symbol(
+                child->children[0]->type,  
+                child->data.str,
+                child->children[0]->data.str,
+                false
+            );
+
+            symbol_append(symbol_node, symbol);
+        }
+    }
+}
