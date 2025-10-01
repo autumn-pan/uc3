@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
+
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
     "CONFIG", // Configure a module
@@ -13,7 +14,9 @@ const char *KEYWORDS[] = {
     "DEPENDENCIES", // Defines what modules must exist for a certain module to work
     "NOTE", // A short string associated with modules for simple descriptions or notes
     "DEFAULT", // Used in definitions to set the default value of a field
-    "DEPENDENCIES"
+    "DEPENDENCIES",
+    "INT",
+    "BOOL"
 };
 
 Lexer* init_lexer(const char *src) {
@@ -123,7 +126,7 @@ Token* next_token(Lexer* lexer)
         printf("\nstring: %s", str);
         printf("\nIn array: %i", (int)in_array(KEYWORDS, str, 8));
         fflush(stdout);
-        if(in_array(KEYWORDS, str, 8))
+        if(in_array(KEYWORDS, str, 10))
             return init_token(KEYWORD, str, lexer->line, lexer->column);
         return init_token(IDENTIFIER, str, lexer->line, lexer->column);
     }

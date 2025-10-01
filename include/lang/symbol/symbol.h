@@ -7,7 +7,7 @@ enum DATATYPE
     BOOLEAN,
     INTEGER,
     FLOAT,
-    STRING,
+    STR,
     CHAR,
     TRISTATE_TYPE
 };
@@ -39,6 +39,7 @@ typedef struct
 typedef struct symbolNode_t
 {
     size_t num_children;
+    size_t num_symbols;
     struct symbolNode_t** children;
     Symbol_t** symbols;
 } SymbolNode_t;

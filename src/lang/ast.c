@@ -1,6 +1,7 @@
 #include "lang/ast.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include "lang/ast.h"
 
 ASTNode_t* init_ast(AST_TYPE type, char* value)
 {

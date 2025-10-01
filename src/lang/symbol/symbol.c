@@ -1,8 +1,14 @@
 #include "lang/symbol/symbol.h"
 #include <ctype.h>
+#include "lang/ast.h"
+#include <string.h>
+
+
+
 bool str_to_bool(char* str)
 {
-    if(strcmp(tolower(str), "true") == 0 || atoi(str) == 1)
+
+    if(strcmp(str, "true") == 0 || atoi(str) == 1)
         return true;
     
     return false;
@@ -56,6 +62,7 @@ void symbol_append(SymbolNode_t* node, Symbol_t* child)
 {
     node->num_children++;
 
-    node->children = (realloc(node->children, node->num_children * sizeof(ASTNode_t*)));
-    node->children[node->num_children - 1] = child;
+    node->symbols = (realloc(node->symbols, node->num_symbols * sizeof(Symbol_t*)));
+    node->symbols[node->num_symbols - 1] = child;
 }
+

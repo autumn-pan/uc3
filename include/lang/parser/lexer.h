@@ -20,7 +20,8 @@ enum TOKEN_TYPE
     EOL,
     LSQBRACE,
     RSQBRACE,
-    UNDEFINED
+    UNDEFINED,
+    DATA_TYPE
 };
 
 extern const char *KEYWORDS[];
