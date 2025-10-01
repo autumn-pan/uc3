@@ -14,7 +14,9 @@ const char *KEYWORDS[] = {
     "DEPENDENCIES", // Defines what modules must exist for a certain module to work
     "NOTE", // A short string associated with modules for simple descriptions or notes
     "DEFAULT", // Used in definitions to set the default value of a field
-    "DEPENDENCIES",
+    "DEPENDENCIES", // Used to declare a list of component dependencies
+    
+    // Data Types
     "INT",
     "BOOL"
 };
@@ -123,9 +125,6 @@ Token* next_token(Lexer* lexer)
         {
             cat_char(str, (advance(lexer))); 
         }
-        printf("\nstring: %s", str);
-        printf("\nIn array: %i", (int)in_array(KEYWORDS, str, 8));
-        fflush(stdout);
         if(in_array(KEYWORDS, str, 10))
             return init_token(KEYWORD_TOKEN, str, lexer->line, lexer->column);
         return init_token(IDENTIFIER_TOKEN, str, lexer->line, lexer->column);
@@ -139,8 +138,6 @@ Token* next_token(Lexer* lexer)
             cat_char(str, (advance(lexer)));
         }
 
-        printf("\n success");
-        fflush(stdout);
         return init_token(INT_TOKEN, str, lexer->line, lexer->column); // Return int literal
     }
 

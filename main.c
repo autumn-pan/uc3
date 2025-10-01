@@ -5,6 +5,7 @@
 #include "lang/ast.h"
 #include <stdlib.h>
 #include "lang/reader.h"
+#include "lang/symbol/symbol.h"
 
 int main()
 {
@@ -24,6 +25,6 @@ int main()
 
     Parser_t* parser = init_parser(ts, lexer);
     ASTNode_t* root = parse(parser);
-
+    
     printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
 }

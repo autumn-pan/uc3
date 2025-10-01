@@ -2,7 +2,7 @@
 #include <ctype.h>
 #include "lang/ast.h"
 #include <string.h>
-
+#include <stdio.h>
 
 bool str_to_bool(char* str)
 {

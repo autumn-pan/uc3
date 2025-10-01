@@ -2,6 +2,7 @@
 #define SYMBOL_H
 #include <stdlib.h>
 #include <stdbool.h>
+#include "lang/ast.h"
 enum DATATYPE
 {
     BOOLEAN_T,
@@ -12,12 +13,12 @@ enum DATATYPE
     TRISTATE_T
 };
 
-enum TRISTATE
+typedef enum
 {
     FALSE = 0,
     NEUTRAL = -1,
     TRUE = 1
-};
+} TRISTATE;
 
 typedef struct
 {
@@ -32,7 +33,7 @@ typedef struct
         bool boolean;
         char character;
         float floating_point;
-        enum TRISTATE tristate;
+        TRISTATE tristate;
     } value;
 } Symbol_t;
 
@@ -43,5 +44,8 @@ typedef struct symbolNode_t
     struct symbolNode_t** children;
     Symbol_t** symbols;
 } SymbolNode_t;
+
+
+SymbolNode_t* symbolize_ast(ASTNode_t* node);
 
 #endif
