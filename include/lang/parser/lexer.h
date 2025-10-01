@@ -56,6 +56,6 @@ TokenStream* tokenize(Lexer* lexer);
 TokenStream* init_tokenstream();
 void append_token(TokenStream* ts, Token* token);
 
-
+void free_tokenstream(TokenStream* ts);
 char * to_string(const char character);
 #endif

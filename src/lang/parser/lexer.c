@@ -225,6 +225,7 @@ void tokenstream_pop_head(TokenStream* ts)
     if(!ts->head) 
         return;
 
+    Token* head = ts->head;
     if(ts->head->next)
     {
         ts->head = ts->head->next;
@@ -235,5 +236,19 @@ void tokenstream_pop_head(TokenStream* ts)
         ts->tail = NULL;
     }
 
+    free(head);
     ts->size--;
+}
+
+void free_tokenstream(TokenStream* ts)
+{
+    Token* token = ts->head;
+    while(token)
+    {
+        Token* tmp = token->next;
+        free(token);
+        token = tmp;
+    }
+
+    free(ts);
 }
