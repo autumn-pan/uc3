@@ -26,6 +26,7 @@ typedef struct
     char* identifier;
     bool constant;
     enum DATATYPE type;
+    uint32_t hash;
 
     union
     {
@@ -44,6 +45,9 @@ typedef struct symbolNode_t
     size_t num_symbols;
     struct symbolNode_t** children;
     Symbol_t** symbols;
+
+    uint8_t hash_limit;
+
 } SymbolNode_t;
 
 
