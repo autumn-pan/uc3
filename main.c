@@ -25,7 +25,5 @@ int main()
     Parser_t* parser = init_parser(ts, lexer);
     ASTNode_t* root = parse(parser);
 
-    printf("\nhi\n");
-    fflush(stdout);
     printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
 }

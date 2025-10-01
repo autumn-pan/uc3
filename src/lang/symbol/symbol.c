@@ -83,7 +83,11 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     {
         if(child->type == BLOCK_AST)
         {
-            symbol_node_append(symbol_node, symbolize_ast(child));
+            SymbolNode_t* new_symbol = symbolize_ast(child);
+            if(!new_symbol)
+                return NULL;
+                
+            symbol_node_append(symbol_node, new_symbol);
         }
 
         else if(child->type == VARIABLE_DECL_AST)
