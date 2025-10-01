@@ -31,7 +31,7 @@ typedef enum
     DEPENDENCY_AST, // Declares which components or subsystems a component needs. Analogous with KConfig depends_on
     PLACEHOLDER_AST,
     VARIABLE_DECL_AST,
-    BLOCK
+    BLOCK_AST
 } AST_TYPE;
 
 typedef struct node

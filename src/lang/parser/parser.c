@@ -254,6 +254,11 @@ ASTNode_t* parse_block(Parser_t* parser)
     // Parse each statement within a definition
     ASTNode_t* child;
 
+    ASTNode_t* block = init_ast(BLOCK_AST, "BLOCK");
+    if(!block)
+        return NULL;
+
+    
     while(parser->ptr->type != RBRACE_TOKEN && parser->ptr->type != EOF)
     {
         child = parse_statement(parser);
@@ -263,7 +268,7 @@ ASTNode_t* parse_block(Parser_t* parser)
             return NULL;
         }
 
-        ast_append(node, child);
+        ast_append(block, child);
     }
 
     if(parser->ptr->type == RBRACE_TOKEN)
@@ -272,6 +277,7 @@ ASTNode_t* parse_block(Parser_t* parser)
         parser->ptr = parser->ptr->next;
     }
 
+    ast_append(node, block);
     return node;
 }
 

@@ -4,10 +4,8 @@
 #include <string.h>
 
 
-
 bool str_to_bool(char* str)
 {
-
     if(strcmp(str, "true") == 0 || atoi(str) == 1)
         return true;
     
@@ -78,10 +76,12 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 {
     SymbolNode_t* symbol_node = init_symbol_node();
 
-    ASTNode_t* child = node->children[0];
+    int child_index = 0;
+    ASTNode_t* child = node->children[child_index];
+
     while(child)
     {
-        if(child->type == BLOCK)
+        if(child->type == BLOCK_AST)
         {
             symbol_node_append(symbol_node, symbolize_ast(child));
         }
@@ -97,5 +97,10 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 
             symbol_append(symbol_node, symbol);
         }
+
+        child_index++;
+        child = node->children[child_index];
     }
+
+    return symbol_node;
 }
