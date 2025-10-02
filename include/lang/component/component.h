@@ -3,12 +3,12 @@
 #include <string.h>
 #include "lang/ast.h"
 
-typedef enum GRAPH_COLOR
+typedef enum
 {
     WHITE,
     GREY,
     BLACK
-};
+} GRAPH_COLOR;
 
 typedef struct component
 {
@@ -18,7 +18,7 @@ typedef struct component
     struct component** dependencies;
     int num_dependencies;
     struct component** enables;
-    enum GRAPH_COLOR color;
+    GRAPH_COLOR color;
 } Component_t;
 
 
@@ -26,5 +26,9 @@ typedef struct {
     Component_t* root;
     Component_t** disjoint_components;
 } ComponentGraph_t;
+
+typedef struct {
+    Component_t** components;
+} ComponentTable_t;
 
 #endif

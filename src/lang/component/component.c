@@ -63,6 +63,8 @@ ComponentGraph_t* init_component_graph(ASTNode_t* root)
     for(int i = 0; i < dependency_node->children[0]->num_children; i++)
     {
         dependency_node->children[0]->children[i]
+
+        
     }
 }
 
