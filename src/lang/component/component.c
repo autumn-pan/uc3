@@ -3,6 +3,18 @@
 #include <limits.h>
 #include <stdio.h>
 
+Field_t* init_field(Symbol_t* symbol, Value_t* value)
+{
+    Field_t* field = malloc(sizeof(Field_t));
+
+    if(!field)
+        return NULL;
+    
+    field->variable = symbol;
+    field->default_value = value;
+
+    return field;
+}
 
 // Constructor for Component_t
 Component_t* init_component(ASTNode_t* node)

@@ -34,6 +34,7 @@ Value_t* init_value(char* str, enum DATATYPE type)
     
         }
 }
+
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
 {
     Symbol_t* symbol = malloc(sizeof(Symbol_t));
@@ -46,8 +47,6 @@ Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool co
     symbol->identifier = identifier;
     symbol->constant = constant;
     
-
-
     return symbol;
 }
 
@@ -95,7 +94,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     if(child_index >= node->num_children)
         return NULL;
 
-
     ASTNode_t* child = node->children[child_index];
     while(child)
     {
@@ -136,7 +134,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             symbol_append(symbol_node, symbol);
 
         }
-
 
         child_index++;
 

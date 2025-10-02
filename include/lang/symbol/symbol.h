@@ -56,7 +56,6 @@ typedef struct symbolNode_t
 
 } SymbolNode_t;
 
-
 SymbolNode_t* symbolize_ast(ASTNode_t* node);
 
 #endif

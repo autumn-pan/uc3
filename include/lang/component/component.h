@@ -21,7 +21,7 @@ typedef enum
 typedef struct
 {
     Symbol_t* variable;
-    Value_t default_value;
+    Value_t* default_value;
 } Field_t;
 
 typedef struct component
@@ -36,8 +36,8 @@ typedef struct component
     struct component** enables;
 
     // What values are configurable
-
-
+    Field_t** fields;
+    
     // Metadata for graph verificaion
     COMPONENT_STATUS cyclic_status;
     GRAPH_STATUS graph_status;
