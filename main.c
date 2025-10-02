@@ -34,10 +34,9 @@ int main()
 
     HashTable_t* registry = init_component_registry(root);
     append_component_dependencies(registry);
-    verify_components(registry);
 
-    Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[0]->data.str)];
+    Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[0]->data.str)]->value;
 
-    printf(component->identifier);
 
+    printf("\nCyclic: %i", verify_components(registry));
 }

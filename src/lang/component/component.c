@@ -3,6 +3,7 @@
 #include <limits.h>
 #include <stdio.h>
 
+
 // Constructor for Component_t
 Component_t* init_component(ASTNode_t* node)
 {
@@ -15,9 +16,6 @@ Component_t* init_component(ASTNode_t* node)
         return NULL;
 
     component->identifier = node->data.str;
-
-    printf("\nIdentifier: %s", component->identifier);
-
     component->node = node;
     component->num_dependencies = 0;
     component->dependencies = calloc(0, sizeof(Component_t*));
@@ -32,6 +30,7 @@ Component_t* init_component(ASTNode_t* node)
 bool check_cycles(Component_t* node)
 {
     node->cyclic_status = ONGOING;
+
     for(int i = 0; i < node->num_dependencies; i++)
     {
         bool cyclic = false;
@@ -46,6 +45,7 @@ bool check_cycles(Component_t* node)
     node->cyclic_status = COMPLETED;
     return false;
 }
+
 
 bool verify_components(HashTable_t* table)
 {
@@ -70,6 +70,7 @@ bool verify_components(HashTable_t* table)
     return false;
 }
 
+// Register the components of a project
 HashTable_t* init_component_registry(ASTNode_t* root)
 {
     HashTable_t* table = init_hash_table(128);
@@ -89,7 +90,6 @@ HashTable_t* init_component_registry(ASTNode_t* root)
             return NULL;
 
         bool duplicate_key = insert_hash(table, child, child->identifier);
-
         // Quit if there's a duplicate key (redefinition error)
         if(duplicate_key)
             return NULL;
@@ -98,7 +98,6 @@ HashTable_t* init_component_registry(ASTNode_t* root)
     return table;
 }
 
-
 void dependency_append(Component_t* node, Component_t* child)
 {
     node->num_dependencies++;
@@ -106,7 +105,6 @@ void dependency_append(Component_t* node, Component_t* child)
     node->dependencies = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
     node->dependencies[node->num_dependencies - 1] = child;
 }
-
 
 // Attaches the dependencies to each component
 bool append_component_dependencies(HashTable_t* registry)
@@ -123,6 +121,7 @@ bool append_component_dependencies(HashTable_t* registry)
         Component_t* component = registry->contents[i]->value;
         if(!component)
             return false;
+        
         
         // Find the dependency node
         ASTNode_t* dependency_node;
@@ -141,10 +140,13 @@ bool append_component_dependencies(HashTable_t* registry)
             return false;
         }
 
+        printf("\nflag");
+        fflush(stdout);
+
         // Copy dependencies from AST Node to Component Node
-        for(int j = 0; j < dependency_node->num_children; j++)
+        for(int j = 0; j < dependency_node->children[0]->num_children; j++)
         {
-            size_t index = get_hash_pos(registry, dependency_node->children[j]->data.str);
+            size_t index = get_hash_pos(registry, dependency_node->children[0]->children[j]->data.str);
 
             if(index == ULONG_MAX)
             {
@@ -152,14 +154,10 @@ bool append_component_dependencies(HashTable_t* registry)
                 return false;
             }
 
+
             dependency_append(component, (Component_t*)(registry->contents[index]->value));
         }
     }
 
     return true;
-}
-
-Component_t* find_component_root()
-{
-
 }

@@ -3,12 +3,13 @@
 #include <limits.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 ////////////////////////////////////////////////////
 // HASHING
 ////////////////////////////////////////////////////
 
-// DBJ2 Algorithm
+// DBJ2 Hashing Algorithm
 unsigned long hash(char * key, unsigned long hash_limit)
 {
     uint32_t hash = 5381;
@@ -81,10 +82,8 @@ bool insert_hash(HashTable_t *table, void * value, char* key)
         free(table->contents);
         table->contents = tmp;
     }
-
     return false;
 }
-
 
 unsigned long get_hash_pos(HashTable_t * table, char * key)
 {
