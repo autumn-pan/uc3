@@ -7,6 +7,8 @@
 #include "lang/reader.h"
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
+#include "lang/component/component.h"
+
 
 int main()
 {
@@ -32,5 +34,7 @@ int main()
 
     printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
     printf("\nIdentifier: %s", sym->identifier);
-}
 
+    HashTable_t* registry = init_component_registry(root);
+    append_component_dependencies(registry);
+}

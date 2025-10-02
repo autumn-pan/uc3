@@ -23,6 +23,7 @@ Component_t* init_component(ASTNode_t* node)
     return component;
 }
 
+
 // Returns true if a component graph is cyclic
 bool check_cycles(Component_t* node)
 {
@@ -40,6 +41,30 @@ bool check_cycles(Component_t* node)
 
     node->cyclic_status = COMPLETED;
     return false;
+}
+
+bool verify_components(HashTable_t* table)
+{
+    if(!table)
+        return false;
+
+    bool is_cyclic = false;
+    for(int i = 0; i < table->hash_max; i++)
+    {
+        if(!table->contents[i])
+            continue;
+        
+        if(((Component_t*)(table->contents[i]->value))->cyclic_status == COMPLETED)
+            continue;
+
+        is_cyclic = check_cycles(table->contents[i]->value);
+
+        if(is_cyclic)
+            return true;
+    }
+
+    return false;
+
 }
 
 HashTable_t* init_component_registry(ASTNode_t* root)
@@ -69,6 +94,7 @@ HashTable_t* init_component_registry(ASTNode_t* root)
 
     return table;
 }
+
 
 
 void dependency_append(Component_t* node, Component_t* child)
@@ -130,4 +156,7 @@ bool append_component_dependencies(HashTable_t* registry)
     return true;
 }
 
+Component_t* find_component_root()
+{
 
+}

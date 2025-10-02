@@ -35,5 +35,7 @@ typedef struct {
     Component_t** disjoint_components;
 } ComponentGraph_t;
 
+HashTable_t* init_component_registry(ASTNode_t* root);
+bool append_component_dependencies(HashTable_t* registry);
 
 #endif

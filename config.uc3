@@ -1,5 +1,13 @@
 INT integer
 
+
+DEFINE important_bloxk
+{
+    SUBSYSTEM not_important_subsystem
+    FIELD yummy 
+        DEFAULT 128
+}
+
 DEFINE block
 {
     SUBSYSTEM very_important_subsystem
@@ -7,8 +15,7 @@ DEFINE block
         DEFAULT 128
     DEPENDENCIES
     [
-        subsystem_base
-        subsystem_helper
+        important_bloxk
     ]
 }
 
