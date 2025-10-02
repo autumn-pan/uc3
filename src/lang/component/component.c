@@ -14,6 +14,8 @@ Component_t* init_component(ASTNode_t* node)
 
     component->identifier = node->data.str;
     component->node = node;
+    component->num_dependencies = 0;
+    component->dependencies = calloc(0, sizeof(Component_t*));
 
     return component;
 }
@@ -36,3 +38,39 @@ bool check_cycles(Component_t* node)
     node->color = BLACK;
     return false;
 }
+/* This portion cannot be completed without a tested hash table system.
+ComponentGraph_t* init_component_graph(ASTNode_t* root)
+{
+    if(root->type != DEFINITION_AST)
+        return NULL;
+
+    ComponentGraph_t* graph = malloc(sizeof(ComponentGraph_t));
+
+    ASTNode_t* dependency_node;
+
+    for(int i = 0; i < root->num_children; i++)
+    {
+        if(root->children[i]->type == DEPENDENCY_AST)
+        {
+            dependency_node = root->children[i];
+            break;
+        }
+    }
+    
+    if(!dependency_node->children[0])
+        return NULL;
+
+    for(int i = 0; i < dependency_node->children[0]->num_children; i++)
+    {
+        dependency_node->children[0]->children[i]
+    }
+}
+
+void dependency_append(Component_t* node, Component_t* child)
+{
+    node->num_dependencies++;
+
+    node->dependencies = (realloc(node->num_dependencies, node->num_dependencies * sizeof(Component_t*)));
+    node->dependencies[node->num_dependencies - 1] = child;
+}
+*/
