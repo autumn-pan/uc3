@@ -73,7 +73,7 @@ bool verify_components(HashTable_t* table)
 // Register the components of a project
 HashTable_t* init_component_registry(ASTNode_t* root)
 {
-    HashTable_t* table = init_hash_table(128);
+    HashTable_t* table = init_hash_table(8);
 
     if(!table)
         return NULL;
