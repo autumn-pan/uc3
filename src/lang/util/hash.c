@@ -50,6 +50,7 @@ void insert_hash(HashTable_t *table, void * value, char* key)
     while (table->contents[index] != NULL) {
         index = (index + 1) % table->hash_max;
     }
+    
 
     table->contents[index] = symbol;
 
@@ -78,6 +79,7 @@ void insert_hash(HashTable_t *table, void * value, char* key)
         table->contents = tmp;
     }
 }
+
 
 unsigned long get_hash_pos(HashTable_t * table, char * key)
 {

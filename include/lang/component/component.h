@@ -2,13 +2,20 @@
 #define COMPONENT_H
 #include <string.h>
 #include "lang/ast.h"
+#include "util/hash.h"
 
 typedef enum
 {
-    WHITE,
-    GREY,
-    BLACK
-} GRAPH_COLOR;
+    UNVISITED,
+    ONGOING,
+    COMPLETED
+} COMPONENT_STATUS;
+
+typedef enum
+{
+    UNGRAPHED,
+    GRAPHED
+} GRAPH_STATUS;
 
 typedef struct component
 {
@@ -18,17 +25,15 @@ typedef struct component
     struct component** dependencies;
     int num_dependencies;
     struct component** enables;
-    GRAPH_COLOR color;
-} Component_t;
+    COMPONENT_STATUS cyclic_status;
+    GRAPH_STATUS graph_status;
 
+} Component_t;
 
 typedef struct {
     Component_t* root;
     Component_t** disjoint_components;
 } ComponentGraph_t;
 
-typedef struct {
-    Component_t** components;
-} ComponentTable_t;
 
 #endif

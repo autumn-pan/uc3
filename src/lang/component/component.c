@@ -17,55 +17,61 @@ Component_t* init_component(ASTNode_t* node)
     component->num_dependencies = 0;
     component->dependencies = calloc(0, sizeof(Component_t*));
 
+    component->cyclic_status = UNVISITED;
+    component->graph_status = UNGRAPHED;
+
     return component;
 }
 
 // Returns true if a component graph is cyclic
 bool check_cycles(Component_t* node)
 {
-    node->color = GREY;
+    node->cyclic_status = ONGOING;
     for(int i = 0; i < node->num_dependencies; i++)
     {
         bool cyclic = false;
 
-        if(node->dependencies[i]->color == GREY)
+        if(node->dependencies[i]->cyclic_status == ONGOING)
             return true;
 
         else if(check_cycles(node->dependencies[i]))
             return true;
     }
 
-    node->color = BLACK;
+    node->cyclic_status = COMPLETED;
     return false;
 }
-/* This portion cannot be completed without a tested hash table system.
-ComponentGraph_t* init_component_graph(ASTNode_t* root)
+
+HashTable_t* init_component_registry(ASTNode_t* root)
 {
-    if(root->type != DEFINITION_AST)
+    HashTable_t* table = init_hash_table(128);
+
+    if(!table)
         return NULL;
 
-    ComponentGraph_t* graph = malloc(sizeof(ComponentGraph_t));
-
-    ASTNode_t* dependency_node;
-
+    size_t num_components = 0;
     for(int i = 0; i < root->num_children; i++)
     {
-        if(root->children[i]->type == DEPENDENCY_AST)
-        {
-            dependency_node = root->children[i];
-            break;
-        }
-    }
-    
-    if(!dependency_node->children[0])
-        return NULL;
-
-    for(int i = 0; i < dependency_node->children[0]->num_children; i++)
-    {
-        dependency_node->children[0]->children[i]
-
+        if(root->children[i]->type != DEFINITION_AST)
+            continue;
+            
+        Component_t* child = init_component(root->children[i]);
         
+        if(!child)
+            return NULL;
+
+        insert_hash(table, child, child->identifier);
     }
+
+    return table;
+}
+
+ComponentGraph_t init_component_graph(HashTable_t* registry)
+{
+    ComponentGraph_t* graph = malloc(sizeof(ComponentGraph_t));
+
+    
+
 }
 
 void dependency_append(Component_t* node, Component_t* child)
@@ -75,4 +81,3 @@ void dependency_append(Component_t* node, Component_t* child)
     node->dependencies = (realloc(node->num_dependencies, node->num_dependencies * sizeof(Component_t*)));
     node->dependencies[node->num_dependencies - 1] = child;
 }
-*/

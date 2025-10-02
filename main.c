@@ -32,10 +32,5 @@ int main()
 
     printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
     printf("\nIdentifier: %s", sym->identifier);
-
-    printf("\n\n\n");
-    HashTable_t* table = init_hash_table(128);
-    
-    insert_hash(table, "hii", "element1");
-    printf(table->contents[get_hash_pos(table, "element1")]->value);
 }
+
