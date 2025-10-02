@@ -12,6 +12,28 @@ bool str_to_bool(char* str)
     return false;
 }
 
+Value_t* init_value(char* str, enum DATATYPE type)
+{
+    Value_t* value = malloc(sizeof(value));
+
+        // TODO: cover all datatypes
+        switch(type)
+        {
+            case INTEGER_T:
+                value->data.integer = atoi(str);
+                break;
+            case STR_T:
+                value->data.str = str;
+                break;
+            case BOOLEAN_T:
+                value->data.boolean = str_to_bool(str);
+                break;
+            default:
+                value->data.str = str;
+                break;
+    
+        }
+}
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
 {
     Symbol_t* symbol = malloc(sizeof(Symbol_t));
@@ -24,23 +46,7 @@ Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool co
     symbol->identifier = identifier;
     symbol->constant = constant;
     
-    // TODO: cover all datatypes
-    switch(type)
-    {
-        case INTEGER_T:
-            symbol->value.integer = atoi(value);
-            break;
-        case STR_T:
-            symbol->value.str = value;
-            break;
-        case BOOLEAN_T:
-            symbol->value.boolean = str_to_bool(value);
-            break;
-        default:
-            symbol->value.str = value;
-            break;
 
-    }
 
     return symbol;
 }

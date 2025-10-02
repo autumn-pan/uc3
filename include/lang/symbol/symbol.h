@@ -23,11 +23,6 @@ typedef enum
 
 typedef struct
 {
-    char* identifier;
-    bool constant;
-    enum DATATYPE type;
-    uint32_t hash;
-
     union
     {
         char* str;
@@ -36,7 +31,19 @@ typedef struct
         char character;
         float floating_point;
         TRISTATE tristate;
-    } value;
+    } data;
+
+    enum DATATYPE type;
+} Value_t;
+
+typedef struct
+{
+    char* identifier;
+    bool constant;
+    enum DATATYPE type;
+    uint32_t hash;
+
+    Value_t value;
 } Symbol_t;
 
 typedef struct symbolNode_t
@@ -45,7 +52,6 @@ typedef struct symbolNode_t
     size_t num_symbols;
     struct symbolNode_t** children;
     Symbol_t** symbols;
-
     uint8_t hash_limit;
 
 } SymbolNode_t;

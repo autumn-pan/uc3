@@ -46,7 +46,6 @@ bool check_cycles(Component_t* node)
     return false;
 }
 
-
 bool verify_components(HashTable_t* table)
 {
     if(!table)

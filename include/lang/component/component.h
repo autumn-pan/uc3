@@ -3,6 +3,7 @@
 #include <string.h>
 #include "lang/ast.h"
 #include "lang/util/hash.h"
+#include "lang/symbol/symbol.h"
 
 typedef enum
 {
@@ -17,6 +18,12 @@ typedef enum
     GRAPHED
 } GRAPH_STATUS;
 
+typedef struct
+{
+    Symbol_t* variable;
+    Value_t default_value;
+} Field_t;
+
 typedef struct component
 {
     char* identifier;
@@ -24,10 +31,16 @@ typedef struct component
 
     struct component** dependencies;
     int num_dependencies;
+
+    // What components this component enables
     struct component** enables;
+
+    // What values are configurable
+
+
+    // Metadata for graph verificaion
     COMPONENT_STATUS cyclic_status;
     GRAPH_STATUS graph_status;
-
 } Component_t;
 
 typedef struct {
