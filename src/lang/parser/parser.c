@@ -195,7 +195,7 @@ ASTNode_t* parse_dependency(Parser_t* parser)
     if(!match_value(parser, "DEPENDENCIES"))
         return NULL;
 
-    ASTNode_t* node = init_ast(DEPENDENCY_AST, "");
+    ASTNode_t* node = init_ast(DEPENDENCY_AST, "DEPENDENCY");
 
     ASTNode_t* list = parse_list(parser);
 

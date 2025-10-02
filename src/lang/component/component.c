@@ -122,26 +122,25 @@ bool append_component_dependencies(HashTable_t* registry)
         if(!component)
             return false;
         
-        
         // Find the dependency node
         ASTNode_t* dependency_node;
-        for(int j = 0; j < component->node->num_children; j++)
+        printf("flag");
+        fflush(stdout);
+        for(int j = 0; j < component->node->children[0]->num_children; j++)
         {
-            if(component->node->children[j]->type == DEPENDENCY_AST)
-            {
-                dependency_node = component->node->children[j];
+            if(component->node->children[0]->children[j]->type == DEPENDENCY_AST)
+            {                
+
+                dependency_node = component->node->children[0]->children[j];
                 break;
             }
         }
 
-        if(!dependency_node)
+        if(!dependency_node || !dependency_node->children[0])
         {
             component->graph_status = GRAPHED;
-            return false;
+            continue;
         }
-
-        printf("\nflag");
-        fflush(stdout);
 
         // Copy dependencies from AST Node to Component Node
         for(int j = 0; j < dependency_node->children[0]->num_children; j++)
@@ -153,7 +152,6 @@ bool append_component_dependencies(HashTable_t* registry)
                 // Reference to undefined dependency
                 return false;
             }
-
 
             dependency_append(component, (Component_t*)(registry->contents[index]->value));
         }
