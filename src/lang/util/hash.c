@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <string.h>
+#include <stdbool.h>
 
 ////////////////////////////////////////////////////
 // HASHING
 ////////////////////////////////////////////////////
-
 
 // DBJ2 Algorithm
 unsigned long hash(char * key, unsigned long hash_limit)
@@ -40,7 +40,8 @@ HashElement_t* init_hash_element(void* value, char* key)
     return element;
 }
 
-void insert_hash(HashTable_t *table, void * value, char* key) 
+// Returns true and quits early if there is a duplicate
+bool insert_hash(HashTable_t *table, void * value, char* key) 
 {
     table->num_elements++;
 
@@ -48,9 +49,11 @@ void insert_hash(HashTable_t *table, void * value, char* key)
     HashElement_t* symbol = init_hash_element(value, key);
 
     while (table->contents[index] != NULL) {
+        if(strcmp(table->contents[index]->key, key) == 0)
+            return true;
+
         index = (index + 1) % table->hash_max;
     }
-    
 
     table->contents[index] = symbol;
 
@@ -78,6 +81,8 @@ void insert_hash(HashTable_t *table, void * value, char* key)
         free(table->contents);
         table->contents = tmp;
     }
+
+    return false;
 }
 
 

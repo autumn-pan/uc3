@@ -2,7 +2,7 @@
 #define COMPONENT_H
 #include <string.h>
 #include "lang/ast.h"
-#include "util/hash.h"
+#include "lang/util/hash.h"
 
 typedef enum
 {

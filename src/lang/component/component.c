@@ -1,6 +1,6 @@
 #include "lang/component/component.h"
 #include <stdlib.h>
-
+#include <limits.h>
 
 Component_t* init_component(ASTNode_t* node)
 {
@@ -60,24 +60,74 @@ HashTable_t* init_component_registry(ASTNode_t* root)
         if(!child)
             return NULL;
 
-        insert_hash(table, child, child->identifier);
+        bool duplicate_key = insert_hash(table, child, child->identifier);
+
+        // Quit if there's a duplicate key (redefinition error)
+        if(duplicate_key)
+            return NULL;
     }
 
     return table;
 }
 
-ComponentGraph_t init_component_graph(HashTable_t* registry)
-{
-    ComponentGraph_t* graph = malloc(sizeof(ComponentGraph_t));
-
-    
-
-}
 
 void dependency_append(Component_t* node, Component_t* child)
 {
     node->num_dependencies++;
 
-    node->dependencies = (realloc(node->num_dependencies, node->num_dependencies * sizeof(Component_t*)));
+    node->dependencies = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
     node->dependencies[node->num_dependencies - 1] = child;
 }
+
+// Attaches the dependencies to each component
+bool append_component_dependencies(HashTable_t* registry)
+{
+    if(!registry)
+        return NULL;
+
+    // Cycle through each component in the registry
+    for(int i = 0; i < registry->hash_max; i++)
+    {
+        if(!registry->contents[i])
+            continue;
+        
+        Component_t* component = registry->contents[i]->value;
+        if(!component)
+            return false;
+        
+        // Find the dependency node
+        ASTNode_t* dependency_node;
+        for(int j = 0; j < component->node->num_children; j++)
+        {
+            if(component->node->children[j]->type == DEPENDENCY_AST)
+            {
+                dependency_node = component->node->children[j];
+                break;
+            }
+        }
+
+        if(!dependency_node)
+        {
+            component->graph_status = GRAPHED;
+            return false;
+        }
+
+        // Copy dependencies from AST Node to Component Node
+        for(int j = 0; j < dependency_node->num_children; j++)
+        {
+            size_t index = get_hash_pos(registry, dependency_node->children[j]->data.str);
+
+            if(index == ULONG_MAX)
+            {
+                // Reference to undefined dependency
+                return false;
+            }
+
+            dependency_append(component, (Component_t*)(registry->contents[index]->value));
+        }
+    }
+
+    return true;
+}
+
+
