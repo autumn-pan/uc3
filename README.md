@@ -10,7 +10,7 @@ UC3 employs its own Domain-Specific Language (DSL) to declare and define compone
 ### Components
 Components are defined by `DEFINE <component_identifier> {}`. An example of a component is
 
-`
+```
 DEFINE ai_scheduling
 {
     SUBSYSTEM scheduler
@@ -21,7 +21,7 @@ DEFINE ai_scheduling
         ai_tools
     ]
 }
-`
+```
 
 Here, the component `ai_scheduling` is defined, wherein it defined its subsystem as `scheduler`, and defined a configurable integer called `memory`. Lastly, it depends on the component `ai_tools`.
 
