@@ -1,0 +1,5 @@
+# UC3
+## What Is UC3?
+UC3 is an experimental configuration toolchain and DSL. At its core, it's meant to follow the purpose of similar systems like KConfig. UC3 breaks a program down into its subsystems, which each have configurable components. This separates subsystems into interchangable pieces of code. They can be enabled, disabled, or configured in any way. This is primarily done with the generation of C Preprocessor Macros.
+
+Although UC3 is far from finished, it's rapidly approaching its first prototype. At this point in development, components can already declare their dependencies, being what other components they need to function. UC3 is already capable of analyzing these relationships, and graphing them. It is through this that UC3 has already proposed a prototype dependency verifier, which checks for circular dependencies.

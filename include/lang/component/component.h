@@ -51,5 +51,4 @@ typedef struct {
 HashTable_t* init_component_registry(ASTNode_t* root);
 bool append_component_dependencies(HashTable_t* registry);
 bool verify_components(HashTable_t* table);
-
 #endif
