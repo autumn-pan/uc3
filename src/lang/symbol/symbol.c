@@ -195,24 +195,6 @@ void insert_symbol(SymbolNode_t *table, Symbol_t * symbol)
     }
 }
 
-
-
-bool search_symbol(SymbolNode_t *table, char *key) {
-    int index = hash(key, table->hash_limit);
-
-    // Resolve collisions via linear probing
-    while (table->symbols[index] != NULL) 
-    {
-        if (strcmp(table->symbols[index]->identifier, key) == 0) {
-            return true;
-        }
-        index = (index + 1) % table->hash_limit;
-    }
-
-    // If key is not found,
-    return false;
-}
-
 unsigned long get_symbol_position(SymbolNode_t * table, char * key)
 {
     int index = hash(key, table->hash_limit);
