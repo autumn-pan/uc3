@@ -1,7 +1,9 @@
 #include "lang/component/component.h"
 #include <stdlib.h>
 #include <limits.h>
+#include <stdio.h>
 
+// Constructor for Component_t
 Component_t* init_component(ASTNode_t* node)
 {
     if(!node)
@@ -13,6 +15,9 @@ Component_t* init_component(ASTNode_t* node)
         return NULL;
 
     component->identifier = node->data.str;
+
+    printf("\nIdentifier: %s", component->identifier);
+
     component->node = node;
     component->num_dependencies = 0;
     component->dependencies = calloc(0, sizeof(Component_t*));
@@ -22,7 +27,6 @@ Component_t* init_component(ASTNode_t* node)
 
     return component;
 }
-
 
 // Returns true if a component graph is cyclic
 bool check_cycles(Component_t* node)
@@ -64,7 +68,6 @@ bool verify_components(HashTable_t* table)
     }
 
     return false;
-
 }
 
 HashTable_t* init_component_registry(ASTNode_t* root)
@@ -96,7 +99,6 @@ HashTable_t* init_component_registry(ASTNode_t* root)
 }
 
 
-
 void dependency_append(Component_t* node, Component_t* child)
 {
     node->num_dependencies++;
@@ -104,6 +106,7 @@ void dependency_append(Component_t* node, Component_t* child)
     node->dependencies = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
     node->dependencies[node->num_dependencies - 1] = child;
 }
+
 
 // Attaches the dependencies to each component
 bool append_component_dependencies(HashTable_t* registry)

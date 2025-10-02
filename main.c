@@ -32,9 +32,12 @@ int main()
     SymbolNode_t* symbol = symbolize_ast(root);
     Symbol_t* sym = symbol->symbols[0];
 
-    printf(root->children[1]->children[0]->children[2]->children[0]->children[0]->data.str);
-    printf("\nIdentifier: %s", sym->identifier);
-
     HashTable_t* registry = init_component_registry(root);
     append_component_dependencies(registry);
+    verify_components(registry);
+
+    Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[0]->data.str)];
+
+    printf(component->identifier);
+
 }

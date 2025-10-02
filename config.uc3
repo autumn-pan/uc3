@@ -1,6 +1,3 @@
-INT integer
-
-
 DEFINE important_bloxk
 {
     SUBSYSTEM not_important_subsystem
