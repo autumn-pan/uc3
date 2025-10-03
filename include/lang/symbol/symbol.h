@@ -57,5 +57,8 @@ typedef struct symbolNode_t
 } SymbolNode_t;
 
 SymbolNode_t* symbolize_ast(ASTNode_t* node);
+Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant);
+Value_t* init_value(char* str, enum DATATYPE type);
+
 
 #endif

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <stdio.h>
+#include "lang/symbol/symbol.h"
 
 Field_t* init_field(Symbol_t* symbol, Value_t* value)
 {
@@ -135,13 +136,10 @@ bool append_component_dependencies(HashTable_t* registry)
         
         // Find the dependency node
         ASTNode_t* dependency_node;
-        printf("flag");
-        fflush(stdout);
         for(int j = 0; j < component->node->children[0]->num_children; j++)
         {
             if(component->node->children[0]->children[j]->type == DEPENDENCY_AST)
             {                
-
                 dependency_node = component->node->children[0]->children[j];
                 break;
             }
@@ -165,6 +163,37 @@ bool append_component_dependencies(HashTable_t* registry)
             }
 
             dependency_append(component, (Component_t*)(registry->contents[index]->value));
+        }
+
+        // Also, find any FIELD nodes
+        ASTNode_t* field_node;
+        for(int j = 0; j < component->node->children[0]->num_children; j++)
+        {
+            if(component->node->children[0]->children[j]->type != FIELD_AST)
+            {         
+                continue;
+            }
+
+            field_node = component->node->children[0]->children[j];
+
+            // The first child of a FIELD node is its required default
+            if(!field_node->children[0])
+                return false;
+
+            Symbol_t* symbol = init_symbol(
+                UNKNOWN_T,
+                field_node->data.str,
+                field_node->children[0]->data.str,
+                false
+            );
+
+            Field_t* field = init_field(
+                symbol, 
+                init_value(field_node->children[0]->data.str, UNKNOWN_T)
+            );
+
+            component->fields[component->num_fields+1] = field;
+            component->num_fields += 1;
         }
     }
 

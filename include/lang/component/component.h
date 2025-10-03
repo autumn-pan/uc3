@@ -1,9 +1,13 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
+
+#define COMPONENT_MAX_FIELDS 32
+
 #include <string.h>
 #include "lang/ast.h"
 #include "lang/util/hash.h"
 #include "lang/symbol/symbol.h"
+
 
 typedef enum
 {
@@ -37,6 +41,7 @@ typedef struct component
 
     // What values are configurable
     Field_t** fields;
+    size_t num_fields;
     
     // Metadata for graph verificaion
     COMPONENT_STATUS cyclic_status;
