@@ -36,6 +36,8 @@ Component_t* init_component(ASTNode_t* node)
     component->cyclic_status = UNVISITED;
     component->graph_status = UNGRAPHED;
 
+    component->fields = calloc(COMPONENT_MAX_FIELDS, sizeof(Field_t*));
+
     return component;
 }
 
