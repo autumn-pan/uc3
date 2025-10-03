@@ -39,4 +39,6 @@ int main()
 
 
     printf("\nCyclic: %i", verify_components(registry));
+
+    printf(component->fields[0]->variable->identifier);
 }

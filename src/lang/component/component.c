@@ -189,12 +189,18 @@ bool append_component_dependencies(HashTable_t* registry)
                 false
             );
 
+            if(!symbol)
+                return NULL;
+
             Field_t* field = init_field(
                 symbol, 
                 init_value(field_node->children[0]->data.str, UNKNOWN_T)
             );
 
-            component->fields[component->num_fields+1] = field;
+            if(!field)
+                return NULL;
+
+            component->fields[component->num_fields] = field;
             component->num_fields += 1;
         }
     }
