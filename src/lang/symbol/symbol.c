@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <limits.h>
 
+// Translate a string to a boolean
 bool str_to_bool(char* str)
 {
     if(strcmp(str, "true") == 0 || atoi(str) == 1)
@@ -12,29 +13,38 @@ bool str_to_bool(char* str)
     return false;
 }
 
+// Translate a string into a tristate
+TRISTATE str_to_tristate(char* str)
+{
+    if(strcmp(str, "neutral") == 0 || atoi(str) == -1)
+        return NEUTRAL;
+    else    
+        return str_to_bool(str);
+}
+
 Value_t* init_value(char* str, enum DATATYPE type)
 {
     Value_t* value = malloc(sizeof(value));
 
-        // TODO: cover all datatypes
-        switch(type)
-        {
-            case INTEGER_T:
-                value->data.integer = atoi(str);
-                break;
-            case STR_T:
-                value->data.str = str;
-                break;
-            case BOOLEAN_T:
-                value->data.boolean = str_to_bool(str);
-                break;
-            default:
-                value->data.str = str;
-                break;
-    
+    // TODO: cover all datatypes
+    switch(type)
+    {
+        case INTEGER_T:
+            value->data.integer = atoi(str);
+            break;
+        case STR_T:
+            value->data.str = str;
+            break;
+        case BOOLEAN_T:
+            value->data.boolean = str_to_bool(str);
+            break;
+        default:
+            value->data.str = str;
+            break;
         }
 }
 
+// Constructor for a symbol
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
 {
     Symbol_t* symbol = malloc(sizeof(Symbol_t));
@@ -59,19 +69,11 @@ SymbolNode_t* init_symbol_node()
     }
 
     node->num_children = 0;
-    node->symbols = calloc(0, sizeof(Symbol_t));
-    node->num_symbols = 0;
+    node->symbols = init_hash_table(32);
     return node;
 }
 
-void symbol_append(SymbolNode_t* node, Symbol_t* child)
-{
-    node->num_symbols++;
-
-    node->symbols = (realloc(node->symbols, node->num_symbols * sizeof(Symbol_t*)));
-    node->symbols[node->num_symbols - 1] = child;
-}
-
+// Append a node as a child of another node; constructs a symbol tree
 void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
 {
     node->num_children++;
@@ -102,12 +104,14 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         {
             SymbolNode_t* new_symbol = symbolize_ast(child->children[0]);
             if(!new_symbol)
-                return NULL;
+                continue;
             symbol_node_append(symbol_node, new_symbol);
 
         }
         else if(child->type == VARIABLE_DECL_AST)
         {
+
+
             Symbol_t* symbol;
             if(!child->children[0]) // Register undefined symbols
             {
@@ -131,17 +135,17 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             if(!symbol)
                 return NULL;
 
-            symbol_append(symbol_node, symbol);
-
+            // Insert the symbol into the scope if it's not null
+            insert_hash(symbol_node->symbols, symbol, symbol->identifier);
         }
 
         child_index++;
-
         if(child_index >= node->num_children)
             break;
 
         child = node->children[child_index];
     }
-
+    printf("flag");
+    fflush(stdout);
     return symbol_node;
 }

@@ -1,8 +1,12 @@
+INT my_int
+
 DEFINE important_block
 {
     SUBSYSTEM not_important_subsystem
     FIELD yummy 
         DEFAULT 128
+    FIELD my_num 
+        DEFAULT 12
     DEPENDENCIES
     [
         other_block

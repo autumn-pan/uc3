@@ -304,5 +304,6 @@ ASTNode_t* parse(Parser_t* parser)
 
         ast_append(root, block);
     }
+    
     return root;
 }

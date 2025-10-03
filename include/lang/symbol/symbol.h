@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "lang/ast.h"
+#include "lang/util/hash.h"
 enum DATATYPE
 {
     BOOLEAN_T,
@@ -49,11 +50,8 @@ typedef struct
 typedef struct symbolNode_t
 {
     size_t num_children;
-    size_t num_symbols;
     struct symbolNode_t** children;
-    Symbol_t** symbols;
-    uint8_t hash_limit;
-
+    HashTable_t* symbols;
 } SymbolNode_t;
 
 SymbolNode_t* symbolize_ast(ASTNode_t* node);
