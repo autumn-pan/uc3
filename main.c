@@ -22,16 +22,10 @@ int main()
 
     Symbol_t* val = symbol->symbols->contents[get_hash_pos(symbol->symbols, "my_int")]->value;
 
+    printf(val->identifier);
     HashTable_t* registry = init_component_registry(root);
     append_component_dependencies(registry);
 
-    for(int i = 0; i < registry->hash_max; i++)
-    {
-        if(registry->contents[i])
-        {
-            printf("\n%s",registry->contents[i]->key);
-        }
-    }
 
     fflush(stdout);
 
@@ -41,7 +35,9 @@ int main()
     printf("\nCyclic: %i", verify_components(registry));
 
     printf(component->identifier);
+    printf("\nFields: %i",component->num_fields);
     fflush(stdout);
 
-    printf(component->fields[1]->variable->identifier);
+    printf(component->fields[0]->variable->identifier);
 }
+
