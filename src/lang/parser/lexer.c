@@ -122,8 +122,18 @@ char advance(Lexer* lexer)
 {
     char c = lexer->src[lexer->pos];
     lexer->pos++;
+    lexer->column++;
+
+    if(c == '\n')
+    {
+        // Increment line, reset column
+        lexer->line++;
+        lexer->column = 0;
+    }
+
     return c;
 }
+
 
 Token* next_token(Lexer* lexer)
 {    
