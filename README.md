@@ -48,3 +48,13 @@ DEPENDENCIES
 This states that a component depends on `foo`, `bar`, and `baz`. At the current moment, there are no need for seperation tokens, like commas, to exist because all current contents of a list are consistently single-token.
 #### DEPENDENCIES
 A component can declare its dependencies using the ```DEPENDENCIES []``` statement. It must always be followed by a list full of identifiers, which declares what other components it depends on. They also must be defined somewhere else in the source code. Whether or not it has been defined at that point is irrelevant however, because of how components are registered. An example of this statement was shown above.
+### Variables
+There are two supported data types currently: `INT` and `BOOL`. A variable definition goes as such:
+
+```<DATA_TYPE> <IDENTIFIER> = <VALUE>```
+Examples
+```BOOL my_bool = true```
+```INT my_int = 128```
+
+Defining a variable is not necessary, and a declaration may also suffice, such as
+```<DATA_TYPE> <IDENTIFIER>```
