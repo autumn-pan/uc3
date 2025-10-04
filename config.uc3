@@ -1,4 +1,4 @@
-INT my_bool = 16
+INT my_bool = 16 * 2 + 4
 
 DEFINE important_block
 {

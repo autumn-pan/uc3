@@ -6,7 +6,7 @@
 #include <ctype.h>
 
 #define SIZEOF_KEYWORDS 10
-#define SIZEOF_OPERATORS 5
+#define SIZEOF_OPERATORS 9
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -33,7 +33,11 @@ const char *OPERATORS[] = {
     "||", // OR operator
     "&&", // AND operator
     "!", // NOT operator
-    "==" // Equivalence operator
+    "==", // Equivalence operator
+    "*",
+    "/",
+    "+",
+    "-"
 };
 
 enum TOKEN_TYPE str_to_datatype(char* str)
@@ -149,7 +153,6 @@ char advance(Lexer* lexer)
     return c;
 }
 
-
 Token* next_token(Lexer* lexer)
 {    
     skip_whitespace(lexer);
@@ -178,7 +181,7 @@ Token* next_token(Lexer* lexer)
         // Return it as an identifier if it's neither
         return init_token(IDENTIFIER_TOKEN, str, lexer->line, lexer->column);
     }
-
+    
     // Check if the string is a number
     if(isdigit(lexer->src[lexer->pos])) //Checks for a numeric literal
     {
@@ -229,7 +232,6 @@ Token* next_token(Lexer* lexer)
     
     return NULL;
 }
-
 
 TokenStream* tokenize(Lexer* lexer)
 {
@@ -289,6 +291,5 @@ void free_tokenstream(TokenStream* ts)
         free(token);
         token = tmp;
     }
-
     free(ts);
 }

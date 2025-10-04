@@ -53,6 +53,8 @@ bool advance_parser(Parser_t* parser)
         parser->pos++;
         parser->ptr = parser->ptr->next;
 
+        printf("\n%s", parser->ptr->value);
+        fflush(stdout);
         parser->line = parser->ptr->line;
         parser->column = parser->ptr->column;
 
@@ -374,18 +376,22 @@ ASTNode_t* parse(Parser_t* parser)
 ///////////////////////////////////////////////////////////
 // Expressions -- Recursive Descent
 ///////////////////////////////////////////////////////////
-
+// point_error() is fatal
 ASTNode_t* parse_literal(Parser_t* parser)
 {
     enum TOKEN_TYPE type = parser->ptr->type;
+    char* value = parser->ptr->value;
 
     printf("\nType: %i", type);
     fflush(stdout);
 
+
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
 
+
     advance_parser(parser);
+
     return init_ast(type, parser->ptr->value);
 }
 
@@ -408,14 +414,12 @@ ASTNode_t * parse_factor(Parser_t* parser) {
         return expr;
     }
     ASTNode_t * node = NULL;
-
     if ((node = parse_literal(parser)) != NULL) return node;
     if ((node = parse_variable_call(parser)) != NULL) return node;
 
     fprintf(stderr, "Error: expected a factor");
     point_error(parser->line, parser->column);
 }
-
 
 ASTNode_t* parse_term(Parser_t* parser)
 {
@@ -449,6 +453,7 @@ ASTNode_t* parse_term(Parser_t* parser)
             ASTNode_t* operator = init_ast(DIV_AST, "DIV");
             ast_append(operator, node);
             ast_append(operator, right);
+            node = operator;
         }
         else
             break;
@@ -488,9 +493,12 @@ ASTNode_t* parse_expression(Parser_t* parser)
             ASTNode_t* operator = init_ast(type, "OPERATOR");
             ast_append(operator, node);
             ast_append(operator, right);
+            node = operator;
         }
         else
+        {
             break;
+        }
     }
 
     return node;
