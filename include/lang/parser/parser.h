@@ -17,7 +17,6 @@ typedef struct
 
 
 Parser_t* init_parser(TokenStream* ts, Lexer* lexer);
-
 ASTNode_t* parse(Parser_t* parser);
 
 #endif

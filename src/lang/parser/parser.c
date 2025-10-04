@@ -403,7 +403,6 @@ ASTNode_t* parse_variable_call(Parser_t* parser)
 // Expressions
 ///////////////////////////////////////////////////////////
 
-/*
 ASTNode_t * parse_factor(Parser_t* parser) {
     if (match(parser, LPAR_TOKEN)) {
         ASTNode_t * expr = parse_expression(parser);
@@ -423,9 +422,43 @@ ASTNode_t * parse_factor(Parser_t* parser) {
 }
 
 
-ASTNode_t* parse_term(Parser_t* parparse_literalser)
+ASTNode_t* parse_term(Parser_t* parser)
 {
+    ASTNode_t* node = parse_factor(parser);
+    if(node == NULL)
+    {
+        fprintf(stderr, "Error: Left side of term is missing!");
+        point_error(parser->line, parser->column);
+    }
 
+    while(1)
+    {
+        Token* token = parser->ptr;
+        if (token->type == OPERATOR_TOKEN && (token->value[0] == '*' || token->value[0] == '/'))
+        {
+            advance_parser(parser);
+            ASTNode_t* right = parse_factor(parser);
+
+            // Obtain binary operation type
+            AST_TYPE type = NULL_AST;
+            if(token->value[0] == '*')
+                type = MULT_AST;
+            else if(token->value[0] == '/')
+                type = DIV_AST;
+            else
+            {
+                fprintf(stderr, "Error: Unrecognized binary operator");
+                point_error(parser->line, parser->column);
+            }
+
+            ASTNode_t* operator = init_ast(DIV_AST, "DIV");
+            ast_append(operator, node);
+            ast_append(operator, right);
+        }
+        else
+            break;
+    }
+    return node;
 }
 
 ASTNode_t* parse_expression(Parser_t* parser) 
@@ -434,41 +467,3 @@ ASTNode_t* parse_expression(Parser_t* parser)
 }
 
 
-// Parses the expression
-struct ASTNode * parse_expression(Parser_t * parser) {
-    struct ASTNode * left = parse_term(parser);
-    if (left == NULL) return NULL;
-
-    while (!is_end_of_term(get_current_token(parser))) {
-        Token token = *get_current_token(parser);
-        if (token.type != OPERATOR) break;
-
-        advance_parser(parser);
-        struct ASTNode * right = parse_term(parser);
-        if (right == NULL) return NULL;
-
-        left = create_binary_operator_node(token.value, left, right);
-    }
-
-    return left;
-}
-
-// Parses each term in the expression
-struct ASTNode * parse_term(Parser_t * parser) {
-    struct ASTNode * node = parse_factor(parser);
-    if (node == NULL) return NULL;
-
-    while (!is_end_of_term(get_current_token(parser))) {
-        Token token = *get_current_token(parser);
-        if (token.type != OPERATOR) break;
-
-        advance_parser(parser);
-        struct ASTNode * right = parse_factor(parser);
-        if (right == NULL) return NULL;
-
-        node = create_binary_operator_node(token.value, node, right);
-    }
-
-    return node;
-}
-*/
