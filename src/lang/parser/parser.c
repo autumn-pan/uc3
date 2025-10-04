@@ -463,7 +463,42 @@ ASTNode_t* parse_term(Parser_t* parser)
 
 ASTNode_t* parse_expression(Parser_t* parser) 
 {
+    ASTNode_t* node = parse_term(parser);
+    if(node == NULL)
+    {
+        fprintf(stderr, "Error: Left side of term is missing!");
+        point_error(parser->line, parser->column);
+    }
 
+    while(1)
+    {
+        Token* token = parser->ptr;
+        if (token->type == OPERATOR_TOKEN && (token->value[0] == '+' || token->value[0] == '-'))
+        {
+            advance_parser(parser);
+            ASTNode_t* right = parse_term(parser);
+
+            // Obtain binary operation type
+            AST_TYPE type = NULL_AST;
+            if(token->value[0] == '+')
+                type = PLUS_AST;
+            else if(token->value[0] == '-')
+                type = MINUS_AST;
+            else
+            {
+                fprintf(stderr, "Error: Unrecognized binary operator");
+                point_error(parser->line, parser->column);
+            }
+
+            ASTNode_t* operator = init_ast(type, "OPERATOR");
+            ast_append(operator, node);
+            ast_append(operator, right);
+        }
+        else
+            break;
+    }
+    
+    return node;
 }
 
 
