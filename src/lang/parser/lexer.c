@@ -6,7 +6,7 @@
 #include <ctype.h>
 
 #define SIZEOF_KEYWORDS 10
-#define SIZEOF_OPERATORS 4
+#define SIZEOF_OPERATORS 5
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -32,7 +32,8 @@ const char *OPERATORS[] = {
     "=", // Assignment operator
     "||", // OR operator
     "&&", // AND operator
-    "!" // NOT operator
+    "!", // NOT operator
+    "==" // Equivalence operator
 };
 
 Lexer* init_lexer(const char *src) {
