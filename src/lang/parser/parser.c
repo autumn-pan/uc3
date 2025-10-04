@@ -7,7 +7,13 @@
 void syntax_error(char* expected, char* found)
 {
     fprintf(stderr, "Syntax Error: expected %s%s%s", expected, ", found ", found);
-    EXIT_FAILURE;
+    exit(EXIT_FAILURE);
+}
+
+void point_error(size_t line, size_t column)\
+{
+    fprintf(stderr, "\nLine: %i%s%i", line, ", Column: ", column);
+    exit(EXIT_FAILURE);
 }
 
 Parser_t* init_parser(TokenStream* ts, Lexer* lexer)
@@ -44,6 +50,9 @@ bool advance_parser(Parser_t* parser)
         parser->pos++;
         parser->ptr = parser->ptr->next;
 
+        parser->line = parser->ptr->line;
+        parser->column = parser->ptr->column;
+
         if(!parser->ptr)
             return false;
 
@@ -61,6 +70,7 @@ char* match(Parser_t *p, enum TOKEN_TYPE type) {
     }
     return NULL;
 }
+
 
 // Match value function
 bool match_value(Parser_t *p, char *value) {
@@ -84,7 +94,7 @@ ASTNode_t* parse_field(Parser_t* parser)
     if(!match_value(parser, "DEFAULT"))
     {
         fprintf(stderr, "Error: Expected a DEFAULT value to be set");
-        exit(EXIT_FAILURE);
+        point_error(parser->line, parser->column);
     }
 
     char* val;
@@ -127,7 +137,7 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
     if(!(identifier = match(parser, IDENTIFIER_TOKEN)))
     {
         fprintf(stderr, "Error: Expected identifier after variable declaration!");
-        exit(EXIT_FAILURE);
+        point_error(parser->line, parser->column);
     }
 
     ASTNode_t* node = init_ast(VARIABLE_DECL_AST, identifier);
@@ -207,7 +217,7 @@ ASTNode_t* parse_list(Parser_t* parser)
         if(type == NULL_TOKEN)
         {
             fprintf(stderr, "\nError: List contents must be identifiers or literals!");
-            exit(EXIT_FAILURE);
+            point_error(parser->line, parser->column);
         }
 
         // Append the child to the list root
@@ -224,7 +234,7 @@ ASTNode_t* parse_list(Parser_t* parser)
     if(match(parser, RSQBRACE_TOKEN) == NULL)
     {
         fprintf(stderr, "\nError: List contents must be identifiers or literals!");
-        exit(EXIT_FAILURE);
+        point_error(parser->line, parser->column);
     }
 
     return node;
@@ -262,7 +272,7 @@ ASTNode_t* parse_statement(Parser_t* parser)
 
     
     fprintf(stderr, "\nError: Unrecognized token");
-    exit(EXIT_FAILURE);
+    point_error(parser->line, parser->column);
 }
 
 // TODO: Sopport conditional blocks
@@ -323,12 +333,12 @@ ASTNode_t* parse_block(Parser_t* parser)
     else
     {
         fprintf(stderr, "Error: expected ']'");
+        point_error(parser->line, parser->column);
     }
 
     ast_append(node, block);
     return node;
 }
-
 
 // Returns a project tree
 ASTNode_t* parse(Parser_t* parser)

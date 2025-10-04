@@ -1,12 +1,16 @@
 #ifndef PARSER_H
 #define PARSER_H
 #include "lang/ast.h"
+#include <stdlib.h>
 
 typedef struct 
 {
     int pos;
     int len;
     TokenStream* ts;
+
+    size_t line;
+    size_t column;
     
     Token* ptr;
 } Parser_t;
