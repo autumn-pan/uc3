@@ -218,8 +218,6 @@ TokenStream* tokenize(Lexer* lexer)
         token = next_token(lexer);
     }
 
-    printf("\nTokenization Complete!");
-    fflush(stdout);
     return token_stream;
 }
 

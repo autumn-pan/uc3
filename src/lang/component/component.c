@@ -79,9 +79,7 @@ bool verify_components(HashTable_t* table)
         if(((Component_t*)(table->contents[i]->value))->cyclic_status == COMPLETED)
             continue;
 
-        is_cyclic = check_cycles(table->contents[i]->value);
-
-        if(is_cyclic)
+        if(check_cycles(table->contents[i]->value))
             return true;
     }
 
