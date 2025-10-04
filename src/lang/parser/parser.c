@@ -129,9 +129,17 @@ ASTNode_t* parse_subsystem(Parser_t* parser)
 
 ASTNode_t* parse_variable_decl(Parser_t* parser)
 {
+    char* str = parser->ptr->value;
     if(!(match_value(parser, "INT") || match_value(parser, "BOOL")))
         return NULL;
 
+    enum TOKEN_TYPE declared_type = str_to_datatype(str);
+
+    if(declared_type == NULL_TOKEN)
+    {
+        fprintf(stderr, "Error: Data type not recognized");
+        point_error(parser->line, parser->column);
+    }
 
     char* identifier;
     if(!(identifier = match(parser, IDENTIFIER_TOKEN)))
@@ -151,6 +159,12 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
 
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
+
+    if(type != declared_type)
+    {
+        fprintf(stderr, "Error: ");
+        point_error(parser->line, parser->column);
+    }
 
     advance_parser(parser);
 
@@ -362,7 +376,99 @@ ASTNode_t* parse(Parser_t* parser)
 
         ast_append(root, block);
     }
-    
+
     free(parser);
     return root;
 }
+
+ASTNode_t* parse_literal(Parser_t* parser)
+{
+    enum TOKEN_TYPE type = parser->ptr->type;
+
+    if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
+        return NULL;
+
+    return init_ast(type, parser->ptr->value);
+}
+
+ASTNode_t* parse_variable_call(Parser_t* parser)
+{
+    if(parser->ptr->type != IDENTIFIER_TOKEN)
+        return NULL;
+
+    return init_ast(IDENTIFIER_TOKEN, parser->ptr->value);
+}
+
+///////////////////////////////////////////////////////////
+// Expressions
+///////////////////////////////////////////////////////////
+
+/*
+ASTNode_t * parse_factor(Parser_t* parser) {
+    if (match(parser, LPAR_TOKEN)) {
+        ASTNode_t * expr = parse_expression(parser);
+
+        if (!match(parser, RPAR_TOKEN)) {
+            fprintf(stderr, "Error: Right Parenthesis expected!");
+        }
+        return expr;
+    }
+    ASTNode_t * node = NULL;
+
+    if ((node = parse_literal(parser)) != NULL) return node;
+    if ((node = parse_variable_call(parser)) != NULL) return node;
+
+    fprintf(stderr, "Error: expected a factor");
+    point_error(parser->line, parser->column);
+}
+
+
+ASTNode_t* parse_term(Parser_t* parparse_literalser)
+{
+
+}
+
+ASTNode_t* parse_expression(Parser_t* parser) 
+{
+
+}
+
+
+// Parses the expression
+struct ASTNode * parse_expression(Parser_t * parser) {
+    struct ASTNode * left = parse_term(parser);
+    if (left == NULL) return NULL;
+
+    while (!is_end_of_term(get_current_token(parser))) {
+        Token token = *get_current_token(parser);
+        if (token.type != OPERATOR) break;
+
+        advance_parser(parser);
+        struct ASTNode * right = parse_term(parser);
+        if (right == NULL) return NULL;
+
+        left = create_binary_operator_node(token.value, left, right);
+    }
+
+    return left;
+}
+
+// Parses each term in the expression
+struct ASTNode * parse_term(Parser_t * parser) {
+    struct ASTNode * node = parse_factor(parser);
+    if (node == NULL) return NULL;
+
+    while (!is_end_of_term(get_current_token(parser))) {
+        Token token = *get_current_token(parser);
+        if (token.type != OPERATOR) break;
+
+        advance_parser(parser);
+        struct ASTNode * right = parse_factor(parser);
+        if (right == NULL) return NULL;
+
+        node = create_binary_operator_node(token.value, node, right);
+    }
+
+    return node;
+}
+*/

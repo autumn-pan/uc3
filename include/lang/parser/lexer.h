@@ -24,7 +24,9 @@ enum TOKEN_TYPE
     NULL_TOKEN,
     DATA_TYPE_TOKEN,
 
-    OPERATOR_TOKEN
+    OPERATOR_TOKEN,
+    LPAR_TOKEN,
+    RPAR_TOKEN
 };
 
 extern const char *KEYWORDS[];
@@ -50,6 +52,8 @@ typedef struct {
     int line;            // Line number for error reporting
     int column;          // Column number for debugging
 } Lexer;
+
+enum TOKEN_TYPE str_to_datatype(char* str);
 
 char advance(Lexer* lexer);
 Lexer* init_lexer(const char* str);

@@ -36,6 +36,17 @@ const char *OPERATORS[] = {
     "==" // Equivalence operator
 };
 
+enum TOKEN_TYPE str_to_datatype(char* str)
+{
+    if(strcmp(str, "INT") == 0)
+        return INT_TOKEN;
+    else if(strcmp(str, "BOOL") == 0)
+        return BOOL_TOKEN;
+
+    return NULL_TOKEN;
+}
+
+// Constructor for lexer struct
 Lexer* init_lexer(const char *src) {
     Lexer *lexer = malloc(sizeof(Lexer)); 
     if(!lexer)
