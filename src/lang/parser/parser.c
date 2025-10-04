@@ -69,7 +69,6 @@ bool match_value(Parser_t *p, char *value) {
         advance_parser(p);
         return true;
     }
-
     return false;
 }
 
@@ -126,20 +125,18 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
 
     char* identifier;
     if(!(identifier = match(parser, IDENTIFIER_TOKEN)))
-        return NULL;
+    {
+        fprintf(stderr, "Error: Expected identifier after variable declaration!");
+        exit(EXIT_FAILURE);
+    }
 
     ASTNode_t* node = init_ast(VARIABLE_DECL_AST, identifier);
-    // TODO: add definitions (requires operator parsing)
 
-    if(!node)
-        return NULL;
-
+    // Set variable definition if applicable
     if(!match_value(parser, "="))
         return node;
 
     char* value = parser->ptr->value;
-
-
     enum TOKEN_TYPE type = parser->ptr->type;
 
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
@@ -164,7 +161,7 @@ bool is_list_compatible(Token* token)
     if(!token)
         return false;
 
-    if(token->type == IDENTIFIER_TOKEN || token->type == INT_TOKEN || token->type == STR_TOKEN)
+    if(token->type == IDENTIFIER_TOKEN || token->type == INT_TOKEN || token->type == STR_TOKEN || token->type == BOOL_TOKEN)
         return true;
 
     return false;
@@ -322,6 +319,10 @@ ASTNode_t* parse_block(Parser_t* parser)
     {
         parser->pos++;
         parser->ptr = parser->ptr->next;
+    }
+    else
+    {
+        fprintf(stderr, "Error: expected ']'");
     }
 
     ast_append(node, block);

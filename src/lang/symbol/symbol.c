@@ -106,7 +106,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             if(!new_symbol)
                 continue;
             symbol_node_append(symbol_node, new_symbol);
-
         }
         else if(child->type == VARIABLE_DECL_AST)
         {

@@ -265,26 +265,6 @@ void append_token(TokenStream* ts, Token* token)
     ts->size++;
 }
 
-void tokenstream_pop_head(TokenStream* ts)
-{
-    if(!ts->head) 
-        return;
-
-    Token* head = ts->head;
-    if(ts->head->next)
-    {
-        ts->head = ts->head->next;
-    }
-    else
-    {
-        ts->head = NULL;
-        ts->tail = NULL;
-    }
-
-    free(head);
-    ts->size--;
-}
-
 void free_tokenstream(TokenStream* ts)
 {
     Token* token = ts->head;

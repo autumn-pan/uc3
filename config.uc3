@@ -12,6 +12,7 @@ DEFINE important_block
         DEFAULT 12
     DEPENDENCIES
     [
+        block
     ]
 }
 
