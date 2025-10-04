@@ -20,7 +20,6 @@ ASTNode_t* init_ast(AST_TYPE type, char* value)
     ast->type = type;
 }
 
-
 void ast_append(ASTNode_t* node, ASTNode_t* child)
 {
     node->num_children++;

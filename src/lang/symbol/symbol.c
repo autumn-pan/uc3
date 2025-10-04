@@ -110,8 +110,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         }
         else if(child->type == VARIABLE_DECL_AST)
         {
-
-
             Symbol_t* symbol;
             if(!child->children[0]) // Register undefined symbols
             {
@@ -124,12 +122,14 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             }
             else // Register defined symbols
             {
-                Symbol_t* symbol = init_symbol(
+
+                symbol = init_symbol(
                     child->children[0]->type,  
                     child->data.str,
                     child->children[0]->data.str,
                     false
                 );
+                
             }
 
             if(!symbol)

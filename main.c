@@ -23,6 +23,7 @@ int main()
     Symbol_t* val = symbol->symbols->contents[get_hash_pos(symbol->symbols, "my_int")]->value;
 
     printf(val->identifier);
+    
     HashTable_t* registry = init_component_registry(root);
     append_component_dependencies(registry);
 

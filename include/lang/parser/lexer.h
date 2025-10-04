@@ -21,7 +21,9 @@ enum TOKEN_TYPE
     LSQBRACE_TOKEN,
     RSQBRACE_TOKEN,
     NULL_TOKEN,
-    DATA_TYPE_TOKEN
+    DATA_TYPE_TOKEN,
+
+    OPERATOR_TOKEN
 };
 
 extern const char *KEYWORDS[];

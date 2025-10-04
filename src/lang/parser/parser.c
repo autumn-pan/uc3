@@ -117,6 +117,26 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
 
     ASTNode_t* node = init_ast(VARIABLE_DECL_AST, identifier);
     // TODO: add definitions (requires operator parsing)
+
+    if(!node)
+        return NULL;
+
+    if(!match_value(parser, "="))
+        return node;
+
+
+    // Currently, only integers are supported
+    char* value = parser->ptr->value;
+    if(match(parser, INT_TOKEN))
+    {
+        ASTNode_t* child = init_ast(INT_AST, value);
+        if(!child)
+            return NULL;
+
+        ast_append(node, child);
+        advance_parser(parser);
+    }
+
     return node;
 }
 
@@ -132,6 +152,7 @@ bool is_list_compatible(Token* token)
 
     return false;
 }
+
 
 // Parse a list into an AST subtree
 ASTNode_t* parse_list(Parser_t* parser)
@@ -305,5 +326,6 @@ ASTNode_t* parse(Parser_t* parser)
         ast_append(root, block);
     }
     
+    free(parser);
     return root;
 }

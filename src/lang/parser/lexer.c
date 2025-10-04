@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#define SIZEOF_KEYWORDS 10
+#define SIZEOF_OPERATORS 1
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -21,8 +23,8 @@ const char *KEYWORDS[] = {
     "BOOL"
 };
 
-const char OPERATORS[] = {
-    '=', // Assignment operator
+const char *OPERATORS[] = {
+    "=", // Assignment operator
 };
 
 Lexer* init_lexer(const char *src) {
@@ -82,6 +84,7 @@ void skip_whitespace(Lexer* lexer)
 /// Tokenization
 //////////////////////////////////////////////////////////////
 
+// Constructor for token struct
 Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line, uint32_t col)
 {
     Token* token = (malloc(sizeof(Token)));
@@ -129,7 +132,7 @@ Token* next_token(Lexer* lexer)
         {
             cat_char(str, (advance(lexer))); 
         }
-        if(in_array(KEYWORDS, str, 10))
+        if(in_array(KEYWORDS, str, SIZEOF_KEYWORDS))
             return init_token(KEYWORD_TOKEN, str, lexer->line, lexer->column);
         return init_token(IDENTIFIER_TOKEN, str, lexer->line, lexer->column);
     }
@@ -149,6 +152,8 @@ Token* next_token(Lexer* lexer)
     enum TOKEN_TYPE misc_token_type = NULL_TOKEN;
 
     char temp[2] = {current_char, '\0'};
+    printf(temp);
+    fflush(stdout);
     switch(current_char)
     {
         case '{':
@@ -171,7 +176,15 @@ Token* next_token(Lexer* lexer)
 
     if(misc_token_type != NULL_TOKEN)
     {
+        advance(lexer);
         return init_token(misc_token_type, temp, lexer->line, lexer->column);
+    }
+
+    // Check for operators
+    if(in_array(OPERATORS, temp, SIZEOF_OPERATORS))
+    {
+        advance(lexer);
+        return init_token(OPERATOR_TOKEN, temp, lexer->line, lexer->column);
     }
     
     return NULL;
@@ -190,6 +203,8 @@ TokenStream* tokenize(Lexer* lexer)
         token = next_token(lexer);
     }
 
+    printf("\nTokenization Complete!");
+    fflush(stdout);
     return token_stream;
 }
 
