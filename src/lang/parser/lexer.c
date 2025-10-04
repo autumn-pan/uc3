@@ -8,7 +8,6 @@
 #define SIZEOF_KEYWORDS 10
 #define SIZEOF_OPERATORS 1
 
-
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
     "CONFIG", // Configure a module

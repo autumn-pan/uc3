@@ -23,12 +23,13 @@ int main()
     if(!symbol)
         return 1;
 
-    Symbol_t* val = symbol->symbols->contents[get_hash_pos(symbol->symbols, "my_int")]->value;
-
+    printf("\nNum: %i", get_hash_pos(symbol->children[0]->symbols, "my_int"));
+    Symbol_t* sym = (Symbol_t*)symbol->children[0]->symbols->contents[get_hash_pos(symbol->children[0]->symbols, "my_int")]->value;
+    
     HashTable_t* registry = init_component_registry(root);
     append_component_dependencies(registry);
 
-
+    
     Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[2]->data.str)]->value;
 
     printf("\nCyclic: %i", verify_components(registry));

@@ -44,7 +44,7 @@ typedef struct
     enum DATATYPE type;
     uint32_t hash;
 
-    Value_t value;
+    char* value;
 } Symbol_t;
 
 typedef struct symbolNode_t

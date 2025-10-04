@@ -56,7 +56,8 @@ Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool co
     symbol->type = type;
     symbol->identifier = identifier;
     symbol->constant = constant;
-    
+    symbol->value = value;
+
     return symbol;
 }
 
@@ -129,7 +130,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                     child->children[0]->data.str,
                     false
                 );
-                
             }
 
             if(!symbol)
