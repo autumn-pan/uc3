@@ -4,7 +4,10 @@ char* read(char* file_name)
 {
     FILE* file = fopen(file_name, "r");
     if(!file)
-        return NULL;
+    {
+        fprintf(stderr, "Error: No such file %s", file_name);
+        exit(EXIT_FAILURE);
+    }
 
     // find file size
     fseek(file, 0, SEEK_END);

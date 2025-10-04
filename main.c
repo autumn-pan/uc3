@@ -8,35 +8,9 @@
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
 #include "lang/component/component.h"
+#include "lang/compiler.h"
 
 int main()
 {
-    char* source = read("config.uc3");
-    Lexer* lexer = init_lexer(source);
-    TokenStream* ts = tokenize(lexer);
-
-    Parser_t* parser = init_parser(ts, lexer);
-    ASTNode_t* root = parse(parser);
-
-    SymbolNode_t* symbol = symbolize_ast(root);
-    
-    if(!symbol)
-        return 1;
-
-    printf("\nNum: %i", get_hash_pos(symbol->children[0]->symbols, "my_int"));
-    Symbol_t* sym = (Symbol_t*)symbol->children[0]->symbols->contents[get_hash_pos(symbol->children[0]->symbols, "my_int")]->value;
-    
-    HashTable_t* registry = init_component_registry(root);
-    append_component_dependencies(registry);
-
-    
-    Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[2]->data.str)]->value;
-
-    printf("\nCyclic: %i", verify_components(registry));
-
-    printf(component->identifier);
-    printf("\nFields: %i",component->num_fields);
-    fflush(stdout);
-
-    printf(component->fields[0]->variable->identifier);
+    compile("config.uc3");
 }

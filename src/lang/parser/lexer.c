@@ -169,8 +169,6 @@ Token* next_token(Lexer* lexer)
     enum TOKEN_TYPE misc_token_type = NULL_TOKEN;
 
     char temp[2] = {current_char, '\0'};
-    printf(temp);
-    fflush(stdout);
     switch(current_char)
     {
         case '{':

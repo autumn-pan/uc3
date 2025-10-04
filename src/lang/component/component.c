@@ -26,7 +26,10 @@ Component_t* init_component(ASTNode_t* node)
     Component_t* component = malloc(sizeof(Component_t));
 
     if(!component)
-        return NULL;
+    {
+        fprintf(stderr, "Error: Failed to allocate critical memory!");
+        exit(EXIT_FAILURE);
+    }
 
     component->identifier = node->data.str;
     component->node = node;
@@ -61,6 +64,7 @@ bool check_cycles(Component_t* node)
     return false;
 }
 
+// Returns true if there is a circular dependency
 bool verify_components(HashTable_t* table)
 {
     if(!table)
@@ -104,6 +108,7 @@ HashTable_t* init_component_registry(ASTNode_t* root)
             return NULL;
 
         bool duplicate_key = insert_hash(table, child, child->identifier);
+
         // Quit if there's a duplicate key (redefinition error)
         if(duplicate_key)
         {

@@ -12,7 +12,6 @@ DEFINE important_block
         DEFAULT 12
     DEPENDENCIES
     [
-        other_block
     ]
 }
 
@@ -23,7 +22,6 @@ DEFINE block
         DEFAULT 128
     DEPENDENCIES
     [
-        important_block
     ]
     BOOL my_int = true
 
@@ -38,6 +36,5 @@ DEFINE other_block
         DEFAULT 128
     DEPENDENCIES
     [
-        block
     ]
 }

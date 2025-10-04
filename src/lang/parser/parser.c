@@ -154,8 +154,6 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
         ast_append(node, child);
     }
 
-    printf(parser->ptr->value);
-
     return node;
 }
 
