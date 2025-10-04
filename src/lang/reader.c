@@ -18,8 +18,7 @@ char* read(char* file_name)
 
     if(!buffer)
     {
-        fclose(file);
-        return NULL;
+        fprintf(stderr, "Error: Memory allocation failed!");
     }
 
     fread(buffer, 1, file_size, file);

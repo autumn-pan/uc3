@@ -21,6 +21,7 @@ unsigned long hash(char * key, unsigned long hash_limit)
     return hash % hash_limit;
 }
 
+// Constructor for hash tables
 HashTable_t* init_hash_table(int hash_max)
 {
     HashTable_t* table = malloc(sizeof(HashTable_t));
@@ -29,8 +30,15 @@ HashTable_t* init_hash_table(int hash_max)
         fprintf(stderr, "Error: Failed to allocate enough memory!");
         exit(EXIT_FAILURE);
     }
+    // Maximum number of hash elements in the table
     table->hash_max = hash_max;
+
     table->contents = malloc(sizeof(HashElement_t*)*table->hash_max);
+    if(!table->contents)
+    {
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
+    }
     table->num_elements = 0;
 
     return table;
@@ -96,6 +104,7 @@ bool insert_hash(HashTable_t *table, void * value, char* key)
     return false;
 }
 
+// Get the index of a key in a hash table, if present. Returns ULONG_MAX is absent.
 unsigned long get_hash_pos(HashTable_t * table, char * key)
 {
     if(!table || !key)
@@ -116,6 +125,7 @@ unsigned long get_hash_pos(HashTable_t * table, char * key)
     return ULONG_MAX;
 }
 
+// Removes and frees a symbol from a hash table
 void delete_symbol(HashTable_t * table, char * key)
 {
     if(get_hash_pos(table, key) == ULONG_MAX)

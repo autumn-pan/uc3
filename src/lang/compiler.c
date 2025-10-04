@@ -14,6 +14,9 @@ void compile(char* file_name)
     ASTNode_t* root = parse(init_parser(tokenstream, lexer));
 
     HashTable_t* table = init_component_registry(root);
+
+    // After configuration, active modules will have their dependencies checked and verfied.
+    /*
     append_component_dependencies(table);
 
     if(verify_components(table) == 1)
@@ -21,6 +24,7 @@ void compile(char* file_name)
         fprintf(stderr, "Error: Circular dependency detected!");
         exit(EXIT_FAILURE);
     }
+    */
 
     SymbolNode_t* symbol_table = symbolize_ast(root);
 }

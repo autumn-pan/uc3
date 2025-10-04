@@ -89,8 +89,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 {
     // Initialize the root symbol
     SymbolNode_t* symbol_node = init_symbol_node();
-    if(!symbol_node)
-        return NULL;
 
     int child_index = 0;
 
@@ -132,9 +130,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                     false
                 );
             }
-
-            if(!symbol)
-                return NULL;
 
             // Insert the symbol into the scope if it's not null
             if(insert_hash(symbol_node->symbols, symbol, symbol->identifier))

@@ -240,7 +240,6 @@ TokenStream* init_tokenstream()
     return token_stream;
 }
 
-
 void append_token(TokenStream* ts, Token* token)
 {
     token->next = NULL;

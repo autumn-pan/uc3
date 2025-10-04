@@ -31,6 +31,7 @@ Component_t* init_component(ASTNode_t* node)
         exit(EXIT_FAILURE);
     }
 
+    component->enabled = true;
     component->identifier = node->data.str;
     component->node = node;
     component->num_dependencies = 0;
@@ -43,6 +44,7 @@ Component_t* init_component(ASTNode_t* node)
 
     return component;
 }
+
 
 // Returns true if a component graph is cyclic
 bool check_cycles(Component_t* node)
@@ -111,7 +113,6 @@ HashTable_t* init_component_registry(ASTNode_t* root)
             exit(EXIT_FAILURE);
         }
     }
-
     return table;
 }
 
