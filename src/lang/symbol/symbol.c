@@ -145,7 +145,5 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 
         child = node->children[child_index];
     }
-    printf("flag");
-    fflush(stdout);
     return symbol_node;
 }
