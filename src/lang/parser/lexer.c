@@ -34,6 +34,11 @@ const char *OPERATORS[] = {
 
 Lexer* init_lexer(const char *src) {
     Lexer *lexer = malloc(sizeof(Lexer)); 
+    if(!lexer)
+    {
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
+    }
     lexer->src = src;
     lexer->length = strlen(src);
 
@@ -227,6 +232,11 @@ TokenStream* tokenize(Lexer* lexer)
 TokenStream* init_tokenstream()
 {
     TokenStream* token_stream = (malloc(sizeof(TokenStream)));
+    if(!token_stream)
+    {
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
+    }
     token_stream->head = NULL;
     token_stream->tail = NULL;
     token_stream->size = 0;

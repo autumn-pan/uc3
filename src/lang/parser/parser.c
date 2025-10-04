@@ -4,11 +4,20 @@
 #include <string.h>
 #include <stdio.h>
 
+void syntax_error(char* expected, char* found)
+{
+    fprintf(stderr, "Syntax Error: expected %s%s%s", expected, ", found ", found);
+    EXIT_FAILURE;
+}
+
 Parser_t* init_parser(TokenStream* ts, Lexer* lexer)
 {
     Parser_t *parser = (malloc(sizeof(Parser_t)));
     if(!parser)
-        return NULL;
+    {
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
+    }
     
     parser->ts = ts;
 
@@ -130,7 +139,6 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
 
     enum TOKEN_TYPE type = parser->ptr->type;
 
-    printf("\nType: %i", type);
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
 
