@@ -66,7 +66,8 @@ SymbolNode_t* init_symbol_node()
     SymbolNode_t* node = malloc(sizeof(SymbolNode_t));
     if(!node)
     {
-        return NULL;
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
     }
 
     node->num_children = 0;
@@ -136,7 +137,11 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                 return NULL;
 
             // Insert the symbol into the scope if it's not null
-            insert_hash(symbol_node->symbols, symbol, symbol->identifier);
+            if(insert_hash(symbol_node->symbols, symbol, symbol->identifier))
+            {
+                fprintf(stderr, "Error: Variable declaration error!");
+                exit(EXIT_FAILURE);
+            }
         }
 
         child_index++;

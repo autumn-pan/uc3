@@ -106,7 +106,10 @@ HashTable_t* init_component_registry(ASTNode_t* root)
         bool duplicate_key = insert_hash(table, child, child->identifier);
         // Quit if there's a duplicate key (redefinition error)
         if(duplicate_key)
-            return NULL;
+        {
+            fprintf(stderr, "Error: Component declaration detected!");
+            exit(EXIT_FAILURE);
+        }
     }
 
     return table;

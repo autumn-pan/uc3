@@ -83,7 +83,10 @@ ASTNode_t* parse_field(Parser_t* parser)
         return NULL;
 
     if(!match_value(parser, "DEFAULT"))
-        return NULL;
+    {
+        fprintf(stderr, "Error: Expected a DEFAULT value to be set");
+        exit(EXIT_FAILURE);
+    }
 
     char* val;
     if(!(val = match(parser, INT_TOKEN)))
@@ -207,7 +210,10 @@ ASTNode_t* parse_list(Parser_t* parser)
 
         // Quit if the type is unrecognized for whatever reason
         if(type == NULL_TOKEN)
-            return NULL;
+        {
+            fprintf(stderr, "\nError: List contents must be identifiers or literals!");
+            exit(EXIT_FAILURE);
+        }
 
         // Append the child to the list root
         ASTNode_t* child = init_ast(type, token->value);
@@ -221,7 +227,10 @@ ASTNode_t* parse_list(Parser_t* parser)
 
     // Ensure that the lit is closed appropriately
     if(match(parser, RSQBRACE_TOKEN) == NULL)
-        return NULL;
+    {
+        fprintf(stderr, "\nError: List contents must be identifiers or literals!");
+        exit(EXIT_FAILURE);
+    }
 
     return node;
 }
@@ -256,9 +265,12 @@ ASTNode_t* parse_statement(Parser_t* parser)
     else if((node = parse_variable_decl(parser)) != NULL)
         return node;
 
-    return NULL;
+    
+    fprintf(stderr, "\nError: Unrecognized token");
+    exit(EXIT_FAILURE);
 }
 
+// TODO: Sopport conditional blocks
 ASTNode_t* parse_block(Parser_t* parser)
 {
     AST_TYPE type;
