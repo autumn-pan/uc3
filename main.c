@@ -22,13 +22,9 @@ int main()
 
     Symbol_t* val = symbol->symbols->contents[get_hash_pos(symbol->symbols, "my_int")]->value;
 
-    printf(val->identifier);
-    
     HashTable_t* registry = init_component_registry(root);
     append_component_dependencies(registry);
 
-
-    fflush(stdout);
 
     Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[2]->data.str)]->value;
 
@@ -41,4 +37,3 @@ int main()
 
     printf(component->fields[0]->variable->identifier);
 }
-
