@@ -24,6 +24,11 @@ unsigned long hash(char * key, unsigned long hash_limit)
 HashTable_t* init_hash_table(int hash_max)
 {
     HashTable_t* table = malloc(sizeof(HashTable_t));
+    if(!table)
+    {
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
+    }
     table->hash_max = hash_max;
     table->contents = malloc(sizeof(HashElement_t*)*table->hash_max);
     table->num_elements = 0;
@@ -35,6 +40,12 @@ HashElement_t* init_hash_element(void* value, char* key)
 {
     HashElement_t* element = malloc(sizeof(HashElement_t));
 
+    if(!element)
+    {
+        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        exit(EXIT_FAILURE);
+    }
+    
     element->value = value;
     element->key = key;
 
