@@ -16,7 +16,7 @@ void compile(char* file_name)
     HashTable_t* table = init_component_registry(root);
     append_component_dependencies(table);
 
-    if(verify_components)
+    if(verify_components(table) == 1)
     {
         fprintf(stderr, "Error: Circular dependency detected!");
         exit(EXIT_FAILURE);
