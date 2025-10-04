@@ -1,4 +1,4 @@
-INT my_int = 14
+BOOL my_int = true
 
 DEFINE important_block
 {

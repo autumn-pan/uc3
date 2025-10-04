@@ -8,6 +8,7 @@
 #define SIZEOF_KEYWORDS 10
 #define SIZEOF_OPERATORS 1
 
+
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
     "CONFIG", // Configure a module
@@ -20,7 +21,12 @@ const char *KEYWORDS[] = {
     
     // Data Types
     "INT",
-    "BOOL"
+    "BOOL",
+};
+
+const char* BOOLEAN_KEYWORDS[] = {
+    "true",
+    "false"
 };
 
 const char *OPERATORS[] = {
@@ -61,6 +67,7 @@ bool in_array(const char *arr[], const char *key, uint8_t size)
     // If no string matches, return false
     return false;
 }
+
 
 bool is_whitespace(Lexer *lexer)
 {
@@ -118,7 +125,6 @@ Token* next_token(Lexer* lexer)
 {    
     skip_whitespace(lexer);
 
-
     // The value of the next token, as a string
     char str[32] = "";
 
@@ -132,8 +138,15 @@ Token* next_token(Lexer* lexer)
         {
             cat_char(str, (advance(lexer))); 
         }
+        // Check if the resultant is a keyword
         if(in_array(KEYWORDS, str, SIZEOF_KEYWORDS))
             return init_token(KEYWORD_TOKEN, str, lexer->line, lexer->column);
+
+        // The size of BOOLEAN_KEYWORDS is always 2
+        if(in_array(BOOLEAN_KEYWORDS, str, 2))
+            return init_token(BOOL_TOKEN, str, lexer->line, lexer->column);
+
+        // Return it as an identifier if it's neither
         return init_token(IDENTIFIER_TOKEN, str, lexer->line, lexer->column);
     }
 

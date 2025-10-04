@@ -111,6 +111,7 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
     if(!(match_value(parser, "INT") || match_value(parser, "BOOL")))
         return NULL;
 
+
     char* identifier;
     if(!(identifier = match(parser, IDENTIFIER_TOKEN)))
         return NULL;
@@ -124,15 +125,21 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
     if(!match_value(parser, "="))
         return node;
 
-
-    // Currently, only integers are supported
     char* value = parser->ptr->value;
-    if(match(parser, INT_TOKEN))
-    {
-        ASTNode_t* child = init_ast(INT_AST, value);
-        if(!child)
-            return NULL;
 
+
+    enum TOKEN_TYPE type = parser->ptr->type;
+
+    printf("\nType: %i", type);
+    if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
+        return NULL;
+
+    advance_parser(parser);
+
+    ASTNode_t* child = init_ast(type, value);
+
+    if(!child) {
+        return NULL;
         ast_append(node, child);
     }
 

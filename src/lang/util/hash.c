@@ -87,6 +87,9 @@ bool insert_hash(HashTable_t *table, void * value, char* key)
 
 unsigned long get_hash_pos(HashTable_t * table, char * key)
 {
+    if(!table || !key)
+        return ULONG_MAX;
+
     int index = hash(key, table->hash_max);
 
     while (table->contents[index] != NULL) 

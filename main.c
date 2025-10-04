@@ -17,8 +17,11 @@ int main()
 
     Parser_t* parser = init_parser(ts, lexer);
     ASTNode_t* root = parse(parser);
-    
+
     SymbolNode_t* symbol = symbolize_ast(root);
+    
+    if(!symbol)
+        return 1;
 
     Symbol_t* val = symbol->symbols->contents[get_hash_pos(symbol->symbols, "my_int")]->value;
 
@@ -27,7 +30,6 @@ int main()
 
 
     Component_t* component = (Component_t*)registry->contents[get_hash_pos(registry, root->children[2]->data.str)]->value;
-
 
     printf("\nCyclic: %i", verify_components(registry));
 

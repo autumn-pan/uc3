@@ -1,6 +1,7 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <stdbool.h>
 #include <stdint.h>
 
 enum TOKEN_TYPE
@@ -27,7 +28,6 @@ enum TOKEN_TYPE
 };
 
 extern const char *KEYWORDS[];
-
 
 typedef struct token {
     enum TOKEN_TYPE type;
@@ -60,5 +60,8 @@ void append_token(TokenStream* ts, Token* token);
 
 void free_tokenstream(TokenStream* ts);
 char * to_string(const char character);
+
+bool in_array(const char *arr[], const char *key, uint8_t size);
+
 
 #endif
