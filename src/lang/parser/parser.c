@@ -4,6 +4,9 @@
 #include <string.h>
 #include <stdio.h>
 
+ASTNode_t* parse_expression(Parser_t* parser);
+
+
 void syntax_error(char* expected, char* found)
 {
     fprintf(stderr, "Syntax Error: expected %s%s%s", expected, ", found ", found);
@@ -154,21 +157,7 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
     if(!match_value(parser, "="))
         return node;
 
-    char* value = parser->ptr->value;
-    enum TOKEN_TYPE type = parser->ptr->type;
-
-    if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
-        return NULL;
-
-    if(type != declared_type)
-    {
-        fprintf(stderr, "Error: ");
-        point_error(parser->line, parser->column);
-    }
-
-    advance_parser(parser);
-
-    ASTNode_t* child = init_ast(type, value);
+    ASTNode_t* child = parse_expression(parser);
 
     if(!child) {
         return NULL;
@@ -381,13 +370,22 @@ ASTNode_t* parse(Parser_t* parser)
     return root;
 }
 
+
+///////////////////////////////////////////////////////////
+// Expressions -- Recursive Descent
+///////////////////////////////////////////////////////////
+
 ASTNode_t* parse_literal(Parser_t* parser)
 {
     enum TOKEN_TYPE type = parser->ptr->type;
 
+    printf("\nType: %i", type);
+    fflush(stdout);
+
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
 
+    advance_parser(parser);
     return init_ast(type, parser->ptr->value);
 }
 
@@ -396,12 +394,9 @@ ASTNode_t* parse_variable_call(Parser_t* parser)
     if(parser->ptr->type != IDENTIFIER_TOKEN)
         return NULL;
 
+    advance_parser(parser);
     return init_ast(IDENTIFIER_TOKEN, parser->ptr->value);
 }
-
-///////////////////////////////////////////////////////////
-// Expressions
-///////////////////////////////////////////////////////////
 
 ASTNode_t * parse_factor(Parser_t* parser) {
     if (match(parser, LPAR_TOKEN)) {
@@ -497,8 +492,6 @@ ASTNode_t* parse_expression(Parser_t* parser)
         else
             break;
     }
-    
+
     return node;
 }
-
-
