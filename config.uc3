@@ -8,6 +8,8 @@ DEFINE important_block
         DEFAULT 128
     FIELD my_num 
         DEFAULT 12
+
+    MACRO MY_KACRO 1
     DEPENDENCIES
     [
         block

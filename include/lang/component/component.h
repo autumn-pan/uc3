@@ -49,6 +49,12 @@ typedef struct component
     GRAPH_STATUS graph_status;
 } Component_t;
 
+typedef struct
+{
+    char* identifier;
+    ASTNode_t* value;
+} Macro_t;
+
 typedef struct {
     Component_t* root;
     Component_t** disjoint_components;
