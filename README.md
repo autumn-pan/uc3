@@ -59,6 +59,30 @@ Examples
 Defining a variable is not necessary, and a declaration may also suffice, such as
 ```<DATA_TYPE> <IDENTIFIER>```
 
+### Macros
+Macros are UC3's way of interacting with the actual code. You might have something like
+```
+#ifdef CAMERA_ENABLED
+typdef struct
+{
+    Position_t* position;
+    bool enabled;
+    uint8_t zoom;
+} Camera;
+#endif
+```
+You would then define a component that corresponds to the Camera in UC3, including the CAMERA_ENABLED macro. For example:
+```
+DEFINE camera
+{
+    FIELD enabled
+    MACRO CAMERA_ENABLED enabled
+}
+```
+
+The `MACRO` keyword defines a macro with a name, and a value. They are of the form
+```MACRO <macro_name> <macro_value>```
+A macro value can be of any type that a c macro can hold.
 # How UC3 Works
 ## Parsing
 UC3 using a relatively simple lexer. First, it reads an entire file ino a string buffer. This will be expanded to support multi-file compilation in the future. Then, it reads through every single character, and sorts them into tokens.There are a few main types of tokens.

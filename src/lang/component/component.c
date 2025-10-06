@@ -45,7 +45,6 @@ Component_t* init_component(ASTNode_t* node)
     return component;
 }
 
-
 // Returns true if a component graph is cyclic
 bool check_cycles(Component_t* node)
 {

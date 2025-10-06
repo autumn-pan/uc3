@@ -5,8 +5,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#define SIZEOF_KEYWORDS 10
-#define SIZEOF_OPERATORS 9
+#define SIZEOF_KEYWORDS 11
+#define SIZEOF_OPERATORS 15
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -17,6 +17,7 @@ const char *KEYWORDS[] = {
     "NOTE", // A short string associated with modules for simple descriptions or notes
     "DEFAULT", // Used in definitions to set the default value of a field
     "DEPENDENCIES", // Used to declare a list of component dependencies
+    "MACRO",
     
     // Data Types
     "INT",
@@ -34,6 +35,12 @@ const char *OPERATORS[] = {
     "&&", // AND operator
     "!", // NOT operator
     "==", // Equivalence operator
+    "<",
+    ">",
+    ">=",
+    "<=",
+    "!=",
+    "!",
     "*",
     "/",
     "+",
@@ -58,6 +65,7 @@ Lexer* init_lexer(const char *src) {
         fprintf(stderr, "Error: Failed to allocate enough memory!");
         exit(EXIT_FAILURE);
     }
+
     lexer->src = src;
     lexer->length = strlen(src);
 

@@ -39,6 +39,7 @@ HashTable_t* init_hash_table(int hash_max)
         fprintf(stderr, "Error: Failed to allocate enough memory!");
         exit(EXIT_FAILURE);
     }
+    
     table->num_elements = 0;
 
     return table;
