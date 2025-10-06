@@ -31,6 +31,7 @@ typedef enum
     PLACEHOLDER_AST,
     VARIABLE_DECL_AST,
     BLOCK_AST,
+    MACRO_AST,
 
     // Operators
     AND_AST,

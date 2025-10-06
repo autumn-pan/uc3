@@ -6,7 +6,6 @@
 
 ASTNode_t* parse_expression(Parser_t* parser);
 
-
 void syntax_error(char* expected, char* found)
 {
     fprintf(stderr, "Syntax Error: expected %s%s%s", expected, ", found ", found);
@@ -182,7 +181,6 @@ bool is_list_compatible(Token* token)
     return false;
 }
 
-
 // Parse a list into an AST subtree
 ASTNode_t* parse_list(Parser_t* parser)
 {
@@ -263,6 +261,31 @@ ASTNode_t* parse_dependency(Parser_t* parser)
     return node;
 }
 
+ASTNode_t* parse_macro(Parser_t* parser)
+{
+    if(!match_value(parser, "MACRO"))
+        return NULL;
+
+    char* macro_name = parser->ptr->value;
+    if(!match(parser, IDENTIFIER_TOKEN))
+    {
+        fprintf(stderr, "Error: Expected identifier");
+        point_error(parser->line, parser->column);
+    }
+
+    ASTNode_t* value;
+    if(!(value = parse_expression(parser)))
+    {
+        fprintf(stderr, "Error: Expression failed to parse");
+        point_error(parser->line, parser->column);
+    }
+
+    ASTNode_t* node = init_ast(MACRO_AST, macro_name);
+    ast_append(node, value);
+
+    return node;
+}
+
 ASTNode_t* parse_statement(Parser_t* parser)
 {   
     ASTNode_t* node = NULL;
@@ -273,6 +296,8 @@ ASTNode_t* parse_statement(Parser_t* parser)
     else if((node = parse_dependency(parser)) != NULL)
         return node;
     else if((node = parse_variable_decl(parser)) != NULL)
+        return node;
+    else if((node = parse_macro(parser)) != NULL)
         return node;
 
     
@@ -372,10 +397,10 @@ ASTNode_t* parse(Parser_t* parser)
     return root;
 }
 
-
 ///////////////////////////////////////////////////////////
 // Expressions -- Recursive Descent
 ///////////////////////////////////////////////////////////
+
 // point_error() is fatal
 ASTNode_t* parse_literal(Parser_t* parser)
 {
@@ -410,6 +435,7 @@ ASTNode_t * parse_factor(Parser_t* parser) {
 
         if (!match(parser, RPAR_TOKEN)) {
             fprintf(stderr, "Error: Right Parenthesis expected!");
+            point_error(parser->line, parser->column);
         }
         return expr;
     }
