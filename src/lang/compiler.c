@@ -41,6 +41,7 @@ void compile(char* file_name)
 void gen_config(HashTable_t* component_registry)
 {
     Macro_t** macro_list = calloc(0, sizeof(Macro_t));
+    uint8_t num_macros = 0;
 
     for(int i = 0; i < component_registry->hash_max; i++)
     {
@@ -60,11 +61,26 @@ void gen_config(HashTable_t* component_registry)
             if(!macro)
                 return NULL;
 
-            macro_append(component, macro);
+            num_macros++;
+            macro_list = realloc(macro_list, sizeof(Macro_t)*num_macros);
+            if(!macro_list)
+            {
+                fprintf(stderr, "Error: Memory allocation failed!");
+                exit(EXIT_FAILURE);
+            }
+
+            macro_list[num_macros - 1] = macro;
         }
     }
 
     // Create the file
     FILE* file = fopen("autoconfig.h", "w");
+    if(!file)
+    {
+        fprintf(stderr, "Error: autoconfig.h failed to open!");
+        exit(EXIT_FAILURE);
+    }
+
+
 }
 

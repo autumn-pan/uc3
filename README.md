@@ -58,7 +58,7 @@ Examples
 
 Defining a variable is not necessary, and a declaration may also suffice, such as
 ```<DATA_TYPE> <IDENTIFIER>```
-
+Integers and booleans are the two most important data types for the purposes of UC3 because they are intended to be used to construct config values and conditional trees. Other data types, like strings and tristates, are planned in the future.
 ### Macros
 Macros are UC3's way of interacting with the actual code. You might have something like
 ```

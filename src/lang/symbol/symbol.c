@@ -13,15 +13,6 @@ bool str_to_bool(char* str)
     return false;
 }
 
-// Translate a string into a tristate
-TRISTATE str_to_tristate(char* str)
-{
-    if(strcmp(str, "neutral") == 0 || atoi(str) == -1)
-        return NEUTRAL;
-    else    
-        return str_to_bool(str);
-}
-
 // Constructor for a symbol
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
 {
@@ -124,6 +115,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     return symbol_node;
 }
 
+// Return the int value of a variable
 int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     char* identifier = node->data.str;
@@ -131,6 +123,13 @@ int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode
     uint8_t var_index;
 
     Symbol_t* symbol;
+    /*  
+    Currently, acope is two-layered. It's only possible to have the global scope,
+    as well as one layer of scope for each component. Blocks and conditional trees
+    will not be included in the first release.
+    */
+
+    // Check global index
     if((var_index = get_hash_pos(symbol_table, identifier)) == ULONG_MAX)
     {
         fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
@@ -139,9 +138,10 @@ int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode
     else
     {
         symbol = symbol_table->symbols->contents[var_index];
-        return init_value(symbol->identifier, symbol->type);
+        return symbol->value;
     }
     
+    // Check local scope
     if((var_index = get_hash_pos(scope->symbols, identifier)) == ULONG_MAX)
     {
         fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
@@ -150,7 +150,7 @@ int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode
     else
     {
         symbol = scope->symbols->contents[var_index];
-        return init_value(symbol->identifier, symbol->type);
+        return symbol->value;
     }
 
     // Find the symbol associated with the identifier
@@ -210,9 +210,9 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
                 fprintf(stderr, "Error: Division by zero is undefined!");
                 exit(EXIT_FAILURE);
             }
+
             break;
     }
 
     return NULL;
 }
-

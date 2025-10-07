@@ -52,7 +52,8 @@ typedef struct component
 typedef struct
 {
     char* identifier;
-    ASTNode_t* value;
+    ASTNode_t* expr;
+    int value
 } Macro_t;
 
 typedef struct {
