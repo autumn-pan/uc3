@@ -145,3 +145,28 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     }
     return symbol_node;
 }
+
+Value_t* evaluate_ast_expression(ASTNode_t* expression)
+{
+    if(!expression)
+    {
+        fprintf(stderr, "Error: expression can't be null!");
+        exit(EXIT_FAILURE);
+    }
+
+    if(expression->type == INT_AST)
+    {
+        return init_value(expression->data.str, INTEGER_T);
+    }
+    else if(expression->type == BOOL_AST)
+    {
+        return init_value(expression->data.str, BOOLEAN_T);
+
+    }
+    else if(expression->type == IDEN_AST)
+    {
+        char* identifier = expression->data.str;
+
+        
+    }
+}

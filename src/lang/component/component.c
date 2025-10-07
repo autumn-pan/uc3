@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include "lang/symbol/symbol.h"
 
+// How many macros that a component is assumed to have at first
+#define INITIAL_MACRO_NUM 4
+
 Field_t* init_field(Symbol_t* symbol, Value_t* value)
 {
     Field_t* field = malloc(sizeof(Field_t));
@@ -15,6 +18,51 @@ Field_t* init_field(Symbol_t* symbol, Value_t* value)
     field->default_value = value;
 
     return field;
+}
+
+Macro_t* init_macro(char* identifier, ASTNode_t* value)
+{
+    Macro_t* macro = malloc(sizeof(Macro_t));
+    if(!macro)
+    {
+        fprintf(stderr, "Error: Memory allocation failed!");
+        exit(EXIT_FAILURE);
+    }
+
+    macro->identifier = identifier;
+    macro->value = value;
+
+    return macro;
+}
+
+void macro_append(Component_t* node, Macro_t* child)
+{
+    node->num_dependencies++;
+
+    node->dependencies = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
+    node->dependencies[node->num_dependencies - 1] = child;
+}
+
+void parse_component_macros(Component_t* component)
+{
+    ASTNode_t* block = component->node;
+    if(!block)
+    {
+        fprintf(stderr, "Error: Component block is missing!");
+        exit(EXIT_FAILURE);
+    }
+
+    for(int i = 0; i < block->num_children; i++)
+    {
+        if(block->children[i]->type == MACRO_AST)
+        {
+            Macro_t* macro = init_macro(
+                block->children[i]->data.str,
+                block->children[i]->children[0]
+            );
+            macro_append(component, macro);
+        }
+    }
 }
 
 // Constructor for Component_t

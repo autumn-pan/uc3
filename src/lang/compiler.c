@@ -36,3 +36,16 @@ void compile(char* file_name)
 
     SymbolNode_t* symbol_table = symbolize_ast(root);
 }
+
+/*
+void gen_config(HashTable_t* component_registry)
+{
+    for(int i = 0; i < component_registry->hash_max; i++)
+    {
+        if(component_registry->contents[i])
+        {
+            
+        }
+    }
+}
+*/

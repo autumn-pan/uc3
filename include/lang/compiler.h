@@ -7,4 +7,5 @@ typedef struct
 } Compiler;
 
 void compile(char* file_name);
+void gen_config(char* src_file);
 #endif

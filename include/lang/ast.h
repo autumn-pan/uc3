@@ -23,8 +23,6 @@ typedef enum
     CONFIGURATION_AST, // Defunct, but configures a component
     FIELD_AST, // Declares a value associated with a component that can be configured
     DEFAULT_AST, // Defines the default value for a FIELD. Defaults are required and non-optional.
-    INT_AST, // Integer data type
-    STRING_AST, // String data type
     LIST_AST, // Stores an array of literals or identifiers
     IDEN_AST, // Refers to another subsystem or variable
     DEPENDENCY_AST, // Declares which components or subsystems a component needs. Analogous with KConfig depends_on
@@ -32,6 +30,9 @@ typedef enum
     VARIABLE_DECL_AST,
     BLOCK_AST,
     MACRO_AST,
+
+    INT_AST,
+    BOOL_AST,
 
     // Operators
     AND_AST,

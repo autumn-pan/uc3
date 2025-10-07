@@ -10,7 +10,6 @@
 #include "lang/component/component.h"
 #include "lang/compiler.h"
 
-
 int main()
 {
     compile("config.uc3");

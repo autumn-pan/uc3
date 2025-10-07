@@ -61,6 +61,8 @@ typedef struct {
 } ComponentGraph_t;
 
 HashTable_t* init_component_registry(ASTNode_t* root);
+Macro_t* init_macro(char* identifier, ASTNode_t* value);
 bool append_component_dependencies(HashTable_t* registry);
 bool verify_components(HashTable_t* table);
+
 #endif
