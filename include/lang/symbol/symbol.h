@@ -8,10 +8,8 @@ enum DATATYPE
 {
     BOOLEAN_T,
     INTEGER_T,
-    FLOAT_T,
     STR_T,
-    CHAR_T,
-    TRISTATE_T,
+
     UNKNOWN_T
 };
 
@@ -26,12 +24,10 @@ typedef struct
 {
     union
     {
-        char* str;
+        // Str type should not be used, and is a debug value
+        char* str; 
         int integer;
         bool boolean;
-        char character;
-        float floating_point;
-        TRISTATE tristate;
     } data;
 
     enum DATATYPE type;

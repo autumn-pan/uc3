@@ -22,6 +22,10 @@ TRISTATE str_to_tristate(char* str)
         return str_to_bool(str);
 }
 
+/////////////////////////////////////////////////////////////////////
+// Value_t and Helpers
+/////////////////////////////////////////////////////////////////////
+
 Value_t* init_value(char* str, enum DATATYPE type)
 {
     Value_t* value = malloc(sizeof(value));
@@ -32,9 +36,6 @@ Value_t* init_value(char* str, enum DATATYPE type)
         case INTEGER_T:
             value->data.integer = atoi(str);
             break;
-        case STR_T:
-            value->data.str = str;
-            break;
         case BOOLEAN_T:
             value->data.boolean = str_to_bool(str);
             break;
@@ -43,6 +44,10 @@ Value_t* init_value(char* str, enum DATATYPE type)
             break;
         }
 }
+
+////////////////////////////////////////////////////////////////////////
+// Symbols and Symbol Tables
+////////////////////////////////////////////////////////////////////////
 
 // Constructor for a symbol
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
@@ -179,30 +184,38 @@ Value_t* get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbo
     return NULL;
 }
 
-Value_t* evaluate_ast_expression(ASTNode_t* expression, SymbolNode_t* symbol_table, SymbolNode_t* scope)
+Value_t* eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
-    if(!expression)
+    if(!node)
     {
         fprintf(stderr, "Error: expression can't be null!");
         exit(EXIT_FAILURE);
     }
 
-    if(expression->type == INT_AST)
+    if(node->type == INT_AST)
     {
-        return init_value(expression->data.str, INTEGER_T);
+        return init_value(node->data.str, INTEGER_T);
     }
-    else if(expression->type == BOOL_AST)
+    else if(node->type == BOOL_AST)
     {
-        return init_value(expression->data.str, BOOLEAN_T);
+        return init_value(node->data.str, BOOLEAN_T);
 
     }
-    else if(expression->type == IDEN_AST)
+    else if(node->type == IDEN_AST)
     {
-        return get_identifier_value(expression->data.str, symbol_table, scope);
+        return get_identifier_value(node->data.str, symbol_table, scope);
     }
+
+    Value_t* left;
+    Value_t* right;
+    if(!node->children[0] || !node->children[1])
+        return NULL;
+
+    left = node->children[0];
+    right = node->children[1];
 
     // Binary operators (unary ones don't exist yet)
-    switch(expression->type)
+    switch(node->type)
     {
         case PLUS_AST:
             break;
@@ -213,4 +226,7 @@ Value_t* evaluate_ast_expression(ASTNode_t* expression, SymbolNode_t* symbol_tab
         case DIV_AST:
             break;
     }
+
+    return NULL;
 }
+
