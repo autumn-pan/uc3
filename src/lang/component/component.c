@@ -7,7 +7,7 @@
 // How many macros that a component is assumed to have at first
 #define INITIAL_MACRO_NUM 4
 
-Field_t* init_field(Symbol_t* symbol, Value_t* value)
+Field_t* init_field(Symbol_t* symbol, int value)
 {
     Field_t* field = malloc(sizeof(Field_t));
 

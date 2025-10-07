@@ -22,33 +22,6 @@ TRISTATE str_to_tristate(char* str)
         return str_to_bool(str);
 }
 
-/////////////////////////////////////////////////////////////////////
-// Value_t and Helpers
-/////////////////////////////////////////////////////////////////////
-
-Value_t* init_value(char* str, enum DATATYPE type)
-{
-    Value_t* value = malloc(sizeof(value));
-
-    // TODO: cover all datatypes
-    switch(type)
-    {
-        case INTEGER_T:
-            value->data.integer = atoi(str);
-            break;
-        case BOOLEAN_T:
-            value->data.boolean = str_to_bool(str);
-            break;
-        default:
-            value->data.str = str;
-            break;
-        }
-}
-
-////////////////////////////////////////////////////////////////////////
-// Symbols and Symbol Tables
-////////////////////////////////////////////////////////////////////////
-
 // Constructor for a symbol
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
 {
@@ -151,7 +124,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     return symbol_node;
 }
 
-Value_t* get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
+int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     char* identifier = node->data.str;
 
@@ -184,7 +157,7 @@ Value_t* get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbo
     return NULL;
 }
 
-Value_t* eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
+int eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     if(!node)
     {
@@ -206,8 +179,9 @@ Value_t* eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
         return get_identifier_value(node->data.str, symbol_table, scope);
     }
 
-    Value_t* left;
-    Value_t* right;
+    int left;
+    int right;
+    
     if(!node->children[0] || !node->children[1])
         return NULL;
 

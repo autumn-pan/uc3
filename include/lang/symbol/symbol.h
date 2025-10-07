@@ -22,19 +22,6 @@ typedef enum
 
 typedef struct
 {
-    union
-    {
-        // Str type should not be used, and is a debug value
-        char* str; 
-        int integer;
-        bool boolean;
-    } data;
-
-    enum DATATYPE type;
-} Value_t;
-
-typedef struct
-{
     char* identifier;
     bool constant;
     enum DATATYPE type;
@@ -52,7 +39,6 @@ typedef struct symbolNode_t
 
 SymbolNode_t* symbolize_ast(ASTNode_t* node);
 Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant);
-Value_t* init_value(char* str, enum DATATYPE type);
 
 
 #endif
