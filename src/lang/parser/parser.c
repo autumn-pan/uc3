@@ -205,9 +205,6 @@ ASTNode_t* parse_list(Parser_t* parser)
         // TODO: consolidate types or create simpler conversions
         switch(token->type)
         {
-            case(STR_TOKEN):
-                type = STRING_AST;
-                break;
             case(INT_TOKEN):
                 type = INT_AST;
                 break;

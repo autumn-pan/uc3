@@ -146,7 +146,40 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     return symbol_node;
 }
 
-Value_t* evaluate_ast_expression(ASTNode_t* expression)
+Value_t* get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
+{
+    char* identifier = node->data.str;
+
+    uint8_t var_index;
+
+    Symbol_t* symbol;
+    if((var_index = get_hash_pos(symbol_table, identifier)) == ULONG_MAX)
+    {
+        fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        symbol = symbol_table->symbols->contents[var_index];
+        return init_value(symbol->identifier, symbol->type);
+    }
+    
+    if((var_index = get_hash_pos(scope->symbols, identifier)) == ULONG_MAX)
+    {
+        fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        symbol = scope->symbols->contents[var_index];
+        return init_value(symbol->identifier, symbol->type);
+    }
+
+    // Find the symbol associated with the identifier
+    return NULL;
+}
+
+Value_t* evaluate_ast_expression(ASTNode_t* expression, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     if(!expression)
     {
@@ -165,8 +198,19 @@ Value_t* evaluate_ast_expression(ASTNode_t* expression)
     }
     else if(expression->type == IDEN_AST)
     {
-        char* identifier = expression->data.str;
+        return get_identifier_value(expression->data.str, symbol_table, scope);
+    }
 
-        
+    // Binary operators (unary ones don't exist yet)
+    switch(expression->type)
+    {
+        case PLUS_AST:
+            break;
+        case MINUS_AST:
+            break;
+        case MULT_AST:
+            break;
+        case DIV_AST:
+            break;
     }
 }
