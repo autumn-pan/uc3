@@ -25,7 +25,7 @@ typedef enum
 typedef struct
 {
     Symbol_t* variable;
-    Value_t* default_value;
+    int default_value;
 } Field_t;
 
 typedef struct component
@@ -64,5 +64,7 @@ HashTable_t* init_component_registry(ASTNode_t* root);
 Macro_t* init_macro(char* identifier, ASTNode_t* value);
 bool append_component_dependencies(HashTable_t* registry);
 bool verify_components(HashTable_t* table);
+Macro_t* init_macro(char* identifier, ASTNode_t* value);
+void macro_append(Component_t* node, Macro_t* child);
 
 #endif

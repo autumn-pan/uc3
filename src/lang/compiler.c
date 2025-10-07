@@ -5,6 +5,7 @@
 #include "lang/component/component.h"
 #include "lang/util/hash.h"
 #include <stdio.h>
+#include "lang/symbol/symbol.h"
 
 void compile(char* file_name)
 {
@@ -37,15 +38,33 @@ void compile(char* file_name)
     SymbolNode_t* symbol_table = symbolize_ast(root);
 }
 
-/*
 void gen_config(HashTable_t* component_registry)
 {
+    Macro_t** macro_list = calloc(0, sizeof(Macro_t));
+
     for(int i = 0; i < component_registry->hash_max; i++)
     {
-        if(component_registry->contents[i])
+        Component_t* component = (Component_t*)component_registry->contents[i]->value;
+
+        if(!component)
+            continue;
+
+        ASTNode_t* block = component->node;
+        for(int j = 0; j < block->num_children; j++)
         {
-            
+            ASTNode_t* child = block->children[j];
+            if(child->type != MACRO_AST)
+                continue;
+
+            Macro_t* macro = init_macro(child->data.str, child->children[0]->data.str);
+            if(!macro)
+                return NULL;
+
+            macro_append(component, macro);
         }
     }
+
+    // Create the file
+    FILE* file = fopen("autoconfig.h", "w");
 }
-*/
+

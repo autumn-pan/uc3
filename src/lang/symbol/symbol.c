@@ -157,7 +157,7 @@ int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode
     return NULL;
 }
 
-int eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
+int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 {
     if(!node)
     {
@@ -176,12 +176,12 @@ int eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
     }
     else if(node->type == IDEN_AST)
     {
-        return get_identifier_value(node->data.str, symbol_table, scope);
+        return get_identifier_value(node->data.str, table, scope);
     }
 
     int left;
     int right;
-    
+
     if(!node->children[0] || !node->children[1])
         return NULL;
 
@@ -192,12 +192,24 @@ int eval(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
     switch(node->type)
     {
         case PLUS_AST:
+            return eval(left, table, scope) + eval(right, table, scope);
             break;
         case MINUS_AST:
+            return eval(left, table, scope) - eval(right, table, scope);
+
             break;
         case MULT_AST:
+            return eval(left, table, scope) * eval(right, table, scope);
+
             break;
         case DIV_AST:
+            if(right != 0)
+                return eval(left, table, scope) + eval(right, table, scope);
+            else
+            {
+                fprintf(stderr, "Error: Division by zero is undefined!");
+                exit(EXIT_FAILURE);
+            }
             break;
     }
 
