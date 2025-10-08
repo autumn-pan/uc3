@@ -4,14 +4,13 @@
 #include <stdbool.h>
 #include "lang/ast.h"
 #include "lang/util/hash.h"
-enum DATATYPE
-{
-    BOOLEAN_T,
-    INTEGER_T,
-    STR_T,
 
+typedef enum 
+{
+    INT_T,
+    BOOL_T,
     UNKNOWN_T
-};
+} TYPE;
 
 typedef enum
 {
@@ -20,14 +19,19 @@ typedef enum
     TRUE = 1
 } TRISTATE;
 
+typedef struct 
+{
+    int value;
+    TYPE type;
+} Value_t;
+
 typedef struct
 {
     char* identifier;
     bool constant;
-    enum DATATYPE type;
     uint32_t hash;
 
-    int value;
+    Value_t value;
 } Symbol_t;
 
 typedef struct symbolNode_t
@@ -38,6 +42,5 @@ typedef struct symbolNode_t
 } SymbolNode_t;
 
 SymbolNode_t* symbolize_ast(ASTNode_t* node);
-Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant);
-
+Symbol_t* init_symbol(TYPE type, char* identifier, char* value, bool constant);
 #endif

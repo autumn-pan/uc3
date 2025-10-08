@@ -5,6 +5,21 @@
 #include <stdio.h>
 #include <limits.h>
 
+////////////////////////////////////////////////////////////////////
+// Value_t
+////////////////////////////////////////////////////////////////////
+
+Value_t init_value(TYPE type, int data)
+{
+    Value_t value;
+    value.type = type;
+    value.value = data;
+}
+
+////////////////////////////////////////////////////////////////////
+// Util
+////////////////////////////////////////////////////////////////////
+
 // Translate a string to a boolean
 bool str_to_bool(char* str)
 {
@@ -13,8 +28,19 @@ bool str_to_bool(char* str)
     return false;
 }
 
+// Translate a string into a Value_t
+Value_t string_to_value(TYPE type, char* str)
+{
+    if(type == INT_T)
+        return init_value(INT_T, atoi(str));
+    else if(type == BOOL_T)
+        return init_value(BOOL_T, str_to_bool(str));
+    else
+        return init_value(UNKNOWN_T, 0);
+}
+
 // Constructor for a symbol
-Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool constant)
+Symbol_t* init_symbol(Value_t value, char* identifier, bool constant)
 {
     Symbol_t* symbol = malloc(sizeof(Symbol_t));
     if(!symbol)
@@ -22,7 +48,6 @@ Symbol_t* init_symbol(enum DATATYPE type, char* identifier, char* value, bool co
         return NULL;
     }
 
-    symbol->type = type;
     symbol->identifier = identifier;
     symbol->constant = constant;
     symbol->value = value;
@@ -82,18 +107,16 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             if(!child->children[0]) // Register undefined symbols
             {
                 symbol = init_symbol(
-                    UNKNOWN_T,  
+                    init_value(UNKNOWN_T, 0),  
                     child->data.str,
-                    NULL,
                     false
                 );    
             }
             else // Register defined symbols
             {
                 symbol = init_symbol(
-                    child->children[0]->type,  
+                    init_value(child->children[0]->type, child->children[0]->data.str),
                     child->data.str,
-                    child->children[0]->data.str,
                     false
                 );
             }
@@ -116,7 +139,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 }
 
 // Return the int value of a variable
-int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
+Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     char* identifier = node->data.str;
 
@@ -140,7 +163,7 @@ int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode
         symbol = symbol_table->symbols->contents[var_index];
         return symbol->value;
     }
-    
+
     // Check local scope
     if((var_index = get_hash_pos(scope->symbols, identifier)) == ULONG_MAX)
     {
@@ -154,7 +177,7 @@ int get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode
     }
 
     // Find the symbol associated with the identifier
-    return NULL;
+    return ;
 }
 
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
@@ -167,16 +190,16 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 
     if(node->type == INT_AST)
     {
-        return init_value(node->data.str, INTEGER_T);
+        return string_to_value(node->data.str, INT_T).value;
     }
     else if(node->type == BOOL_AST)
     {
-        return init_value(node->data.str, BOOLEAN_T);
+        return string_to_value(node->data.str, BOOL_T).value;
 
     }
     else if(node->type == IDEN_AST)
     {
-        return get_identifier_value(node->data.str, table, scope);
+        return get_identifier_value(node->data.str, table, scope).value;
     }
 
     int left;
@@ -210,7 +233,6 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
                 fprintf(stderr, "Error: Division by zero is undefined!");
                 exit(EXIT_FAILURE);
             }
-
             break;
     }
 
