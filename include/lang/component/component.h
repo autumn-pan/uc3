@@ -24,6 +24,13 @@ typedef enum
 
 typedef struct
 {
+    char* identifier;
+    ASTNode_t* expr;
+    int value;
+} Macro_t;
+
+typedef struct
+{
     Symbol_t* variable;
     int default_value;
 } Field_t;
@@ -53,13 +60,6 @@ typedef struct component
     GRAPH_STATUS graph_status;
 } Component_t;
 
-typedef struct
-{
-    char* identifier;
-    ASTNode_t* expr;
-    int value
-} Macro_t;
-
 typedef struct {
     Component_t* root;
     Component_t** disjoint_components;
@@ -71,5 +71,4 @@ bool append_component_dependencies(HashTable_t* registry);
 bool verify_components(HashTable_t* table);
 Macro_t* init_macro(char* identifier, ASTNode_t* value);
 void macro_append(Component_t* node, Macro_t* child);
-
 #endif

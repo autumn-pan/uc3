@@ -39,8 +39,8 @@ void macro_append(Component_t* node, Macro_t* child)
 {
     node->num_dependencies++;
 
-    node->dependencies = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
-    node->dependencies[node->num_dependencies - 1] = child;
+    node->macros = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
+    node->macros[node->num_dependencies - 1] = child;
 }
 
 void parse_component_macros(Component_t* component)
