@@ -43,6 +43,7 @@ void macro_append(Component_t* node, Macro_t* child)
     node->macros[node->num_dependencies - 1] = child;
 }
 
+// Append a component node's macros to its corresponding component
 void parse_component_macros(Component_t* component)
 {
     ASTNode_t* block = component->node;
@@ -54,14 +55,14 @@ void parse_component_macros(Component_t* component)
 
     for(int i = 0; i < block->num_children; i++)
     {
-        if(block->children[i]->type == MACRO_AST)
-        {
-            Macro_t* macro = init_macro(
-                block->children[i]->data.str,
-                block->children[i]->children[0]
-            );
-            macro_append(component, macro);
-        }
+        if(block->children[i]->type != MACRO_AST)
+            continue;
+
+        Macro_t* macro = init_macro(
+            block->children[i]->data.str,
+            block->children[i]->children[0]
+        );
+        macro_append(component, macro);
     }
 }
 

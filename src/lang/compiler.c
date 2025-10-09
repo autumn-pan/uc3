@@ -62,10 +62,10 @@ void gen_config(HashTable_t* component_registry)
                 return;
 
             num_macros++;
-            macro_list = realloc(macro_list, sizeof(Macro_t)*num_macros);
+            macro_list = realloc(macro_list, sizeof(Macro_t) * num_macros);
             if(!macro_list)
             {
-                fprintf(stderr, "Error: Memory allocation failed!");
+                fprintf(stderr, "Error: Failed to allocate memory!");
                 exit(EXIT_FAILURE);
             }
 
@@ -81,6 +81,17 @@ void gen_config(HashTable_t* component_registry)
         exit(EXIT_FAILURE);
     }
 
+    // Insert macros
+    for(int i = 0; i < num_macros; i++)
+    {
+        if(!macro_list[i])
+        {
+            fprintf(stderr, "Error: Macro was improperly appended!");
+            exit(EXIT_FAILURE);
+        }
 
+        fprintf(file, "#define %s%i", macro_list[i]->identifier, " ", macro_list[i]->value);
+        fprintf(file, "\n");
+    }
 }
 
