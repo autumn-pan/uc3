@@ -10,7 +10,7 @@
 ////////////////////////////////////////////////////
 
 // DBJ2 Hashing Algorithm
-unsigned long hash(char * key, unsigned long hash_limit)
+unsigned long hash(const char * key, unsigned long hash_limit)
 {
     uint32_t hash = 5381;
     uint32_t c;
@@ -45,7 +45,7 @@ HashTable_t* init_hash_table(int hash_max)
     return table;
 }
 
-HashElement_t* init_hash_element(void* value, char* key)
+HashElement_t* init_hash_element(void* value, const char* key)
 {
     HashElement_t* element = malloc(sizeof(HashElement_t));
 
@@ -62,7 +62,7 @@ HashElement_t* init_hash_element(void* value, char* key)
 }
 
 // Returns true and quits early if there is a duplicate
-bool insert_hash(HashTable_t *table, void * value, char* key) 
+bool insert_hash(HashTable_t *table, void * value, const char* key) 
 {
     table->num_elements++;
 
@@ -106,7 +106,7 @@ bool insert_hash(HashTable_t *table, void * value, char* key)
 }
 
 // Get the index of a key in a hash table, if present. Returns ULONG_MAX is absent.
-unsigned long get_hash_pos(HashTable_t * table, char * key)
+unsigned long get_hash_pos(HashTable_t * table, const char * key)
 {
     if(!table || !key)
         return ULONG_MAX;

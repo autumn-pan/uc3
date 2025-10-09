@@ -27,7 +27,7 @@ typedef struct
 
 typedef struct
 {
-    char* identifier;
+    const char* identifier;
     bool constant;
     uint32_t hash;
 
@@ -42,8 +42,8 @@ typedef struct symbolNode_t
 } SymbolNode_t;
 
 SymbolNode_t* symbolize_ast(ASTNode_t* node);
-Symbol_t* init_symbol(Value_t value, char* identifier, bool constant);
+Symbol_t* init_symbol(Value_t value, const char* identifier, bool constant);
 Value_t init_value(TYPE type, int data);
-Value_t string_to_value(TYPE type, char* str);
+Value_t string_to_value(TYPE type, const char* str);
 
 #endif

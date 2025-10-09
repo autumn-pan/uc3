@@ -6,7 +6,7 @@
 typedef struct
 {
     void* value;
-    char* key;
+    const char* key;
     int index;
 } HashElement_t;
 
@@ -20,9 +20,9 @@ typedef struct
 
 
 HashTable_t* init_hash_table(int hash_max);
-HashElement_t* init_hash_element(void* value, char* key);
-bool insert_hash(HashTable_t *table, void * symbol, char* key);
-unsigned long get_hash_pos(HashTable_t * table, char * key);
+HashElement_t* init_hash_element(void* value, const char* key);
+bool insert_hash(HashTable_t *table, void * symbol, const char* key);
+unsigned long get_hash_pos(HashTable_t * table, const char * key);
 
 
 #endif
