@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <limits.h>
+#include <stdlib.h>
 
 ////////////////////////////////////////////////////////////////////
 // Value_t
@@ -14,6 +15,8 @@ Value_t init_value(TYPE type, int data)
     Value_t value;
     value.type = type;
     value.value = data;
+
+    return value;
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -21,7 +24,7 @@ Value_t init_value(TYPE type, int data)
 ////////////////////////////////////////////////////////////////////
 
 // Translate a string to a boolean
-bool str_to_bool(char* str)
+bool str_to_bool(const char* str)
 {
     if(strcmp(str, "true") == 0 || atoi(str) == 1)
         return true;
@@ -29,7 +32,7 @@ bool str_to_bool(char* str)
 }
 
 // Translate a string into a Value_t
-Value_t string_to_value(TYPE type, char* str)
+Value_t string_to_value(TYPE type, const char* str)
 {
     if(type == INT_T)
         return init_value(INT_T, atoi(str));
@@ -40,7 +43,7 @@ Value_t string_to_value(TYPE type, char* str)
 }
 
 // Constructor for a symbol
-Symbol_t* init_symbol(Value_t value, char* identifier, bool constant)
+Symbol_t* init_symbol(Value_t value, const char* identifier, bool constant)
 {
     Symbol_t* symbol = malloc(sizeof(Symbol_t));
     if(!symbol)
@@ -77,6 +80,7 @@ void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
     node->children = (realloc(node->children, node->num_children * sizeof(SymbolNode_t*)));
     node->children[node->num_children - 1] = child;
 }
+
 
 // Create a Symbol Tree that corresponds to the variables of an Abstract Syntax Tree.
 SymbolNode_t* symbolize_ast(ASTNode_t* node)
@@ -180,6 +184,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     return init_value(UNKNOWN_T, 0);
 }
 
+// Evaluate an expression AST and return its integer value
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 {
     if(!node)
@@ -189,18 +194,11 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     }
 
     if(node->type == INT_AST)
-    {
         return string_to_value(INT_T, node->data.str).value;
-    }
     else if(node->type == BOOL_AST)
-    {
         return string_to_value(BOOL_T, node->data.str).value;
-
-    }
     else if(node->type == IDEN_AST)
-    {
         return get_identifier_value(node, table, scope).value;
-    }
 
     ASTNode_t* left;
     ASTNode_t* right;
@@ -217,18 +215,13 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     {
         case PLUS_AST:
             return eval(left, table, scope) + eval(right, table, scope);
-            break;
         case MINUS_AST:
             return eval(left, table, scope) - eval(right, table, scope);
-
-            break;
         case MULT_AST:
             return eval(left, table, scope) * eval(right, table, scope);
-
-            break;
         case DIV_AST:
             if(right != 0)
-                return eval(left, table, scope) + eval(right, table, scope);
+                return eval(left, table, scope) / eval(right, table, scope);
             else
             {
                 fprintf(stderr, "Error: Division by zero is undefined!");
@@ -238,5 +231,6 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     }
 
     // Error, unrecognized expression
-    return -1;
+    fprintf(stderr, "Error: Unrecognized expression structure!");
+    exit(EXIT_FAILURE);
 }
