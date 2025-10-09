@@ -19,7 +19,8 @@
         "utility": "c",
         "any": "c",
         "complex": "c",
-        "symbol.h": "c"
+        "symbol.h": "c",
+        "string": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

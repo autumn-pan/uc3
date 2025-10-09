@@ -43,6 +43,10 @@ typedef struct component
     // What values are configurable
     Field_t** fields;
     size_t num_fields;
+
+    // C Macros associated with the component
+    Macro_t** macros;
+    size_t num_macros;
     
     // Metadata for graph verificaion
     COMPONENT_STATUS cyclic_status;

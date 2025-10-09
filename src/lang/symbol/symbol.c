@@ -115,7 +115,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             else // Register defined symbols
             {
                 symbol = init_symbol(
-                    init_value(child->children[0]->type, child->children[0]->data.str),
+                    init_value(child->children[0]->type, atoi(child->children[0]->data.str)),
                     child->data.str,
                     false
                 );
@@ -153,14 +153,14 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     */
 
     // Check global index
-    if((var_index = get_hash_pos(symbol_table, identifier)) == ULONG_MAX)
+    if((var_index = get_hash_pos(symbol_table->symbols, identifier)) == ULONG_MAX)
     {
         fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
         exit(EXIT_FAILURE);
     }
     else
     {
-        symbol = symbol_table->symbols->contents[var_index];
+        symbol = (Symbol_t*)symbol_table->symbols->contents[var_index];
         return symbol->value;
     }
 
@@ -172,12 +172,12 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     }
     else
     {
-        symbol = scope->symbols->contents[var_index];
+        symbol = (Symbol_t*)scope->symbols->contents[var_index];
         return symbol->value;
     }
 
     // Find the symbol associated with the identifier
-    return ;
+    return init_value(UNKNOWN_T, 0);
 }
 
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
@@ -190,23 +190,24 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 
     if(node->type == INT_AST)
     {
-        return string_to_value(node->data.str, INT_T).value;
+        return string_to_value(INT_T, node->data.str).value;
     }
     else if(node->type == BOOL_AST)
     {
-        return string_to_value(node->data.str, BOOL_T).value;
+        return string_to_value(BOOL_T, node->data.str).value;
 
     }
     else if(node->type == IDEN_AST)
     {
-        return get_identifier_value(node->data.str, table, scope).value;
+        return get_identifier_value(node, table, scope).value;
     }
 
-    int left;
-    int right;
+    ASTNode_t* left;
+    ASTNode_t* right;
 
+    // Error: Unrecognized expression node
     if(!node->children[0] || !node->children[1])
-        return NULL;
+        return -1;
 
     left = node->children[0];
     right = node->children[1];
@@ -236,5 +237,6 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
             break;
     }
 
-    return NULL;
+    // Error, unrecognized expression
+    return -1;
 }

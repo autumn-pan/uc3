@@ -20,7 +20,7 @@ Field_t* init_field(Symbol_t* symbol, int value)
     return field;
 }
 
-Macro_t* init_macro(char* identifier, ASTNode_t* value)
+Macro_t* init_macro(char* identifier, ASTNode_t* expr)
 {
     Macro_t* macro = malloc(sizeof(Macro_t));
     if(!macro)
@@ -30,7 +30,7 @@ Macro_t* init_macro(char* identifier, ASTNode_t* value)
     }
 
     macro->identifier = identifier;
-    macro->value = value;
+    macro->expr = expr;
 
     return macro;
 }
@@ -234,10 +234,9 @@ bool append_component_dependencies(HashTable_t* registry)
                 return false;
 
             Symbol_t* symbol = init_symbol(
-                UNKNOWN_T,
+                init_value(UNKNOWN_T, false),
                 field_node->data.str,
-                field_node->children[0]->data.str,
-                false
+                field_node->children[0]->data.str
             );
 
             if(!symbol)
@@ -245,7 +244,7 @@ bool append_component_dependencies(HashTable_t* registry)
 
             Field_t* field = init_field(
                 symbol, 
-                init_value(field_node->children[0]->data.str, UNKNOWN_T)
+                atoi(field_node->children[0]->data.str)
             );
 
             if(!field)

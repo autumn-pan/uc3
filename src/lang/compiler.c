@@ -57,9 +57,9 @@ void gen_config(HashTable_t* component_registry)
             if(child->type != MACRO_AST)
                 continue;
 
-            Macro_t* macro = init_macro(child->data.str, child->children[0]->data.str);
+            Macro_t* macro = init_macro(child->data.str, child->children[0]);
             if(!macro)
-                return NULL;
+                return;
 
             num_macros++;
             macro_list = realloc(macro_list, sizeof(Macro_t)*num_macros);
