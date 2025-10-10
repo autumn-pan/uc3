@@ -1,1 +1,1 @@
-#define MY_MACRO-848150220
+#define MY_MACRO -1

@@ -76,7 +76,7 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             printf("Macro");
             fflush(stdout);
 
-            fprintf(file, "#define %s%i", macro->identifier, " ", macro->value);
+            fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);
             fprintf(file, "\n");
         }
     }
