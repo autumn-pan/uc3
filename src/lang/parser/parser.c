@@ -6,6 +6,10 @@
 
 ASTNode_t* parse_expression(Parser_t* parser);
 
+//////////////////////////////////////////////////////////////
+// Utils
+//////////////////////////////////////////////////////////////
+
 void syntax_error(char* expected, char* found)
 {
     fprintf(stderr, "Syntax Error: expected %s%s%s", expected, ", found ", found);
@@ -17,6 +21,25 @@ void point_error(size_t line, size_t column)\
     fprintf(stderr, "\nLine: %i%s%i", line, ", Column: ", column);
     exit(EXIT_FAILURE);
 }
+
+int token_to_ast_type(enum TOKEN_TYPE type)
+{
+    switch(type)
+    {
+        case(INT_TOKEN):
+            return INT_AST;
+        case(BOOL_TOKEN):
+            return BOOL_AST;
+        case(IDENTIFIER_TOKEN):
+            return IDEN_AST;
+        default:
+            return NULL_AST;
+    }
+}
+
+//////////////////////////////////////////////////////////////
+// Parser
+//////////////////////////////////////////////////////////////
 
 Parser_t* init_parser(TokenStream* ts, Lexer* lexer)
 {
@@ -52,8 +75,6 @@ bool advance_parser(Parser_t* parser)
         parser->pos++;
         parser->ptr = parser->ptr->next;
 
-        printf("\n%s", parser->ptr->value);
-        fflush(stdout);
         parser->line = parser->ptr->line;
         parser->column = parser->ptr->column;
 
@@ -411,10 +432,10 @@ ASTNode_t* parse_literal(Parser_t* parser)
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
 
-
+    ASTNode_t* node = init_ast(token_to_ast_type(type), parser->ptr->value);;
     advance_parser(parser);
 
-    return init_ast(type, parser->ptr->value);
+    return node;
 }
 
 ASTNode_t* parse_variable_call(Parser_t* parser)

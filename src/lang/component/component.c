@@ -54,7 +54,6 @@ void parse_component_macros(Component_t* component)
         exit(EXIT_FAILURE);
     }
 
-    printf("Parsing macros for component %s\n", component->identifier);
     for(int i = 0; i < block->num_children; i++)
     {
         if(block->children[i]->type != MACRO_AST)

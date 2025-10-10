@@ -193,11 +193,16 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
         exit(EXIT_FAILURE);
     }
 
-    if(node->type == INT_AST)
+    AST_TYPE type = node->type;
+
+    printf("\nType: %i", type);
+    fflush(stdout);
+    
+    if(type == INT_AST)
         return string_to_value(INT_T, node->data.str).value;
-    else if(node->type == BOOL_AST)
+    else if(type == BOOL_AST)
         return string_to_value(BOOL_T, node->data.str).value;
-    else if(node->type == IDEN_AST)
+    else if(type == IDEN_AST)
         return get_identifier_value(node, table, scope).value;
 
     ASTNode_t* left;

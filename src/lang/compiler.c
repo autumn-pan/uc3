@@ -15,12 +15,6 @@ void compile(char* file_name)
 
     Token* token = tokenstream->head;
 
-    while(token)
-    {
-        printf("\nToken: %s%s%i%s%i", token->value, ", ", token->line, ", ", token->column);
-        token = token->next;
-    }
-
     ASTNode_t* root = parse(init_parser(tokenstream, lexer));
     HashTable_t* table = init_component_registry(root);
 
