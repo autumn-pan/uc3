@@ -2,6 +2,7 @@
 #define COMPILER_H
 
 #include "lang/util/hash.h"
+#include "lang/symbol/symbol.h"
 
 typedef struct
 {
@@ -9,5 +10,5 @@ typedef struct
 } Compiler;
 
 void compile(char* file_name);
-void gen_config(HashTable_t* component_registry);
+void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols);
 #endif

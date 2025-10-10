@@ -35,24 +35,26 @@ Macro_t* init_macro(char* identifier, ASTNode_t* expr)
     return macro;
 }
 
+// Append a macro to a component's list
 void macro_append(Component_t* node, Macro_t* child)
 {
-    node->num_dependencies++;
+    node->num_macros++;
 
-    node->macros = (realloc(node->dependencies, node->num_dependencies * sizeof(Component_t*)));
-    node->macros[node->num_dependencies - 1] = child;
+    node->macros = (realloc(node->macros, node->num_macros * sizeof(Macro_t*)));
+    node->macros[node->num_macros - 1] = child;
 }
 
 // Append a component node's macros to its corresponding component
 void parse_component_macros(Component_t* component)
 {
-    ASTNode_t* block = component->node;
+    ASTNode_t* block = component->node->children[0];
     if(!block)
     {
         fprintf(stderr, "Error: Component block is missing!");
         exit(EXIT_FAILURE);
     }
 
+    printf("Parsing macros for component %s\n", component->identifier);
     for(int i = 0; i < block->num_children; i++)
     {
         if(block->children[i]->type != MACRO_AST)
@@ -62,6 +64,7 @@ void parse_component_macros(Component_t* component)
             block->children[i]->data.str,
             block->children[i]->children[0]
         );
+
         macro_append(component, macro);
     }
 }
@@ -91,6 +94,8 @@ Component_t* init_component(ASTNode_t* node)
 
     component->fields = calloc(COMPONENT_MAX_FIELDS, sizeof(Field_t*));
 
+    component->num_macros = 0;
+    component->macros = calloc(INITIAL_MACRO_NUM, sizeof(Macro_t*));
     return component;
 }
 

@@ -71,4 +71,6 @@ bool append_component_dependencies(HashTable_t* registry);
 bool verify_components(HashTable_t* table);
 Macro_t* init_macro(char* identifier, ASTNode_t* value);
 void macro_append(Component_t* node, Macro_t* child);
+void parse_component_macros(Component_t* component);
+
 #endif

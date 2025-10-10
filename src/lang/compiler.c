@@ -24,8 +24,8 @@ void compile(char* file_name)
     ASTNode_t* root = parse(init_parser(tokenstream, lexer));
     HashTable_t* table = init_component_registry(root);
 
-    // After configuration, active modules will have their dependencies checked and verfied.
-    /*
+    // This section of compilation works only if dependencies and macro declarations are not conditional.
+    // If they are, 
     append_component_dependencies(table);
 
     if(verify_components(table) == 1)
@@ -33,46 +33,14 @@ void compile(char* file_name)
         fprintf(stderr, "Error: Circular dependency detected!");
         exit(EXIT_FAILURE);
     }
-    */
 
     SymbolNode_t* symbol_table = symbolize_ast(root);
+
+    gen_config(table, symbol_table);
 }
 
-void gen_config(HashTable_t* component_registry)
+void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
 {
-    Macro_t** macro_list = calloc(0, sizeof(Macro_t));
-    uint8_t num_macros = 0;
-
-    for(int i = 0; i < component_registry->hash_max; i++)
-    {
-        Component_t* component = (Component_t*)component_registry->contents[i]->value;
-
-        if(!component)
-            continue;
-
-        ASTNode_t* block = component->node;
-        for(int j = 0; j < block->num_children; j++)
-        {
-            ASTNode_t* child = block->children[j];
-            if(child->type != MACRO_AST)
-                continue;
-
-            Macro_t* macro = init_macro(child->data.str, child->children[0]);
-            if(!macro)
-                return;
-
-            num_macros++;
-            macro_list = realloc(macro_list, sizeof(Macro_t) * num_macros);
-            if(!macro_list)
-            {
-                fprintf(stderr, "Error: Failed to allocate memory!");
-                exit(EXIT_FAILURE);
-            }
-
-            macro_list[num_macros - 1] = macro;
-        }
-    }
-
     // Create the file
     FILE* file = fopen("autoconfig.h", "w");
     if(!file)
@@ -81,17 +49,35 @@ void gen_config(HashTable_t* component_registry)
         exit(EXIT_FAILURE);
     }
 
-    // Insert macros
-    for(int i = 0; i < num_macros; i++)
+    uint8_t num_macros = 0;
+    for(int i = 0; i < component_registry->hash_max; i++)
     {
-        if(!macro_list[i])
-        {
-            fprintf(stderr, "Error: Macro was improperly appended!");
-            exit(EXIT_FAILURE);
-        }
+        HashElement_t* element = component_registry->contents[i];
 
-        fprintf(file, "#define %s%i", macro_list[i]->identifier, " ", macro_list[i]->value);
-        fprintf(file, "\n");
+        if(!element)
+            continue;
+        
+        Component_t* component = (Component_t*)element->value;
+        if(!component)
+            continue;
+
+        parse_component_macros(component);
+
+        for(int j = 0; j < component->num_macros; j++)
+        {
+            Macro_t* macro = component->macros[j];
+            if(!macro)
+            {
+                fprintf(stderr, "Error: Macro was improperly appended!");
+                exit(EXIT_FAILURE);
+            }
+
+            macro->value = eval(macro->expr, global_symbols, global_symbols->children[i]);
+            printf("Macro");
+            fflush(stdout);
+
+            fprintf(file, "#define %s%i", macro->identifier, " ", macro->value);
+            fprintf(file, "\n");
+        }
     }
 }
-
