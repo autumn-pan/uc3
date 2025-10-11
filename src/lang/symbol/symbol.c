@@ -165,6 +165,13 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     else
     {
         symbol = (Symbol_t*)symbol_table->symbols->contents[var_index];
+        
+        if(!symbol)
+        {
+            fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
+            exit(EXIT_FAILURE);
+        }
+
         return symbol->value;
     }
 
@@ -177,6 +184,8 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     else
     {
         symbol = (Symbol_t*)scope->symbols->contents[var_index];
+
+
         return symbol->value;
     }
 

@@ -1,4 +1,4 @@
-INT my_bool = 16 * 2 + 4
+INT my_bool = 16
 
 DEFINE important_block
 {
@@ -9,7 +9,7 @@ DEFINE important_block
     FIELD my_num 
         DEFAULT 12
 
-    MACRO MY_MACRO yummy
+    MACRO MY_MACRO my_bool
     DEPENDENCIES
     [
         block

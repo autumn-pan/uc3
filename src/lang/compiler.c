@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "lang/symbol/symbol.h"
 
+
 void compile(char* file_name)
 {
     char* src = read(file_name);
@@ -66,9 +67,11 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
                 exit(EXIT_FAILURE);
             }
 
+            // Evaluate the macro's value
             printf("Macro: %i\n", macro->expr->type);
             macro->value = eval(macro->expr, global_symbols, global_symbols->children[i]);
             
+            // Print the macro to the file
             fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);
             fprintf(file, "\n");
         }

@@ -448,8 +448,9 @@ ASTNode_t* parse_variable_call(Parser_t* parser)
     if(parser->ptr->type != IDENTIFIER_TOKEN)
         return NULL;
 
+    ASTNode_t* node = init_ast(IDEN_AST, parser->ptr->value);
     advance_parser(parser);
-    return init_ast(IDEN_AST, parser->ptr->value);
+    return node;
 }
 
 // Parse a factor, which consists of either a literal, variable call, or parenthesized expression
@@ -507,8 +508,6 @@ ASTNode_t* parse_term(Parser_t* parser)
             ast_append(operator, right);
 
             node = operator;
-            printf("AST: %s\n", node->children[1]->data.str);
-
         }
         else
             break;
@@ -559,5 +558,6 @@ ASTNode_t* parse_expression(Parser_t* parser)
         }
     }
 
+    printf("Name: %s\n", node->data.str);
     return node;
 }
