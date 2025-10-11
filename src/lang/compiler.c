@@ -68,7 +68,6 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             }
 
             // Evaluate the macro's value
-            printf("Macro: %i\n", macro->expr->type);
             macro->value = eval(macro->expr, global_symbols, global_symbols->children[i]);
             
             // Print the macro to the file

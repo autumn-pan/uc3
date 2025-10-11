@@ -175,9 +175,6 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     }
 
     int val = eval(symbol->expr, symbol_table, scope);
-    printf("Flag");
-    fflush(stdout);
-    
     return init_value(INT_T, val);
 
     // Return unknown if the identifier was not found
@@ -207,7 +204,6 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     ASTNode_t* left;
     ASTNode_t* right;
 
-    printf("Eval type: %i\n", type);
     // Error: Unrecognized expression node
     if(!node->children[0] || !node->children[1])
     {
