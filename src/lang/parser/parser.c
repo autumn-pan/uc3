@@ -189,11 +189,12 @@ ASTNode_t* parse_variable_decl(Parser_t* parser)
 
     ASTNode_t* child = parse_expression(parser);
 
-    if(!child) {
+    if(!child) 
+    {
         return NULL;
-        ast_append(node, child);
     }
 
+    ast_append(node, child);
     return node;
 }
 
@@ -558,6 +559,5 @@ ASTNode_t* parse_expression(Parser_t* parser)
         }
     }
 
-    printf("Name: %s\n", node->data.str);
     return node;
 }

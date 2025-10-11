@@ -95,6 +95,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         return NULL;
 
     ASTNode_t* child = node->children[child_index];
+
     while(child)
     {
         // If the child node contains a block, the block will be its first and only child
@@ -112,7 +113,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 
             // The value of the symbol is unknowable at compile-time
             symbol = init_symbol(
-                child,
+                child->children[0],
                 child->data.str,
                 false
             );
@@ -141,7 +142,6 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     char* identifier = node->data.str;
 
     uint8_t var_index;
-
     Symbol_t* symbol;
     /*  
     Currently, acope is two-layered. It's only possible to have the global scope,
@@ -174,14 +174,10 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
     }
 
-    if(symbol)
-    {
-        printf("Symbol Type: %s\n", symbol->identifier);
-        fflush(stdout);
-        return symbol->value;
-    }
-
-    int val = eval(node, symbol_table, scope);
+    int val = eval(symbol->expr, symbol_table, scope);
+    printf("Flag");
+    fflush(stdout);
+    
     return init_value(INT_T, val);
 
     // Return unknown if the identifier was not found
@@ -241,7 +237,6 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
             }
             break;
     }
-
     // Error, unrecognized expression
     fprintf(stderr, "Error: Unrecognized expression structure!");
     exit(EXIT_FAILURE);
