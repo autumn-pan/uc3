@@ -180,13 +180,14 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         return symbol->value;
     }
 
-    // Find the symbol associated with the identifier
+    // Return unknown if the identifier was not found
     return init_value(UNKNOWN_T, 0);
 }
 
 // Evaluate an expression AST and return its integer value
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 {
+    // Ensure that the node is not null
     if(!node)
     {
         fprintf(stderr, "Error: expression can't be null!");
@@ -195,9 +196,7 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 
     AST_TYPE type = node->type;
 
-    printf("\nType: %i", type);
-    fflush(stdout);
-    
+    // Baes cases: literals and identifiers
     if(type == INT_AST)
         return string_to_value(INT_T, node->data.str).value;
     else if(type == BOOL_AST)
@@ -208,9 +207,13 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     ASTNode_t* left;
     ASTNode_t* right;
 
+    printf("Eval type: %i\n", type);
     // Error: Unrecognized expression node
     if(!node->children[0] || !node->children[1])
+    {
+        fprintf(stderr, "Error: Binary operator node is missing children!");
         return -1;
+    }
 
     left = node->children[0];
     right = node->children[1];

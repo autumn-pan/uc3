@@ -22,6 +22,8 @@ void point_error(size_t line, size_t column)\
     exit(EXIT_FAILURE);
 }
 
+// Maps a token data type to its corresponding AST data type
+// Returns NULL if the token is not a data type
 int token_to_ast_type(enum TOKEN_TYPE type)
 {
     switch(type)
@@ -46,7 +48,7 @@ Parser_t* init_parser(TokenStream* ts, Lexer* lexer)
     Parser_t *parser = (malloc(sizeof(Parser_t)));
     if(!parser)
     {
-        fprintf(stderr, "Error: Failed to allocate enough memory!");
+        fprintf(stderr, "Error: Failed to allocate memory!");
         exit(EXIT_FAILURE);
     }
     
@@ -62,6 +64,9 @@ Parser_t* init_parser(TokenStream* ts, Lexer* lexer)
 }
 
 Token *get_next_token(Parser_t *p) {
+    if(!p->ptr)
+        return NULL;
+
     if (p->pos < p->len - 1) {
         return p->ptr->next;
     }
@@ -97,7 +102,7 @@ char* match(Parser_t *p, enum TOKEN_TYPE type) {
 }
 
 
-// Match value function
+// Advance parser and return true if the current token matches the key
 bool match_value(Parser_t *p, char *value) {
     if (p->pos < p->len && strcmp(p->ptr->value, value) == 0 && p->ptr) {
 
@@ -154,6 +159,9 @@ ASTNode_t* parse_subsystem(Parser_t* parser)
 
 ASTNode_t* parse_variable_decl(Parser_t* parser)
 {
+    if(!parser->ptr)
+        return NULL;
+        
     char* str = parser->ptr->value;
     if(!(match_value(parser, "INT") || match_value(parser, "BOOL")))
         return NULL;
@@ -419,15 +427,11 @@ ASTNode_t* parse(Parser_t* parser)
 // Expressions -- Recursive Descent
 ///////////////////////////////////////////////////////////
 
-// point_error() is fatal
+// Parse a literal value (int, bool, char, string)
 ASTNode_t* parse_literal(Parser_t* parser)
 {
     enum TOKEN_TYPE type = parser->ptr->type;
     char* value = parser->ptr->value;
-
-    printf("\nType: %i", type);
-    fflush(stdout);
-
 
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
@@ -438,15 +442,17 @@ ASTNode_t* parse_literal(Parser_t* parser)
     return node;
 }
 
+// Parse a variable call (identifier)
 ASTNode_t* parse_variable_call(Parser_t* parser)
 {
     if(parser->ptr->type != IDENTIFIER_TOKEN)
         return NULL;
 
     advance_parser(parser);
-    return init_ast(IDENTIFIER_TOKEN, parser->ptr->value);
+    return init_ast(IDEN_AST, parser->ptr->value);
 }
 
+// Parse a factor, which consists of either a literal, variable call, or parenthesized expression
 ASTNode_t * parse_factor(Parser_t* parser) {
     if (match(parser, LPAR_TOKEN)) {
         ASTNode_t * expr = parse_expression(parser);
@@ -457,6 +463,7 @@ ASTNode_t * parse_factor(Parser_t* parser) {
         }
         return expr;
     }
+
     ASTNode_t * node = NULL;
     if ((node = parse_literal(parser)) != NULL) return node;
     if ((node = parse_variable_call(parser)) != NULL) return node;
@@ -465,6 +472,7 @@ ASTNode_t * parse_factor(Parser_t* parser) {
     point_error(parser->line, parser->column);
 }
 
+// Parse a term, which represents a multiplication or division operation
 ASTNode_t* parse_term(Parser_t* parser)
 {
     ASTNode_t* node = parse_factor(parser);
@@ -494,10 +502,13 @@ ASTNode_t* parse_term(Parser_t* parser)
                 point_error(parser->line, parser->column);
             }
 
-            ASTNode_t* operator = init_ast(DIV_AST, "DIV");
+            ASTNode_t* operator = init_ast(type, "OPERATOR");
             ast_append(operator, node);
             ast_append(operator, right);
+
             node = operator;
+            printf("AST: %s\n", node->children[1]->data.str);
+
         }
         else
             break;
@@ -505,6 +516,7 @@ ASTNode_t* parse_term(Parser_t* parser)
     return node;
 }
 
+// Recursively parse a full expression
 ASTNode_t* parse_expression(Parser_t* parser) 
 {
     ASTNode_t* node = parse_term(parser);
@@ -519,7 +531,9 @@ ASTNode_t* parse_expression(Parser_t* parser)
         Token* token = parser->ptr;
         if (token->type == OPERATOR_TOKEN && (token->value[0] == '+' || token->value[0] == '-'))
         {
+
             advance_parser(parser);
+
             ASTNode_t* right = parse_term(parser);
 
             // Obtain binary operation type

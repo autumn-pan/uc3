@@ -1,13 +1,11 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
-
 #define COMPONENT_MAX_FIELDS 32
 
 #include <string.h>
 #include "lang/ast.h"
 #include "lang/util/hash.h"
 #include "lang/symbol/symbol.h"
-
 
 typedef enum
 {

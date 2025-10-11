@@ -9,7 +9,7 @@ DEFINE important_block
     FIELD my_num 
         DEFAULT 12
 
-    MACRO MY_MACRO 1
+    MACRO MY_MACRO yummy
     DEPENDENCIES
     [
         block
