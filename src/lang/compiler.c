@@ -19,8 +19,10 @@ void compile(char* file_name)
     ASTNode_t* root = parse(init_parser(tokenstream, lexer));
     HashTable_t* table = init_component_registry(root);
 
-    // This section of compilation works only if dependencies and macro declarations are not conditional.
-    // If they are, 
+    ///////////////////////////////////////////
+    // User Configuration should happen here //
+    ///////////////////////////////////////////
+
     append_component_dependencies(table);
 
     if(verify_components(table) == 1)
@@ -47,6 +49,7 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
     uint8_t num_macros = 0;
     for(int i = 0; i < component_registry->hash_max; i++)
     {
+        // Get the next component
         HashElement_t* element = component_registry->contents[i];
 
         if(!element)
@@ -56,10 +59,13 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
         if(!component)
             continue;
 
+        // Set up the component's macro registry
         parse_component_macros(component);
 
+        // Write macro values to the config file
         for(int j = 0; j < component->num_macros; j++)
         {
+            // Ensure that the macro exists
             Macro_t* macro = component->macros[j];
             if(!macro)
             {
@@ -68,7 +74,8 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             }
 
             // Evaluate the macro's value
-            macro->value = eval(macro->expr, global_symbols, global_symbols->children[i]);
+            SymbolNode_t* local_scope = global_symbols->children[i];
+            macro->value = eval(macro->expr, global_symbols, local_scope);
             
             // Print the macro to the file
             fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);

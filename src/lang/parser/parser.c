@@ -138,7 +138,6 @@ ASTNode_t* parse_field(Parser_t* parser)
         return NULL;
 
     ast_append(node, init_ast(INT_AST, val));
-
     return node;
 }
 

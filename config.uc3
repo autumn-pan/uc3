@@ -1,15 +1,16 @@
-INT my_bool = 16
 
 DEFINE important_block
 {
     SUBSYSTEM not_important_subsystem
+
+    INT my_bool = 2*9 + 4
 
     FIELD yummy 
         DEFAULT 128
     FIELD my_num 
         DEFAULT 12
 
-    MACRO MY_MACRO my_bool
+    MACRO MY_MACRO my_bool/2
     DEPENDENCIES
     [
         block

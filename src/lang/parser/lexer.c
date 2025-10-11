@@ -126,6 +126,12 @@ void skip_whitespace(Lexer* lexer)
 Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line, uint32_t col)
 {
     Token* token = (malloc(sizeof(Token)));
+    if(!token)
+    {
+        fprintf(stderr, "Error: Failed to allocate memory!");
+        fflush(stdout);
+    }
+
     strcpy(token->value, str);
     token->next = NULL;
     token->line = line;
@@ -135,6 +141,7 @@ Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line, uint32_t col)
     return token;
 }
 
+// Returns the next char in the source code
 char peek(Lexer* lexer)
 {
     if(!lexer || lexer->pos+1 >= lexer->length)
@@ -145,6 +152,7 @@ char peek(Lexer* lexer)
     return c;
 }
 
+// Move the lexer forward
 char advance(Lexer* lexer)
 {
     char c = lexer->src[lexer->pos];
@@ -161,6 +169,7 @@ char advance(Lexer* lexer)
     return c;
 }
 
+// Return the next token from the source code
 Token* next_token(Lexer* lexer)
 {    
     skip_whitespace(lexer);

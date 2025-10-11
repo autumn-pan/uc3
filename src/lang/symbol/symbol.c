@@ -82,12 +82,12 @@ void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
     node->children[node->num_children - 1] = child;
 }
 
+
 // Create a Symbol Tree that corresponds to the variables of an Abstract Syntax Tree.
 SymbolNode_t* symbolize_ast(ASTNode_t* node)
 {
     // Initialize the root symbol
     SymbolNode_t* symbol_node = init_symbol_node();
-
     int child_index = 0;
 
     // Ensure that the child index is not out of bounds
@@ -95,7 +95,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         return NULL;
 
     ASTNode_t* child = node->children[child_index];
-
     while(child)
     {
         // If the child node contains a block, the block will be its first and only child
@@ -107,7 +106,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 
             symbol_node_append(symbol_node, new_symbol);
         }
-        else if(child->type == VARIABLE_DECL_AST)
+        else if(child->type == VARIABLE_DECL_AST || child->type == FIELD_AST)
         {
             Symbol_t* symbol;
 
@@ -141,8 +140,15 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
 {
     char* identifier = node->data.str;
 
-    uint8_t var_index;
+    uint64_t var_index;
     Symbol_t* symbol;
+
+    if(!symbol_table)
+    {
+        fprintf(stderr, "Error: Symbol table cannot be NULL!");
+        exit(EXIT_FAILURE);
+    }
+
     /*  
     Currently, acope is two-layered. It's only possible to have the global scope,
     as well as one layer of scope for each component. Blocks and conditional trees
@@ -150,10 +156,18 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     */
 
     // Check global index
-    if((var_index = get_hash_pos(symbol_table->symbols, identifier)) == ULONG_MAX)
+    var_index = get_hash_pos(symbol_table->symbols, identifier);
+
+    if(var_index == ULONG_MAX)
     {
+        // Sometimes, a local scope is not provided. In that case, the variable is undefined.
+        if(!scope)
+            return init_value(UNKNOWN_T, 0);
+
+        printf("Flag");
+        var_index = get_hash_pos(scope->symbols, identifier);
         // Check local scope if global scope is invalid
-        if((var_index = get_hash_pos(scope->symbols, identifier)) == ULONG_MAX)
+        if(var_index == ULONG_MAX)
         {
             fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
             exit(EXIT_FAILURE);
@@ -184,6 +198,9 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
 // Evaluate an expression AST and return its integer value
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 {
+    if(!scope)
+        printf("\nDebug: Scope is missing!");
+
     // Ensure that the node is not null
     if(!node)
     {
