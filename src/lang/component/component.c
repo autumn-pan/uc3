@@ -239,7 +239,7 @@ bool append_component_dependencies(HashTable_t* registry)
                 return false;
 
             Symbol_t* symbol = init_symbol(
-                init_value(UNKNOWN_T, false),
+                field_node,
                 field_node->data.str,
                 field_node->children[0]->data.str
             );

@@ -43,7 +43,7 @@ Value_t string_to_value(TYPE type, const char* str)
 }
 
 // Constructor for a symbol
-Symbol_t* init_symbol(Value_t value, const char* identifier, bool constant)
+Symbol_t* init_symbol(ASTNode_t* expr, const char* identifier, bool constant)
 {
     Symbol_t* symbol = malloc(sizeof(Symbol_t));
     if(!symbol)
@@ -53,8 +53,9 @@ Symbol_t* init_symbol(Value_t value, const char* identifier, bool constant)
 
     symbol->identifier = identifier;
     symbol->constant = constant;
-    symbol->value = value;
+    symbol->value = init_value(UNKNOWN_T, -1);
 
+    symbol->expr = expr;
     return symbol;
 }
 
@@ -81,7 +82,6 @@ void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
     node->children[node->num_children - 1] = child;
 }
 
-
 // Create a Symbol Tree that corresponds to the variables of an Abstract Syntax Tree.
 SymbolNode_t* symbolize_ast(ASTNode_t* node)
 {
@@ -103,27 +103,19 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             SymbolNode_t* new_symbol = symbolize_ast(child->children[0]);
             if(!new_symbol)
                 continue;
+
             symbol_node_append(symbol_node, new_symbol);
         }
         else if(child->type == VARIABLE_DECL_AST)
         {
             Symbol_t* symbol;
-            if(!child->children[0]) // Register undefined symbols
-            {
-                symbol = init_symbol(
-                    init_value(UNKNOWN_T, 0),  
-                    child->data.str,
-                    false
-                );    
-            }
-            else // Register defined symbols
-            {
-                symbol = init_symbol(
-                    init_value(child->children[0]->type, atoi(child->children[0]->data.str)),
-                    child->data.str,
-                    false
-                );
-            }
+
+            // The value of the symbol is unknowable at compile-time
+            symbol = init_symbol(
+                child,
+                child->data.str,
+                false
+            );
 
             // Insert the symbol into the scope if it's not null
             if(insert_hash(symbol_node->symbols, symbol, symbol->identifier))
@@ -132,6 +124,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                 exit(EXIT_FAILURE);
             }
         }
+        ((Symbol_t*)symbol_node->symbols->contents[get_hash_pos(symbol_node->symbols, "my_bool")])->identifier;
 
         child_index++;
         if(child_index >= node->num_children)
@@ -159,35 +152,37 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     // Check global index
     if((var_index = get_hash_pos(symbol_table->symbols, identifier)) == ULONG_MAX)
     {
-        fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
-        exit(EXIT_FAILURE);
+        // Check local scope if global scope is invalid
+        if((var_index = get_hash_pos(scope->symbols, identifier)) == ULONG_MAX)
+        {
+            fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            symbol = (Symbol_t*)scope->symbols->contents[var_index]->value;
+        }
     }
     else
     {
-        symbol = (Symbol_t*)symbol_table->symbols->contents[var_index];
-        
+        symbol = (Symbol_t*)symbol_table->symbols->contents[var_index]->value;
+
         if(!symbol)
         {
             fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
             exit(EXIT_FAILURE);
         }
+    }
 
+    if(symbol)
+    {
+        printf("Symbol Type: %s\n", symbol->identifier);
+        fflush(stdout);
         return symbol->value;
     }
 
-    // Check local scope
-    if((var_index = get_hash_pos(scope->symbols, identifier)) == ULONG_MAX)
-    {
-        fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
-        exit(EXIT_FAILURE);
-    }
-    else
-    {
-        symbol = (Symbol_t*)scope->symbols->contents[var_index];
-
-
-        return symbol->value;
-    }
+    int val = eval(node, symbol_table, scope);
+    return init_value(INT_T, val);
 
     // Return unknown if the identifier was not found
     return init_value(UNKNOWN_T, 0);
