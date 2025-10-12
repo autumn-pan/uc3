@@ -98,12 +98,15 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             if(!block)
                 continue;
 
+            printf("\nBlock: %i", block->symbols->num_elements);
+
             // Insert the block into the child list
             char* element_name = child->data.str;
             HashElement_t* element = init_hash_element(block, element_name);
 
             insert_hash(symbol_node->children, element, element_name);
-            printf("\nELement Index: %i", get_hash_pos(symbol_node->children, element_name));
+            size_t index = get_hash_pos(symbol_node->children, element_name);
+            printf("\nELement Index: %i", ((SymbolNode_t*)symbol_node->children->contents[index]->value) == block);
         }
         else if(child->type == VARIABLE_DECL_AST)
         {
@@ -150,7 +153,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         exit(EXIT_FAILURE);
     }
 
-    printf("\n Num Children: %i", scope->symbols == NULL);
+    printf("\n Num Children: %i", scope == NULL);
     /*  
     Currently, acope is two-layered. It's only possible to have the global scope,
     as well as one layer of scope for each component. Blocks and conditional trees
