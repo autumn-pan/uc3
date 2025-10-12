@@ -20,7 +20,8 @@
         "any": "c",
         "complex": "c",
         "symbol.h": "c",
-        "string": "c"
+        "string": "c",
+        "variant": "c"
     },
     "C_Cpp.errorSquiggles": "enabled",
     "CodeGPT.apiKey": "Ollama"

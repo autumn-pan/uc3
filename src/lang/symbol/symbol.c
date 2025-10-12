@@ -94,6 +94,8 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         // If the child node contains a block, the block will be its first and only child
         if(child->num_children > 0 && child->children[0]->type == BLOCK_AST)
         {
+            printf("\n\n\nHeader");
+
             SymbolNode_t* block = symbolize_ast(child->children[0]);
             if(!block)
                 continue;
@@ -102,12 +104,14 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             char* element_name = child->data.str;
             HashElement_t* element = init_hash_element(block, element_name);
 
+            printf("\nFlag");
             insert_hash(symbol_node->children, element, element_name);
 
             // Debug
             size_t index = get_hash_pos(symbol_node->children, element_name);
-            printf("\nElement Name: %s", element_name);
+            printf("\n\nElement Name: %s", element_name);
             printf("\nIndex: %i", index);
+            printf("\nNum Children: %i", symbol_node->children->num_elements);
             printf("\nELement: %i\n", ((SymbolNode_t*)symbol_node->children->contents[index]->value)->symbols == NULL);
         }
         else if(child->type == VARIABLE_DECL_AST)
@@ -128,7 +132,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                 exit(EXIT_FAILURE);
             }
         }
-        ((Symbol_t*)symbol_node->symbols->contents[get_hash_pos(symbol_node->symbols, "my_bool")])->identifier;
 
         child_index++;
         if(child_index >= node->num_children)
