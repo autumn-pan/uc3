@@ -435,7 +435,7 @@ ASTNode_t* parse_literal(Parser_t* parser)
     if(!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN || type == CHAR_TOKEN))
         return NULL;
 
-    ASTNode_t* node = init_ast(token_to_ast_type(type), parser->ptr->value);;
+    ASTNode_t* node = init_ast(token_to_ast_type(type), value);;
     advance_parser(parser);
 
     return node;

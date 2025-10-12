@@ -1,10 +1,11 @@
 INT other_int = 6
+BOOL boolean = true
 
 DEFINE important_block
 {
     SUBSYSTEM not_important_subsystem
 
-    INT my_bool = 2/9 + 4
+    INT my_bool = 2/9 + 1
 
     FIELD yummy 
         DEFAULT 128
@@ -12,6 +13,7 @@ DEFINE important_block
         DEFAULT 12
 
     MACRO MY_MACRO my_bool + 2
+    MACRO IMPORTANT_BLOCK_ENABLED boolean
     DEPENDENCIES
     [
         block

@@ -54,6 +54,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node);
 Symbol_t* init_symbol(ASTNode_t* expr, const char* identifier, bool constant);
 Value_t init_value(TYPE type, int data);
 Value_t string_to_value(TYPE type, const char* str);
+bool str_to_bool(const char* str);
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope);
 
 #endif

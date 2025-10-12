@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include "lang/symbol/symbol.h"
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -204,8 +205,7 @@ Token* next_token(Lexer* lexer)
         if(in_array(KEYWORDS, str, SIZEOF_KEYWORDS))
             return init_token(KEYWORD_TOKEN, str, lexer->line, lexer->column);
 
-        // The size of BOOLEAN_KEYWORDS is always 2
-        if(in_array(BOOLEAN_KEYWORDS, str, 2))
+        if(in_array(BOOLEAN_KEYWORDS, str, NUM_BINARY_VALUES))
             return init_token(BOOL_TOKEN, str, lexer->line, lexer->column);
 
         // Return it as an identifier if it's neither
