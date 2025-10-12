@@ -5,10 +5,6 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#define SIZEOF_KEYWORDS 11
-#define SIZEOF_OPERATORS 15
-#define SIZEOF_OPERATOR_CHARS 10
-
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
     "CONFIG", // Configure a module
@@ -31,6 +27,7 @@ const char* BOOLEAN_KEYWORDS[] = {
 };
 
 const char *OPERATORS[] = {
+    "=",
     "||", // OR operator
     "&&", // AND operator
     "!", // NOT operator
@@ -56,9 +53,10 @@ const char* OPERATOR_CHARS[] = {
     "<",
     ">",
     "+",
+    "*",
     "=",
     "-",
-    "/",
+    "/"
 };
 
 // Returns the appropriate data type of a string
@@ -249,32 +247,32 @@ Token* next_token(Lexer* lexer)
             break;
     }
 
+    char op[16] = "";
+    // Check for operators
+    while(in_array(OPERATOR_CHARS, temp, SIZEOF_OPERATOR_CHARS))
+    {
+        strcat(op, temp);
+        advance(lexer);
+        temp[0] = lexer->src[lexer->pos];
+    }
+
+    if(in_array(OPERATORS, op, SIZEOF_OPERATORS))
+    {
+        advance(lexer);
+        printf("\nOperator: %s", op);
+        return init_token(OPERATOR_TOKEN, op, lexer->line, lexer->column);
+    }
+
     if(misc_token_type != NULL_TOKEN)
     {
         advance(lexer);
         return init_token(misc_token_type, temp, lexer->line, lexer->column);
     }
 
-    char op[16] = "";
-    // Check for operators
-    while(in_array(OPERATOR_CHARS, temp, SIZEOF_OPERATOR_CHARS))
-    {
-        printf("\nTemp: %s", temp);
-        fflush(stdout);
-        strcat(op, temp);
-        advance(lexer);
-        temp[0] = lexer->src[lexer->pos];
-        printf("\nTemp: %s", temp);
-        fflush(stdout);
-    }
-    
-    if(in_array(OPERATORS, op, SIZEOF_OPERATORS))
-    {
-        return init_token(OPERATOR_TOKEN, op, lexer->line, lexer->column);
-    }
+    if(lexer->src[lexer->pos] == '\0')
+        return NULL;
 
-    fprintf(stderr, "Error: Invalid token '%s'", op);
-    return NULL;
+    fprintf(stderr, "Error: Unknown char '%c'", lexer->src[lexer->pos]);
 }
 
 TokenStream* tokenize(Lexer* lexer)

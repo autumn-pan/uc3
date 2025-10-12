@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define SIZEOF_KEYWORDS 11
+#define SIZEOF_OPERATORS 15
+#define SIZEOF_OPERATOR_CHARS 11
+
 enum TOKEN_TYPE
 {
     KEYWORD_TOKEN,
