@@ -258,14 +258,11 @@ Token* next_token(Lexer* lexer)
 
     if(in_array(OPERATORS, op, SIZEOF_OPERATORS))
     {
-        advance(lexer);
-        printf("\nOperator: %s", op);
         return init_token(OPERATOR_TOKEN, op, lexer->line, lexer->column);
     }
 
     if(misc_token_type != NULL_TOKEN)
     {
-        advance(lexer);
         return init_token(misc_token_type, temp, lexer->line, lexer->column);
     }
 

@@ -7,16 +7,30 @@
 #include <stdio.h>
 #include "lang/symbol/symbol.h"
 
+void dump_tokenstream(TokenStream* tokenstream)
+{
+    Token* token = tokenstream->head;
+    while(token)
+    {
+        printf("\nToken: %s", token->value);
+        token = token->next;
+    }
+}
+
 void compile(char* file_name)
 {
+    // Tokenize the source code
     char* src = read(file_name);
     Lexer* lexer = init_lexer(src);
     TokenStream* tokenstream = tokenize(lexer);
 
-    Token* token = tokenstream->head;
+    // Dump ts to stdout for debugging
+    dump_tokenstream(tokenstream);
 
+    // Parse and register an abstract syntax tree
     ASTNode_t* root = parse(init_parser(tokenstream, lexer));
     HashTable_t* table = init_component_registry(root);
+
 
     ///////////////////////////////////////////
     // User Configuration should happen here //
