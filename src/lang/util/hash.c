@@ -67,8 +67,6 @@ bool insert_hash(HashTable_t *table, void * value, const char* key)
     table->num_elements++;
 
     uint32_t index = hash(key, table->hash_max);
-    printf("\nInserting Hash! Index: %i", index);
-
     HashElement_t* symbol = init_hash_element(value, key);
 
     while (table->contents[index] != NULL) {

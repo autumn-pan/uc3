@@ -79,7 +79,6 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             size_t index = get_hash_pos(component_registry, component->identifier);
             HashElement_t* local_scope = global_symbols->children->contents[index];
 
-            printf("\nTable: %i", ((SymbolNode_t*)local_scope->value)->symbols == NULL);
             if(!local_scope)
             {
                 fprintf(stderr, "Error: local_scope is not defined");

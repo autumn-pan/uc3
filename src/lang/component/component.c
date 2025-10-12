@@ -156,7 +156,6 @@ HashTable_t* init_component_registry(ASTNode_t* root)
         if(!child)
             return NULL;
 
-        printf("\nInserting Hash!\n");
         bool duplicate_key = insert_hash(table, child, child->identifier);
 
         // Quit if there's a duplicate key (redefinition error)
