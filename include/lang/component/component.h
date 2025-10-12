@@ -6,6 +6,7 @@
 #include "lang/ast.h"
 #include "lang/util/hash.h"
 #include "lang/symbol/symbol.h"
+#define COMPONENT_REGISTRY_SIZE 8
 
 typedef enum
 {

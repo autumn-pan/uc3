@@ -10,6 +10,7 @@
 // Value_t
 ////////////////////////////////////////////////////////////////////
 
+// Constructor for a value
 Value_t init_value(TYPE type, int data)
 {
     Value_t value;
@@ -59,6 +60,7 @@ Symbol_t* init_symbol(ASTNode_t* expr, const char* identifier, bool constant)
     return symbol;
 }
 
+// Constructor for a symbol node
 SymbolNode_t* init_symbol_node()
 {
     SymbolNode_t* node = malloc(sizeof(SymbolNode_t));
@@ -69,19 +71,11 @@ SymbolNode_t* init_symbol_node()
     }
 
     node->num_children = 0;
-    node->symbols = init_hash_table(32);
+    node->symbols = init_hash_table(16);
+    node->children = init_hash_table(SYMBOL_CHILDREN_SIZE);
+
     return node;
 }
-
-// Append a node as a child of another node; constructs a symbol tree
-void symbol_node_append(SymbolNode_t* node, SymbolNode_t* child)
-{
-    node->num_children++;
-
-    node->children = (realloc(node->children, node->num_children * sizeof(SymbolNode_t*)));
-    node->children[node->num_children - 1] = child;
-}
-
 
 // Create a Symbol Tree that corresponds to the variables of an Abstract Syntax Tree.
 SymbolNode_t* symbolize_ast(ASTNode_t* node)
@@ -100,13 +94,18 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
         // If the child node contains a block, the block will be its first and only child
         if(child->num_children > 0 && child->children[0]->type == BLOCK_AST)
         {
-            SymbolNode_t* new_symbol = symbolize_ast(child->children[0]);
-            if(!new_symbol)
+            SymbolNode_t* block = symbolize_ast(child->children[0]);
+            if(!block)
                 continue;
 
-            symbol_node_append(symbol_node, new_symbol);
+            // Insert the block into the child list
+            char* element_name = child->data.str;
+            HashElement_t* element = init_hash_element(block, element_name);
+
+            insert_hash(symbol_node->children, element, element_name);
+            printf("\nELement Index: %i", get_hash_pos(symbol_node->children, element_name));
         }
-        else if(child->type == VARIABLE_DECL_AST || child->type == FIELD_AST)
+        else if(child->type == VARIABLE_DECL_AST)
         {
             Symbol_t* symbol;
 
@@ -124,6 +123,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                 exit(EXIT_FAILURE);
             }
         }
+
         ((Symbol_t*)symbol_node->symbols->contents[get_hash_pos(symbol_node->symbols, "my_bool")])->identifier;
 
         child_index++;
@@ -132,6 +132,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 
         child = node->children[child_index];
     }
+
     return symbol_node;
 }
 
@@ -149,6 +150,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         exit(EXIT_FAILURE);
     }
 
+    printf("\n Num Children: %i", scope->symbols == NULL);
     /*  
     Currently, acope is two-layered. It's only possible to have the global scope,
     as well as one layer of scope for each component. Blocks and conditional trees
@@ -157,19 +159,18 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
 
     // Check global index
     var_index = get_hash_pos(symbol_table->symbols, identifier);
-
     if(var_index == ULONG_MAX)
     {
+        // if it is not found globally, it should be checked in the local scope
         // Sometimes, a local scope is not provided. In that case, the variable is undefined.
         if(!scope)
             return init_value(UNKNOWN_T, 0);
 
-        printf("Flag");
         var_index = get_hash_pos(scope->symbols, identifier);
         // Check local scope if global scope is invalid
         if(var_index == ULONG_MAX)
         {
-            fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
+            fprintf(stderr, "\nError: Identifier '%s'%s", identifier, " is not defined in scope!");
             exit(EXIT_FAILURE);
         }
         else
@@ -183,7 +184,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
 
         if(!symbol)
         {
-            fprintf(stderr, "Error: Identifier %s%s", identifier, " is not defined in scope!");
+            fprintf(stderr, "Error: Identifier '%s'%s", identifier, " is not defined in scope!");
             exit(EXIT_FAILURE);
         }
     }
@@ -194,6 +195,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     // Return unknown if the identifier was not found
     return init_value(UNKNOWN_T, 0);
 }
+
 
 // Evaluate an expression AST and return its integer value
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)

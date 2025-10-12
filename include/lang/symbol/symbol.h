@@ -1,9 +1,13 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include "lang/ast.h"
 #include "lang/util/hash.h"
+
+#define STRINGIFY(x) #x
+#define SYMBOL_CHILDREN_SIZE 8
 
 typedef enum 
 {
@@ -35,10 +39,14 @@ typedef struct
     ASTNode_t* expr;
 } Symbol_t;
 
-typedef struct symbolNode_t
+typedef struct
 {
     size_t num_children;
-    struct symbolNode_t** children;
+
+    // Symbol Nodes come together to form a symbol tree.
+    // children represents a node's subscopes
+    HashTable_t* children;
+    // symbols represents the values that are in the scope
     HashTable_t* symbols;
 } SymbolNode_t;
 

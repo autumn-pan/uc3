@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include "lang/symbol/symbol.h"
 
+#define COMPONENT_REGISTRY_SIZE 8
+
 // How many macros that a component is assumed to have at first
 #define INITIAL_MACRO_NUM 4
 
@@ -140,7 +142,7 @@ bool verify_components(HashTable_t* table)
 // Register the components of a project
 HashTable_t* init_component_registry(ASTNode_t* root)
 {
-    HashTable_t* table = init_hash_table(8);
+    HashTable_t* table = init_hash_table(COMPONENT_REGISTRY_SIZE);
 
     if(!table)
         return NULL;

@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include "lang/symbol/symbol.h"
 
-
 void compile(char* file_name)
 {
     char* src = read(file_name);
@@ -47,6 +46,8 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
     }
 
     uint8_t num_macros = 0;
+    // Measures which component the generator is on
+    size_t current_component = -1;
     for(int i = 0; i < component_registry->hash_max; i++)
     {
         // Get the next component
@@ -59,6 +60,7 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
         if(!component)
             continue;
 
+        current_component++;
         // Set up the component's macro registry
         parse_component_macros(component);
 
@@ -74,8 +76,16 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             }
 
             // Evaluate the macro's value
-            SymbolNode_t* local_scope = global_symbols->children[i];
-            macro->value = eval(macro->expr, global_symbols, local_scope);
+            size_t index = get_hash_pos(component_registry, component->identifier);
+            HashElement_t* local_scope = global_symbols->children->contents[index];
+
+            if(!local_scope)
+            {
+                fprintf(stderr, "Error: local_scope is not defined");
+                exit(EXIT_FAILURE);
+            }
+            
+            macro->value = eval(macro->expr, global_symbols, (SymbolNode_t*)local_scope->value);
             
             // Print the macro to the file
             fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);
