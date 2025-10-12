@@ -97,15 +97,17 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
             printf("\n\n\nHeader");
 
             SymbolNode_t* block = symbolize_ast(child->children[0]);
+            printf("\nBlock: %i", block->symbols == NULL);
+
             if(!block)
                 continue;
 
             // Insert the block into the child list
             char* element_name = child->data.str;
-            HashElement_t* element = init_hash_element(block, element_name);
 
             printf("\nFlag");
-            insert_hash(symbol_node->children, element, element_name);
+            if(insert_hash(symbol_node->children, block, element_name))
+                fprintf(stderr, "\nError: Variable redeclaration detected!");
 
             // Debug
             size_t index = get_hash_pos(symbol_node->children, element_name);

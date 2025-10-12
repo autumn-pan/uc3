@@ -64,10 +64,11 @@ HashElement_t* init_hash_element(void* value, const char* key)
 // Returns true and quits early if there is a duplicate
 bool insert_hash(HashTable_t *table, void * value, const char* key) 
 {
-    printf("\nInserting Hash!");
     table->num_elements++;
 
     uint32_t index = hash(key, table->hash_max);
+    printf("\nInserting Hash! Index: %i", index);
+
     HashElement_t* symbol = init_hash_element(value, key);
 
     while (table->contents[index] != NULL) {
