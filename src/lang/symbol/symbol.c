@@ -231,26 +231,39 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     left = node->children[0];
     right = node->children[1];
 
-    // Binary operators (unary ones don't exist yet)
+    // Integer operations
+    if(left->type != BOOL_AST && right->type != BOOL_AST)
+        switch(node->type)
+        {
+            case PLUS_AST:
+                return eval(left, table, scope) + eval(right, table, scope);
+            case MINUS_AST:
+                return eval(left, table, scope) - eval(right, table, scope);
+            case MULT_AST:
+                return eval(left, table, scope) * eval(right, table, scope);
+            case DIV_AST:
+                if(right != 0)
+                    return eval(left, table, scope) / eval(right, table, scope);
+                else
+                {
+                    fprintf(stderr, "Error: Division by zero is undefined!");
+                    exit(EXIT_FAILURE);
+                }
+                break;
+        }
+    
+    if(left->type != right->type || left->type != BOOL_AST)
+    {
+        // Error, unrecognized expression
+        fprintf(stderr, "Error: Unrecognized expression structure!");
+        exit(EXIT_FAILURE);
+    }
+
     switch(node->type)
     {
-        case PLUS_AST:
-            return eval(left, table, scope) + eval(right, table, scope);
-        case MINUS_AST:
-            return eval(left, table, scope) - eval(right, table, scope);
-        case MULT_AST:
-            return eval(left, table, scope) * eval(right, table, scope);
-        case DIV_AST:
-            if(right != 0)
-                return eval(left, table, scope) / eval(right, table, scope);
-            else
-            {
-                fprintf(stderr, "Error: Division by zero is undefined!");
-                exit(EXIT_FAILURE);
-            }
-            break;
+        case AND_AST:
+            return eval(left, table, scope) && eval(right, table, scope);
+        case OR_AST:
+            return eval(left, table, scope) || eval(right, table, scope);
     }
-    // Error, unrecognized expression
-    fprintf(stderr, "Error: Unrecognized expression structure!");
-    exit(EXIT_FAILURE);
 }

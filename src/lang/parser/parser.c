@@ -130,7 +130,6 @@ ASTNode_t* parse_field(Parser_t* parser)
     char* val;
     if(!(val = match(parser, INT_TOKEN)))
         return NULL;
-    
 
     ASTNode_t* node = init_ast(FIELD_AST, node_identifier);
 

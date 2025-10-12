@@ -37,7 +37,8 @@ typedef struct
 typedef struct component
 {
     char* identifier;
-    bool enabled;
+    int enabled;
+    
     ASTNode_t* node;
 
     struct component** dependencies;

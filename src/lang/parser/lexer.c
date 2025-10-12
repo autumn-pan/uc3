@@ -7,6 +7,7 @@
 
 #define SIZEOF_KEYWORDS 11
 #define SIZEOF_OPERATORS 15
+#define SIZEOF_OPERATOR_CHARS 10
 
 const char *KEYWORDS[] = {
     "DEFINE", // Define a module
@@ -30,7 +31,6 @@ const char* BOOLEAN_KEYWORDS[] = {
 };
 
 const char *OPERATORS[] = {
-    "=", // Assignment operator
     "||", // OR operator
     "&&", // AND operator
     "!", // NOT operator
@@ -47,6 +47,21 @@ const char *OPERATORS[] = {
     "-"
 };
 
+// What characters comprise chars; Necessary for multi-char operators
+const char* OPERATOR_CHARS[] = {
+    "=",
+    "|",
+    "&",
+    "!",
+    "<",
+    ">",
+    "+",
+    "=",
+    "-",
+    "/",
+};
+
+// Returns the appropriate data type of a string
 enum TOKEN_TYPE str_to_datatype(char* str)
 {
     if(strcmp(str, "INT") == 0)
@@ -240,13 +255,25 @@ Token* next_token(Lexer* lexer)
         return init_token(misc_token_type, temp, lexer->line, lexer->column);
     }
 
+    char op[16] = "";
     // Check for operators
-    if(in_array(OPERATORS, temp, SIZEOF_OPERATORS))
+    while(in_array(OPERATOR_CHARS, temp, SIZEOF_OPERATOR_CHARS))
     {
+        printf("\nTemp: %s", temp);
+        fflush(stdout);
+        strcat(op, temp);
         advance(lexer);
-        return init_token(OPERATOR_TOKEN, temp, lexer->line, lexer->column);
+        temp[0] = lexer->src[lexer->pos];
+        printf("\nTemp: %s", temp);
+        fflush(stdout);
     }
     
+    if(in_array(OPERATORS, op, SIZEOF_OPERATORS))
+    {
+        return init_token(OPERATOR_TOKEN, op, lexer->line, lexer->column);
+    }
+
+    fprintf(stderr, "Error: Invalid token '%s'", op);
     return NULL;
 }
 

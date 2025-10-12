@@ -23,7 +23,6 @@ void compile(char* file_name)
     ///////////////////////////////////////////
 
     append_component_dependencies(table);
-
     if(verify_components(table) == 1)
     {
         fprintf(stderr, "Error: Circular dependency detected!");
