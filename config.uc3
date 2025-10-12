@@ -1,3 +1,4 @@
+INT other_int = 6
 
 DEFINE important_block
 {
@@ -10,7 +11,7 @@ DEFINE important_block
     FIELD my_num 
         DEFAULT 12
 
-    MACRO MY_MACRO my_bool/2
+    MACRO MY_MACRO my_num + 2
     DEPENDENCIES
     [
         block

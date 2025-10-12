@@ -106,7 +106,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
                 fprintf(stderr, "\nError: Variable redeclaration detected!");
 
         }
-        else if(child->type == VARIABLE_DECL_AST)
+        else if(child->type == VARIABLE_DECL_AST || child->type == FIELD_AST)
         {
             Symbol_t* symbol;
 
