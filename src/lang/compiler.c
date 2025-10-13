@@ -24,26 +24,24 @@ void compile(char* file_name)
     Lexer* lexer = init_lexer(src);
     TokenStream* tokenstream = tokenize(lexer);
 
-    // Dump ts to stdout for debugging
-    dump_tokenstream(tokenstream);
-
     // Parse and register an abstract syntax tree
     ASTNode_t* root = parse(init_parser(tokenstream, lexer));
     HashTable_t* table = init_component_registry(root);
 
+    SymbolNode_t* symbol_table = symbolize_ast(root);
 
     ///////////////////////////////////////////
     // User Configuration should happen here //
     ///////////////////////////////////////////
+    config(table, symbol_table);
 
+    // Post-Config generation
     append_component_dependencies(table);
     if(verify_components(table) == 1)
     {
         fprintf(stderr, "Error: Circular dependency detected!");
         exit(EXIT_FAILURE);
     }
-
-    SymbolNode_t* symbol_table = symbolize_ast(root);
 
     gen_config(table, symbol_table);
 }
@@ -103,6 +101,29 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             // Print the macro to the file
             fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);
             fprintf(file, "\n");
+        }
+    }
+}
+
+// Prompts the user for config options
+void config(HashTable_t* components, SymbolNode_t* global)
+{
+    for(int i = 0; i < components->hash_max; i++)
+    {
+        if(components->contents[i] == NULL)
+            continue;
+
+        Component_t* component = (Component_t*)components->contents[i]->value;
+        printf("\nConfiguring %s", component->identifier);
+        fflush(stdout);
+
+        for(int j = 0; j < component->num_fields; j++)
+        {
+            if(component->fields[j] == NULL)
+                continue;
+            
+            Field_t* field = component->fields[j];
+            printf("\n%s: ", field->variable->identifier);
         }
     }
 }
