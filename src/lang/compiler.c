@@ -99,8 +99,8 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
                 exit(EXIT_FAILURE);
             }
             
+            printf("\nName: %i", macro->expr->type);
             macro->value = eval(macro->expr, global_symbols, (SymbolNode_t*)local_scope->value);
-
             // Print the macro to the file
             fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);
             fprintf(file, "\n");

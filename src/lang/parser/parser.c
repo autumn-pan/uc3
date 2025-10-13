@@ -132,7 +132,7 @@ ASTNode_t* parse_field(Parser_t* parser)
         return NULL;
 
     ASTNode_t* node = init_ast(FIELD_AST, node_identifier);
-
+    
     if(!node)
         return NULL;
 

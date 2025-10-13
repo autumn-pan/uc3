@@ -135,6 +135,7 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     return symbol_node;
 }
 
+// 
 void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
 {
     for(int i = 0; i < registry->hash_max; i++)
@@ -143,9 +144,9 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
             continue;
 
         Component_t* component = (Component_t*)registry->contents[i]->value;
-
         size_t index = get_hash_pos(root->children, component->identifier);
         SymbolNode_t* node = (SymbolNode_t*)root->children->contents[index]->value;
+
         for(int j = 0; j < component->num_fields; j++)
         {
             Field_t* field = component->fields[j];
@@ -164,7 +165,7 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
 Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     char* identifier = node->data.str;
-
+    
     uint64_t var_index;
     Symbol_t* symbol;
 
@@ -233,8 +234,7 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     }
 
     AST_TYPE type = node->type;
-
-
+    
     // Baes cases: literals and identifiers
     if(type == INT_AST)
         return string_to_value(INT_T, node->data.str).value;
@@ -243,13 +243,14 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     else if(type == IDEN_AST)
         return get_identifier_value(node, table, scope).value;
 
-
+    printf("\nType: %i", node->type);
     ASTNode_t* left;
     ASTNode_t* right;
 
     // Error: Unrecognized expression node
     if(!node->children[0] || !node->children[1])
     {
+        printf("\nType: %i", type);
         fprintf(stderr, "Error: Binary operator node is missing children!");
         return -1;
     }

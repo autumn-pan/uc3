@@ -251,9 +251,9 @@ void append_component_fields(HashTable_t* registry)
                 return;
 
             Symbol_t* symbol = init_symbol(
-                field_node,
+                field_node->children[0],
                 field_node->data.str,
-                field_node->children[0]->data.str
+                false
             );
 
             if(!symbol)
