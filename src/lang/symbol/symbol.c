@@ -135,7 +135,6 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     return symbol_node;
 }
 
-// 
 void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
 {
     for(int i = 0; i < registry->hash_max; i++)
@@ -145,12 +144,24 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
 
         Component_t* component = (Component_t*)registry->contents[i]->value;
         size_t index = get_hash_pos(root->children, component->identifier);
+
         SymbolNode_t* node = (SymbolNode_t*)root->children->contents[index]->value;
+        if(!node)
+        {
+            fprintf(stderr, "Error: Component not registered!");
+        }
 
         for(int j = 0; j < component->num_fields; j++)
         {
             Field_t* field = component->fields[j];
+
+            printf(field->variable->identifier);
+            fflush(stdout);
+
             Symbol_t* symbol = field->variable;
+
+            printf("\nPlaceholder: %s", symbol->expr->data.str);
+            fflush(stdout);
 
             if(insert_hash(node->symbols, symbol, symbol->identifier))
             {
@@ -165,6 +176,11 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
 Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
 {
     char* identifier = node->data.str;
+    if(!identifier)
+    {
+        fprintf(stderr, "Error: requested node has no identifier!");
+        exit(EXIT_FAILURE);
+    }
     
     uint64_t var_index;
     Symbol_t* symbol;
@@ -199,6 +215,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
         else
         {
+            printf("\nFlag");
             symbol = (Symbol_t*)scope->symbols->contents[var_index]->value;
         }
     }
@@ -212,6 +229,9 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
             exit(EXIT_FAILURE);
         }
     }
+
+    printf("\nChildren: %s", symbol->identifier);
+    fflush(stdout);
 
     int val = eval(symbol->expr, symbol_table, scope);
     return init_value(INT_T, val);

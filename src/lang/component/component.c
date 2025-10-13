@@ -197,13 +197,13 @@ bool append_component_dependencies(HashTable_t* registry)
         for(int j = 0; j < component->node->children[0]->num_children; j++)
         {
             if(component->node->children[0]->children[j]->type == DEPENDENCY_AST)
-            {                
+            {               
                 dependency_node = component->node->children[0]->children[j];
                 break;
             }
         }
 
-        if(!dependency_node || !dependency_node->children[0])
+        if(dependency_node == NULL|| dependency_node->num_children <= 0)
         {
             component->graph_status = GRAPHED;
             continue;
@@ -268,6 +268,10 @@ void append_component_fields(HashTable_t* registry)
                 return;
 
             component->fields[component->num_fields] = field;
+
+            printf("\nID: %s",component->fields[component->num_fields]->variable->expr->data.str);
+            fflush(stdout);
+            
             component->num_fields += 1;
         }
     }
