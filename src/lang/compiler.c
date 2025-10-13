@@ -39,6 +39,7 @@ void compile(char* file_name)
 
     // Post-Config generation
     append_component_dependencies(table);
+    symbolize_fields(table, symbol_table);
     if(verify_components(table) == 1)
     {
         fprintf(stderr, "Error: Circular dependency detected!");
@@ -99,7 +100,7 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
             }
             
             macro->value = eval(macro->expr, global_symbols, (SymbolNode_t*)local_scope->value);
-            
+
             // Print the macro to the file
             fprintf(file, "#define %s%s%i", macro->identifier, " ", macro->value);
             fprintf(file, "\n");
@@ -131,10 +132,7 @@ void config(HashTable_t* components, SymbolNode_t* global)
             char* val;
             scanf("%s", &val);
 
-            printf("Flag");
-            fflush(stdout);
-            
-            field->variable->value = string_to_value(INT_T, val);
+            field->variable->expr->data.str = val;
         }
     }
 }

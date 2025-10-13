@@ -56,5 +56,5 @@ Value_t init_value(TYPE type, int data);
 Value_t string_to_value(TYPE type, const char* str);
 bool str_to_bool(const char* str);
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope);
-
+void symbolize_fields(HashTable_t* registry, SymbolNode_t* root);
 #endif

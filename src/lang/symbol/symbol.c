@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdlib.h>
+#include "lang/component/component.h"
 
 ////////////////////////////////////////////////////////////////////
 // Value_t
@@ -104,9 +105,8 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
 
             if(insert_hash(symbol_node->children, block, element_name))
                 fprintf(stderr, "\nError: Variable redeclaration detected!");
-
         }
-        else if(child->type == VARIABLE_DECL_AST || child->type == FIELD_AST)
+        else if(child->type == VARIABLE_DECL_AST)
         {
             Symbol_t* symbol;
 
@@ -133,6 +133,31 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node)
     }
 
     return symbol_node;
+}
+
+void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
+{
+    for(int i = 0; i < registry->hash_max; i++)
+    {
+        if(registry->contents[i] == NULL)
+            continue;
+
+        Component_t* component = (Component_t*)registry->contents[i]->value;
+
+        size_t index = get_hash_pos(root->children, component->identifier);
+        SymbolNode_t* node = (SymbolNode_t*)root->children->contents[index]->value;
+        for(int j = 0; j < component->num_fields; j++)
+        {
+            Field_t* field = component->fields[j];
+            Symbol_t* symbol = field->variable;
+
+            if(insert_hash(node->symbols, symbol, symbol->identifier))
+            {
+                fprintf(stderr, "Error: Variable declaration error!");
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
 }
 
 // Return the int value of a variable
@@ -194,7 +219,6 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
     return init_value(UNKNOWN_T, 0);
 }
 
-
 // Evaluate an expression AST and return its integer value
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 {
@@ -210,6 +234,7 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 
     AST_TYPE type = node->type;
 
+
     // Baes cases: literals and identifiers
     if(type == INT_AST)
         return string_to_value(INT_T, node->data.str).value;
@@ -217,6 +242,7 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
         return string_to_value(BOOL_T, node->data.str).value;
     else if(type == IDEN_AST)
         return get_identifier_value(node, table, scope).value;
+
 
     ASTNode_t* left;
     ASTNode_t* right;
