@@ -5,14 +5,14 @@ DEFINE important_block
 {
     SUBSYSTEM not_important_subsystem
 
-    INT my_bool = 2/9 + 1
+    INT my_bool = 2*8 + 1
 
     FIELD yummy 
         DEFAULT 128
     FIELD my_num 
         DEFAULT 12
 
-    MACRO MY_MACRO my_bool + 2
+    MACRO MY_MACRO yummy
     MACRO IMPORTANT_BLOCK_ENABLED boolean
     DEPENDENCIES
     [

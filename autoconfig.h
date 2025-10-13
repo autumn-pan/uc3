@@ -1,2 +1,2 @@
-#define MY_MACRO 3
+#define MY_MACRO 128
 #define IMPORTANT_BLOCK_ENABLED 1

@@ -222,8 +222,20 @@ bool append_component_dependencies(HashTable_t* registry)
 
             dependency_append(component, (Component_t*)(registry->contents[index]->value));
         }
+    }
 
-        // Also, find any FIELD nodes
+    return true;
+}
+
+void append_component_fields(HashTable_t* registry)
+{
+    for(int i = 0; i < registry->hash_max; i++)
+    {
+        if(registry->contents[i] == NULL)
+            continue;
+
+        Component_t* component = (Component_t*)registry->contents[i]->value;
+
         ASTNode_t* field_node;
         for(int j = 0; j < component->node->children[0]->num_children; j++)
         {
@@ -236,7 +248,7 @@ bool append_component_dependencies(HashTable_t* registry)
 
             // The first child of a FIELD node is its required default
             if(!field_node->children[0])
-                return false;
+                return;
 
             Symbol_t* symbol = init_symbol(
                 field_node,
@@ -245,7 +257,7 @@ bool append_component_dependencies(HashTable_t* registry)
             );
 
             if(!symbol)
-                return NULL;
+                return;
 
             Field_t* field = init_field(
                 symbol, 
@@ -253,12 +265,10 @@ bool append_component_dependencies(HashTable_t* registry)
             );
 
             if(!field)
-                return NULL;
+                return;
 
             component->fields[component->num_fields] = field;
             component->num_fields += 1;
         }
     }
-
-    return true;
 }

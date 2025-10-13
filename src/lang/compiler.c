@@ -17,6 +17,7 @@ void dump_tokenstream(TokenStream* tokenstream)
     }
 }
 
+// Compiles a uc3 script
 void compile(char* file_name)
 {
     // Tokenize the source code
@@ -29,6 +30,7 @@ void compile(char* file_name)
     HashTable_t* table = init_component_registry(root);
 
     SymbolNode_t* symbol_table = symbolize_ast(root);
+    append_component_fields(table);
 
     ///////////////////////////////////////////
     // User Configuration should happen here //
@@ -115,6 +117,7 @@ void config(HashTable_t* components, SymbolNode_t* global)
 
         Component_t* component = (Component_t*)components->contents[i]->value;
         printf("\nConfiguring %s", component->identifier);
+        printf("\nFields to Configure: %i", component->num_fields);
         fflush(stdout);
 
         for(int j = 0; j < component->num_fields; j++)
@@ -124,6 +127,14 @@ void config(HashTable_t* components, SymbolNode_t* global)
             
             Field_t* field = component->fields[j];
             printf("\n%s: ", field->variable->identifier);
+
+            char* val;
+            scanf("%s", &val);
+
+            printf("Flag");
+            fflush(stdout);
+            
+            field->variable->value = string_to_value(INT_T, val);
         }
     }
 }
