@@ -31,15 +31,14 @@ void compile(char* file_name)
 
     SymbolNode_t* symbol_table = symbolize_ast(root);
     append_component_fields(table);
+    symbolize_fields(table, symbol_table);
 
     ///////////////////////////////////////////
     // User Configuration should happen here //
-    ///////////////////////////////////////////
-    config(table, symbol_table);
-    
+    ///////////////////////////////////////////    
     // Post-Config generation
     append_component_dependencies(table);
-    symbolize_fields(table, symbol_table);
+    
     if(verify_components(table) == 1)
     {
         fprintf(stderr, "Error: Circular dependency detected!");
@@ -126,7 +125,7 @@ void config(HashTable_t* components, SymbolNode_t* global)
                 continue;
             
             Field_t* field = component->fields[j];
-            printf("\n%s: ", field->variable->identifier);
+            printf("\n\t%s: ", field->variable->identifier);
 
             char* val;
             scanf("%s", &val);

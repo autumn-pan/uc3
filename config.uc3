@@ -10,5 +10,5 @@ DEFINE important_block
     FIELD yummy 
         DEFAULT 128
 
-    MACRO MY_MACRO 1
+    MACRO MY_MACRO yummy
 }

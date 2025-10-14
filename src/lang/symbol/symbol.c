@@ -146,21 +146,20 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
         size_t index = get_hash_pos(root->children, component->identifier);
 
         SymbolNode_t* node = (SymbolNode_t*)root->children->contents[index]->value;
-        if(!node)
+        if(!node || !node->symbols)
         {
             fprintf(stderr, "Error: Component not registered!");
         }
 
+        printf("\nNode: %s", component->identifier);
+        fflush(stdout);
+
         for(int j = 0; j < component->num_fields; j++)
         {
             Field_t* field = component->fields[j];
-
-            printf(field->variable->identifier);
-            fflush(stdout);
-
             Symbol_t* symbol = field->variable;
 
-            printf("\nPlaceholder: %s", symbol->expr->data.str);
+            printf("\nPlaceholder: %s", symbol->identifier);
             fflush(stdout);
 
             if(insert_hash(node->symbols, symbol, symbol->identifier))
@@ -168,14 +167,20 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
                 fprintf(stderr, "Error: Variable declaration error!");
                 exit(EXIT_FAILURE);
             }
+
+            // Debug
+            int index = get_hash_pos(node->symbols, symbol->identifier);
+            printf("\nIndex: %i", index);
+            fflush(stdout);
         }
     }
 }
 
 // Return the int value of a variable
 Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, SymbolNode_t* scope)
-{
+{   
     char* identifier = node->data.str;
+
     if(!identifier)
     {
         fprintf(stderr, "Error: requested node has no identifier!");
@@ -191,12 +196,6 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         exit(EXIT_FAILURE);
     }
 
-    /*  
-    Currently, acope is two-layered. It's only possible to have the global scope,
-    as well as one layer of scope for each component. Blocks and conditional trees
-    will not be included in the first release.
-    */
-
     // Check global index
     var_index = get_hash_pos(symbol_table->symbols, identifier);
     if(var_index == ULONG_MAX)
@@ -207,6 +206,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
             return init_value(UNKNOWN_T, 0);
 
         var_index = get_hash_pos(scope->symbols, identifier);
+
         // Check local scope if global scope is invalid
         if(var_index == ULONG_MAX)
         {
@@ -215,7 +215,15 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
         else
         {
-            printf("\nFlag");
+            printf("\nIndex: %i", var_index);
+            fflush(stdout);
+
+            if(!scope->symbols->contents[var_index])
+            {
+                fprintf(stderr, "\nError: Identifier '%s'%s", identifier, " is not defined in scope!");
+                exit(EXIT_FAILURE);
+            }
+
             symbol = (Symbol_t*)scope->symbols->contents[var_index]->value;
         }
     }
@@ -230,10 +238,11 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
     }
 
-    printf("\nChildren: %s", symbol->identifier);
+    printf(symbol->expr->data.str);
     fflush(stdout);
 
     int val = eval(symbol->expr, symbol_table, scope);
+
     return init_value(INT_T, val);
 
     // Return unknown if the identifier was not found
@@ -263,14 +272,12 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     else if(type == IDEN_AST)
         return get_identifier_value(node, table, scope).value;
 
-    printf("\nType: %i", node->type);
     ASTNode_t* left;
     ASTNode_t* right;
 
     // Error: Unrecognized expression node
     if(!node->children[0] || !node->children[1])
     {
-        printf("\nType: %i", type);
         fprintf(stderr, "Error: Binary operator node is missing children!");
         return -1;
     }
