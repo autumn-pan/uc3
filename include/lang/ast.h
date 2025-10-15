@@ -68,9 +68,6 @@ typedef struct
     char* component_dependencies[PROJECT_HEADER_MAX_CHILDREN];
 } ProjectHeader_t;
 
-
-
 ASTNode_t* init_ast(AST_TYPE type, char* value);
 void ast_append(ASTNode_t* node, ASTNode_t* child);
-
 #endif

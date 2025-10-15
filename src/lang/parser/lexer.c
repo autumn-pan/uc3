@@ -257,14 +257,10 @@ Token* next_token(Lexer* lexer)
     }
 
     if(in_array(OPERATORS, op, SIZEOF_OPERATORS))
-    {
         return init_token(OPERATOR_TOKEN, op, lexer->line, lexer->column);
-    }
 
     if(misc_token_type != NULL_TOKEN)
-    {
         return init_token(misc_token_type, temp, lexer->line, lexer->column);
-    }
 
     if(lexer->src[lexer->pos] == '\0')
         return NULL;
@@ -313,7 +309,9 @@ void append_token(TokenStream* ts, Token* token)
     if (ts->head == NULL) { // Empty list
         ts->head = token;
         ts->tail = token;
-    } else {
+    }
+    else 
+    {
         ts->tail->next = token;
         ts->tail = token;
     }
@@ -330,5 +328,6 @@ void free_tokenstream(TokenStream* ts)
         free(token);
         token = tmp;
     }
+    
     free(ts);
 }

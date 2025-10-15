@@ -7,6 +7,10 @@
 #include <stdio.h>
 #include "lang/symbol/symbol.h"
 
+void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols);
+void config(HashTable_t* components);
+
+// Writes the entire tokenstream to stdout for debugging
 void dump_tokenstream(TokenStream* tokenstream)
 {
     Token* token = tokenstream->head;
@@ -121,6 +125,7 @@ void config(HashTable_t* components)
         printf("\nConfiguring %s", component->identifier);
         printf("\nFields to Configure (enter only integers): %i", component->num_fields);
 
+        // Prompt users for configs
         for(int j = 0; j < component->num_fields; j++)
         {
             if(component->fields[j] == NULL)
@@ -129,12 +134,13 @@ void config(HashTable_t* components)
             Field_t* field = component->fields[j];
             printf("\n\t%s: ", field->variable->identifier);
 
+            // Prompt the user for a config value
             int val;
             scanf("%i", &val);
             char* out = malloc(16);
-
             sprintf(out, "%i", val);
 
+            // Write config to the appropriate field expression
             if(!field->variable->expr->data.str)
             {
                 fprintf(stderr, "Error: Field '%s' has null expression!", field->variable->identifier);

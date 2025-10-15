@@ -44,7 +44,7 @@ void macro_append(Component_t* node, Macro_t* child)
     node->macros[node->num_macros - 1] = child;
 }
 
-// Append a component node's macros to its corresponding component
+// Append a component node's macros to its corresponding component struct
 void parse_component_macros(Component_t* component)
 {
     ASTNode_t* block = component->node->children[0];
@@ -68,7 +68,6 @@ void parse_component_macros(Component_t* component)
     }
 }
 
-// Constructor for Component_t
 Component_t* init_component(ASTNode_t* node)
 {
     if(!node)
