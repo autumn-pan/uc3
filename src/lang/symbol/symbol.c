@@ -206,17 +206,11 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
         else
         {
-            printf("\nIndex: %i", var_index);
-            fflush(stdout);
-
             if(!scope->symbols->contents[var_index])
             {
                 fprintf(stderr, "\nError: Identifier '%s'%s", identifier, " is not defined in scope!");
                 exit(EXIT_FAILURE);
             }
-
-            printf("\nFlag");
-            fflush(stdout);
             
             symbol = (Symbol_t*)scope->symbols->contents[var_index]->value;
         }
@@ -232,9 +226,6 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
     }
 
-    printf("\nData: %s", symbol->expr->data.str);
-    fflush(stdout);
-
     int val = eval(symbol->expr, symbol_table, scope);
 
     return init_value(INT_T, val);
@@ -246,9 +237,6 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
 // Evaluate an expression AST and return its integer value
 int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
 {
-    if(!scope)
-        printf("\nDebug: Scope is missing!");
-
     // Ensure that the node is not null
     if(!node)
     {
@@ -266,15 +254,15 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope)
     else if(type == IDEN_AST)
         return get_identifier_value(node, table, scope).value;
 
-    ASTNode_t* left;
-    ASTNode_t* right;
-
-    // Error: Unrecognized expression node
+    // The compiler should now expect a binary operator node
     if(!node->children[0] || !node->children[1])
     {
         fprintf(stderr, "Error: Binary operator node is missing children!");
         return -1;
     }
+
+    ASTNode_t* left;
+    ASTNode_t* right;
 
     left = node->children[0];
     right = node->children[1];

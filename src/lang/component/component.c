@@ -268,10 +268,6 @@ void append_component_fields(HashTable_t* registry)
                 return;
 
             component->fields[component->num_fields] = field;
-
-            printf("\nID: %s",component->fields[component->num_fields]->variable->expr->data.str);
-            fflush(stdout);
-            
             component->num_fields += 1;
         }
     }

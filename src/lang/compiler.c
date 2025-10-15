@@ -119,8 +119,7 @@ void config(HashTable_t* components)
         Component_t* component = (Component_t*)components->contents[i]->value;
 
         printf("\nConfiguring %s", component->identifier);
-        printf("\nFields to Configure: %i", component->num_fields);
-        fflush(stdout);
+        printf("\nFields to Configure (enter only integers): %i", component->num_fields);
 
         for(int j = 0; j < component->num_fields; j++)
         {
@@ -142,9 +141,6 @@ void config(HashTable_t* components)
             }
             
             field->variable->expr->data.str = out;
-
-            printf("\nVal: %i", atoi(field->variable->expr->data.str));
-            fflush(stdout);
         }
     }
 }
