@@ -17,20 +17,20 @@ highly modular system.
 
 // Types of abstract syntax tree nodes
 typedef enum {
-  ROOT_AST,    // The root of the entire abstract syntax tree, contains every
-               // global definition
-  HEADER_AST,  // Declares a project's required components and subsystems
-  DEFINITION_AST,     // Declares a component
-  SUBSYSTEM_AST,      // Declares a subsystem
-  CONFIGURATION_AST,  // Defunct, but configures a component
-  FIELD_AST,    // Declares a value associated with a component that can be
-                // configured
-  DEFAULT_AST,  // Defines the default value for a FIELD. Defaults are required
-                // and non-optional.
-  LIST_AST,     // Stores an array of literals or identifiers
-  IDEN_AST,     // Refers to another subsystem or variable
-  DEPENDENCY_AST,  // Declares which components or subsystems a component needs.
-                   // Analogous with KConfig depends_on
+  ROOT_AST,       // The root of the entire abstract syntax tree, contains every
+                  // global definition
+  HEADER_AST,     // Declares a project's required components and subsystems
+  DEFINITION_AST, // Declares a component
+  SUBSYSTEM_AST,  // Declares a subsystem
+  CONFIGURATION_AST, // Defunct, but configures a component
+  FIELD_AST,         // Declares a value associated with a component that can be
+                     // configured
+  DEFAULT_AST, // Defines the default value for a FIELD. Defaults are required
+               // and non-optional.
+  LIST_AST,    // Stores an array of literals or identifiers
+  IDEN_AST,    // Refers to another subsystem or variable
+  DEPENDENCY_AST, // Declares which components or subsystems a component needs.
+                  // Analogous with KConfig depends_on
   PLACEHOLDER_AST,
   VARIABLE_DECL_AST,
   BLOCK_AST,
@@ -53,11 +53,11 @@ typedef enum {
 
 typedef struct node {
   AST_TYPE type;
-  struct node** children;
+  struct node **children;
   int num_children;
 
   union {
-    char* str;
+    char *str;
     char character;
     bool boolean;
     int integer;
@@ -68,9 +68,9 @@ typedef struct node {
 // Defines the intrinsic components for a project. UC3 will refuse to compile if
 // any modules are missing.
 typedef struct {
-  char* component_dependencies[PROJECT_HEADER_MAX_CHILDREN];
+  char *component_dependencies[PROJECT_HEADER_MAX_CHILDREN];
 } ProjectHeader_t;
 
-ASTNode_t* init_ast(AST_TYPE type, char* value);
-void ast_append(ASTNode_t* node, ASTNode_t* child);
+ASTNode_t *init_ast(AST_TYPE type, char *value);
+void ast_append(ASTNode_t *node, ASTNode_t *child);
 #endif

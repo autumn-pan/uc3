@@ -12,18 +12,19 @@
 ////////////////////////////////////////////////////
 
 // DBJ2 Hashing Algorithm
-unsigned long hash(const char* key, unsigned long hash_limit) {
+unsigned long hash(const char *key, unsigned long hash_limit) {
   uint32_t hash = 5381;
   uint32_t c;
 
-  while (c = *key++) hash = ((hash << 5) + hash) + c;
+  while (c = *key++)
+    hash = ((hash << 5) + hash) + c;
 
   return hash % hash_limit;
 }
 
 // Constructor for hash tables
-HashTable_t* init_hash_table(int hash_max) {
-  HashTable_t* table = malloc(sizeof(HashTable_t));
+HashTable_t *init_hash_table(int hash_max) {
+  HashTable_t *table = malloc(sizeof(HashTable_t));
   if (!table) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
@@ -31,7 +32,7 @@ HashTable_t* init_hash_table(int hash_max) {
   // Maximum number of hash elements in the table
   table->hash_max = hash_max;
 
-  table->contents = malloc(sizeof(HashElement_t*) * table->hash_max);
+  table->contents = malloc(sizeof(HashElement_t *) * table->hash_max);
   if (!table->contents) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
@@ -42,8 +43,8 @@ HashTable_t* init_hash_table(int hash_max) {
   return table;
 }
 
-HashElement_t* init_hash_element(void* value, const char* key) {
-  HashElement_t* element = malloc(sizeof(HashElement_t));
+HashElement_t *init_hash_element(void *value, const char *key) {
+  HashElement_t *element = malloc(sizeof(HashElement_t));
 
   if (!element) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
@@ -57,14 +58,15 @@ HashElement_t* init_hash_element(void* value, const char* key) {
 }
 
 // Returns true and quits early if there is a duplicate
-bool insert_hash(HashTable_t* table, void* value, const char* key) {
+bool insert_hash(HashTable_t *table, void *value, const char *key) {
   table->num_elements++;
 
   uint32_t index = hash(key, table->hash_max);
-  HashElement_t* symbol = init_hash_element(value, key);
+  HashElement_t *symbol = init_hash_element(value, key);
 
   while (table->contents[index] != NULL) {
-    if (strcmp(table->contents[index]->key, key) == 0) return true;
+    if (strcmp(table->contents[index]->key, key) == 0)
+      return true;
 
     index = (index + 1) % table->hash_max;
   }
@@ -74,7 +76,7 @@ bool insert_hash(HashTable_t* table, void* value, const char* key) {
   // Double hash limit if table runs out of space
   while (table->num_elements >= table->hash_max / 2) {
     table->hash_max *= 2;
-    HashElement_t** tmp = malloc(sizeof(HashElement_t*) * table->hash_max);
+    HashElement_t **tmp = malloc(sizeof(HashElement_t *) * table->hash_max);
 
     // Rehash all symbols
     for (int i = 0; i < table->hash_max / 2; i++) {
@@ -99,8 +101,9 @@ bool insert_hash(HashTable_t* table, void* value, const char* key) {
 
 // Get the index of a key in a hash table, if present. Returns ULONG_MAX is
 // absent.
-unsigned long get_hash_pos(HashTable_t* table, const char* key) {
-  if (!table || !key) return ULONG_MAX;
+unsigned long get_hash_pos(HashTable_t *table, const char *key) {
+  if (!table || !key)
+    return ULONG_MAX;
 
   int index = hash(key, table->hash_max);
 
@@ -116,8 +119,9 @@ unsigned long get_hash_pos(HashTable_t* table, const char* key) {
 }
 
 // Removes and frees a symbol from a hash table
-void delete_symbol(HashTable_t* table, char* key) {
-  if (get_hash_pos(table, key) == ULONG_MAX) exit(EXIT_FAILURE);
+void delete_symbol(HashTable_t *table, char *key) {
+  if (get_hash_pos(table, key) == ULONG_MAX)
+    exit(EXIT_FAILURE);
 
   unsigned long index = get_hash_pos(table, key);
 

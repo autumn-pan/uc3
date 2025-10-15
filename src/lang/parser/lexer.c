@@ -8,18 +8,18 @@
 
 #include "lang/symbol/symbol.h"
 
-const char* KEYWORDS[] = {
-    "DEFINE",   // Define a module
-    "CONFIG",   // Configure a module
-    "ENABLED",  // Whether or not a module is enabled
-    "FIELD",  // A custom field of any type created in module definition, allows
-              // for customization
-    "DEPENDENCIES",  // Defines what modules must exist for a certain module to
-                     // work
-    "NOTE",  // A short string associated with modules for simple descriptions
-             // or notes
-    "DEFAULT",       // Used in definitions to set the default value of a field
-    "DEPENDENCIES",  // Used to declare a list of component dependencies
+const char *KEYWORDS[] = {
+    "DEFINE",  // Define a module
+    "CONFIG",  // Configure a module
+    "ENABLED", // Whether or not a module is enabled
+    "FIELD", // A custom field of any type created in module definition, allows
+             // for customization
+    "DEPENDENCIES", // Defines what modules must exist for a certain module to
+                    // work
+    "NOTE",    // A short string associated with modules for simple descriptions
+               // or notes
+    "DEFAULT", // Used in definitions to set the default value of a field
+    "DEPENDENCIES", // Used to declare a list of component dependencies
     "MACRO",
 
     // Data Types
@@ -27,22 +27,22 @@ const char* KEYWORDS[] = {
     "BOOL",
 };
 
-const char* BOOLEAN_KEYWORDS[] = {"true", "false"};
+const char *BOOLEAN_KEYWORDS[] = {"true", "false"};
 
-const char* OPERATORS[] = {
+const char *OPERATORS[] = {
     "=",
-    "||",  // OR operator
-    "&&",  // AND operator
-    "!",   // NOT operator
-    "==",  // Equivalence operator
+    "||", // OR operator
+    "&&", // AND operator
+    "!",  // NOT operator
+    "==", // Equivalence operator
     "<",  ">", ">=", "<=", "!=", "!", "*", "/", "+", "-"};
 
 // What characters comprise chars; Necessary for multi-char operators
-const char* OPERATOR_CHARS[] = {"=", "|", "&", "!", "<", ">",
+const char *OPERATOR_CHARS[] = {"=", "|", "&", "!", "<", ">",
                                 "+", "*", "=", "-", "/"};
 
 // Returns the appropriate data type of a string
-enum TOKEN_TYPE str_to_datatype(char* str) {
+enum TOKEN_TYPE str_to_datatype(char *str) {
   if (strcmp(str, "INT") == 0)
     return INT_TOKEN;
   else if (strcmp(str, "BOOL") == 0)
@@ -52,8 +52,8 @@ enum TOKEN_TYPE str_to_datatype(char* str) {
 }
 
 // Constructor for lexer struct
-Lexer* init_lexer(const char* src) {
-  Lexer* lexer = malloc(sizeof(Lexer));
+Lexer *init_lexer(const char *src) {
+  Lexer *lexer = malloc(sizeof(Lexer));
   if (!lexer) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
@@ -74,30 +74,32 @@ Lexer* init_lexer(const char* src) {
 //////////////////////////////////////////////////////////////
 /// String Utils
 //////////////////////////////////////////////////////////////
-void cat_char(char* str, char c) {
+void cat_char(char *str, char c) {
   char temp[2] = {c, '\0'};
   strcat(str, temp);
 }
 
-bool in_array(const char* arr[], const char* key, uint8_t size) {
+bool in_array(const char *arr[], const char *key, uint8_t size) {
   // For every string of the array
   for (int i = 0; i < size; i++) {
-    if (strcmp(arr[i], key) == 0) return true;  // If they are equal, return
-                                                // true
+    if (strcmp(arr[i], key) == 0)
+      return true; // If they are equal, return
+                   // true
   }
   // If no string matches, return false
   return false;
 }
 
-bool is_whitespace(Lexer* lexer) {
+bool is_whitespace(Lexer *lexer) {
   char c = lexer->src[lexer->pos];
   // Check if it is a space, tab, or newline
-  if (c == ' ' || c == '\t' || c == '\n') return true;
+  if (c == ' ' || c == '\t' || c == '\n')
+    return true;
   // If not, return false
   return false;
 }
 
-void skip_whitespace(Lexer* lexer) {
+void skip_whitespace(Lexer *lexer) {
   while (is_whitespace(lexer)) {
     advance(lexer);
   }
@@ -108,9 +110,9 @@ void skip_whitespace(Lexer* lexer) {
 //////////////////////////////////////////////////////////////
 
 // Constructor for token struct
-Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line,
+Token *init_token(enum TOKEN_TYPE type, char *str, uint32_t line,
                   uint32_t col) {
-  Token* token = (malloc(sizeof(Token)));
+  Token *token = (malloc(sizeof(Token)));
   if (!token) {
     fprintf(stderr, "Error: Failed to allocate memory!");
     exit(EXIT_FAILURE);
@@ -126,8 +128,9 @@ Token* init_token(enum TOKEN_TYPE type, char* str, uint32_t line,
 }
 
 // Returns the next char in the source code
-char peek(Lexer* lexer) {
-  if (!lexer || lexer->pos + 1 >= lexer->length) return '\0';
+char peek(Lexer *lexer) {
+  if (!lexer || lexer->pos + 1 >= lexer->length)
+    return '\0';
 
   char c = lexer->src[lexer->pos + 1];
 
@@ -135,7 +138,7 @@ char peek(Lexer* lexer) {
 }
 
 // Move the lexer forward
-char advance(Lexer* lexer) {
+char advance(Lexer *lexer) {
   char c = lexer->src[lexer->pos];
   lexer->pos++;
   lexer->column++;
@@ -150,7 +153,7 @@ char advance(Lexer* lexer) {
 }
 
 // Return the next token from the source code
-Token* next_token(Lexer* lexer) {
+Token *next_token(Lexer *lexer) {
   skip_whitespace(lexer);
 
   // The value of the next token, as a string
@@ -176,16 +179,16 @@ Token* next_token(Lexer* lexer) {
   }
 
   // Check if the string is a number
-  if (isdigit(lexer->src[lexer->pos]))  // Checks for a numeric literal
+  if (isdigit(lexer->src[lexer->pos])) // Checks for a numeric literal
   {
-    while (isdigit(lexer->src[lexer->pos]))  // Initiates the first component of
-                                             // the literal
+    while (isdigit(lexer->src[lexer->pos])) // Initiates the first component of
+                                            // the literal
     {
       cat_char(str, (advance(lexer)));
     }
 
     return init_token(INT_TOKEN, str, lexer->line,
-                      lexer->column);  // Return int literal
+                      lexer->column); // Return int literal
   }
 
   // Check if the next token is a miscellaneous token
@@ -193,22 +196,22 @@ Token* next_token(Lexer* lexer) {
 
   char temp[2] = {current_char, '\0'};
   switch (current_char) {
-    case '{':
-      misc_token_type = LBRACE_TOKEN;
-      advance(lexer);
-      break;
-    case '}':
-      misc_token_type = RBRACE_TOKEN;
-      advance(lexer);
-      break;
-    case '[':
-      misc_token_type = LSQBRACE_TOKEN;
-      advance(lexer);
-      break;
-    case ']':
-      misc_token_type = RSQBRACE_TOKEN;
-      advance(lexer);
-      break;
+  case '{':
+    misc_token_type = LBRACE_TOKEN;
+    advance(lexer);
+    break;
+  case '}':
+    misc_token_type = RBRACE_TOKEN;
+    advance(lexer);
+    break;
+  case '[':
+    misc_token_type = LSQBRACE_TOKEN;
+    advance(lexer);
+    break;
+  case ']':
+    misc_token_type = RSQBRACE_TOKEN;
+    advance(lexer);
+    break;
   }
 
   char op[16] = "";
@@ -225,15 +228,16 @@ Token* next_token(Lexer* lexer) {
   if (misc_token_type != NULL_TOKEN)
     return init_token(misc_token_type, temp, lexer->line, lexer->column);
 
-  if (lexer->src[lexer->pos] == '\0') return NULL;
+  if (lexer->src[lexer->pos] == '\0')
+    return NULL;
 
   fprintf(stderr, "Error: Unknown char '%c'", lexer->src[lexer->pos]);
 }
 
-TokenStream* tokenize(Lexer* lexer) {
-  TokenStream* token_stream = init_tokenstream();
+TokenStream *tokenize(Lexer *lexer) {
+  TokenStream *token_stream = init_tokenstream();
 
-  Token* token = next_token(lexer);
+  Token *token = next_token(lexer);
 
   while (token) {
     append_token(token_stream, token);
@@ -247,8 +251,8 @@ TokenStream* tokenize(Lexer* lexer) {
 /// Token Stream and Utils
 //////////////////////////////////////////////////////////////
 
-TokenStream* init_tokenstream() {
-  TokenStream* token_stream = (malloc(sizeof(TokenStream)));
+TokenStream *init_tokenstream() {
+  TokenStream *token_stream = (malloc(sizeof(TokenStream)));
   if (!token_stream) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
@@ -260,10 +264,10 @@ TokenStream* init_tokenstream() {
   return token_stream;
 }
 
-void append_token(TokenStream* ts, Token* token) {
+void append_token(TokenStream *ts, Token *token) {
   token->next = NULL;
 
-  if (ts->head == NULL) {  // Empty list
+  if (ts->head == NULL) { // Empty list
     ts->head = token;
     ts->tail = token;
   } else {
@@ -274,10 +278,10 @@ void append_token(TokenStream* ts, Token* token) {
   ts->size++;
 }
 
-void free_tokenstream(TokenStream* ts) {
-  Token* token = ts->head;
+void free_tokenstream(TokenStream *ts) {
+  Token *token = ts->head;
   while (token) {
-    Token* tmp = token->next;
+    Token *tmp = token->next;
     free(token);
     token = tmp;
   }

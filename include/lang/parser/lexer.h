@@ -33,43 +33,43 @@ enum TOKEN_TYPE {
   RPAR_TOKEN
 };
 
-extern const char* KEYWORDS[];
+extern const char *KEYWORDS[];
 
 typedef struct token {
   enum TOKEN_TYPE type;
-  struct token* next;
+  struct token *next;
   char value[64];
   int line;
   int column;
 } Token;
 
 typedef struct {
-  Token* head;
-  Token* tail;
+  Token *head;
+  Token *tail;
   uint32_t size;
 } TokenStream;
 
 typedef struct {
-  const char* src;  // Pointer to source code
-  int length;       // Length of source code
-  int pos;          // Current index in source
-  int line;         // Line number for error reporting
-  int column;       // Column number for debugging
+  const char *src; // Pointer to source code
+  int length;      // Length of source code
+  int pos;         // Current index in source
+  int line;        // Line number for error reporting
+  int column;      // Column number for debugging
 } Lexer;
 
-enum TOKEN_TYPE str_to_datatype(char* str);
+enum TOKEN_TYPE str_to_datatype(char *str);
 
-char advance(Lexer* lexer);
-Lexer* init_lexer(const char* str);
-Token* init_token(enum TOKEN_TYPE type, char* value, uint32_t line,
+char advance(Lexer *lexer);
+Lexer *init_lexer(const char *str);
+Token *init_token(enum TOKEN_TYPE type, char *value, uint32_t line,
                   uint32_t column);
-TokenStream* tokenize(Lexer* lexer);
-TokenStream* init_tokenstream();
-void append_token(TokenStream* ts, Token* token);
+TokenStream *tokenize(Lexer *lexer);
+TokenStream *init_tokenstream();
+void append_token(TokenStream *ts, Token *token);
 
-void free_tokenstream(TokenStream* ts);
-char* to_string(const char character);
+void free_tokenstream(TokenStream *ts);
+char *to_string(const char character);
 
-bool in_array(const char* arr[], const char* key, uint8_t size);
+bool in_array(const char *arr[], const char *key, uint8_t size);
 
 #endif

@@ -6,13 +6,13 @@
 
 #include "lang/parser/lexer.h"
 
-ASTNode_t* parse_expression(Parser_t* parser);
+ASTNode_t *parse_expression(Parser_t *parser);
 
 //////////////////////////////////////////////////////////////
 // Utils
 //////////////////////////////////////////////////////////////
 
-void syntax_error(char* expected, char* found) {
+void syntax_error(char *expected, char *found) {
   fprintf(stderr, "Syntax Error: expected %s%s%s", expected, ", found ", found);
   exit(EXIT_FAILURE);
 }
@@ -26,14 +26,14 @@ void point_error(size_t line, size_t column) {
 // Returns NULL if the token is not a data type
 int token_to_ast_type(enum TOKEN_TYPE type) {
   switch (type) {
-    case (INT_TOKEN):
-      return INT_AST;
-    case (BOOL_TOKEN):
-      return BOOL_AST;
-    case (IDENTIFIER_TOKEN):
-      return IDEN_AST;
-    default:
-      return NULL_AST;
+  case (INT_TOKEN):
+    return INT_AST;
+  case (BOOL_TOKEN):
+    return BOOL_AST;
+  case (IDENTIFIER_TOKEN):
+    return IDEN_AST;
+  default:
+    return NULL_AST;
   }
 }
 
@@ -41,8 +41,8 @@ int token_to_ast_type(enum TOKEN_TYPE type) {
 // Parser
 //////////////////////////////////////////////////////////////
 
-Parser_t* init_parser(TokenStream* ts, Lexer* lexer) {
-  Parser_t* parser = (malloc(sizeof(Parser_t)));
+Parser_t *init_parser(TokenStream *ts, Lexer *lexer) {
+  Parser_t *parser = (malloc(sizeof(Parser_t)));
   if (!parser) {
     fprintf(stderr, "Error: Failed to allocate memory!");
     exit(EXIT_FAILURE);
@@ -59,8 +59,9 @@ Parser_t* init_parser(TokenStream* ts, Lexer* lexer) {
   return parser;
 }
 
-Token* get_next_token(Parser_t* p) {
-  if (!p->ptr) return NULL;
+Token *get_next_token(Parser_t *p) {
+  if (!p->ptr)
+    return NULL;
 
   if (p->pos < p->len - 1) {
     return p->ptr->next;
@@ -68,7 +69,7 @@ Token* get_next_token(Parser_t* p) {
   return NULL;
 }
 
-bool advance_parser(Parser_t* parser) {
+bool advance_parser(Parser_t *parser) {
   if (parser->pos < parser->len && parser->ptr) {
     parser->pos++;
     parser->ptr = parser->ptr->next;
@@ -76,16 +77,17 @@ bool advance_parser(Parser_t* parser) {
     parser->line = parser->ptr->line;
     parser->column = parser->ptr->column;
 
-    if (!parser->ptr) return false;
+    if (!parser->ptr)
+      return false;
 
     return true;
   }
   return false;
 }
 
-char* match(Parser_t* p, enum TOKEN_TYPE type) {
+char *match(Parser_t *p, enum TOKEN_TYPE type) {
   if (p->pos < p->len && p->ptr->type == type) {
-    char* tmp = p->ptr->value;
+    char *tmp = p->ptr->value;
 
     advance_parser(p);
     return tmp;
@@ -94,7 +96,7 @@ char* match(Parser_t* p, enum TOKEN_TYPE type) {
 }
 
 // Advance parser and return true if the current token matches the key
-bool match_value(Parser_t* p, char* value) {
+bool match_value(Parser_t *p, char *value) {
   if (p->pos < p->len && strcmp(p->ptr->value, value) == 0 && p->ptr) {
     advance_parser(p);
     return true;
@@ -102,44 +104,52 @@ bool match_value(Parser_t* p, char* value) {
   return false;
 }
 
-ASTNode_t* parse_field(Parser_t* parser) {
-  if (!match_value(parser, "FIELD")) return NULL;
+ASTNode_t *parse_field(Parser_t *parser) {
+  if (!match_value(parser, "FIELD"))
+    return NULL;
 
-  char* node_identifier;
-  if (!(node_identifier = match(parser, IDENTIFIER_TOKEN))) return NULL;
+  char *node_identifier;
+  if (!(node_identifier = match(parser, IDENTIFIER_TOKEN)))
+    return NULL;
 
   if (!match_value(parser, "DEFAULT")) {
     fprintf(stderr, "Error: Expected a DEFAULT value to be set");
     point_error(parser->line, parser->column);
   }
 
-  char* val;
-  if (!(val = match(parser, INT_TOKEN))) return NULL;
+  char *val;
+  if (!(val = match(parser, INT_TOKEN)))
+    return NULL;
 
-  ASTNode_t* node = init_ast(FIELD_AST, node_identifier);
+  ASTNode_t *node = init_ast(FIELD_AST, node_identifier);
 
-  if (!node) return NULL;
+  if (!node)
+    return NULL;
 
   ast_append(node, init_ast(INT_AST, val));
   return node;
 }
 
-ASTNode_t* parse_subsystem(Parser_t* parser) {
-  if (!match_value(parser, "SUBSYSTEM")) return NULL;
+ASTNode_t *parse_subsystem(Parser_t *parser) {
+  if (!match_value(parser, "SUBSYSTEM"))
+    return NULL;
 
-  char* node_identifier;
-  if (!(node_identifier = match(parser, IDENTIFIER_TOKEN))) return NULL;
+  char *node_identifier;
+  if (!(node_identifier = match(parser, IDENTIFIER_TOKEN)))
+    return NULL;
 
-  ASTNode_t* node = init_ast(SUBSYSTEM_AST, node_identifier);
+  ASTNode_t *node = init_ast(SUBSYSTEM_AST, node_identifier);
 
   return node;
 }
 
-ASTNode_t* parse_variable_decl(Parser_t* parser) {
-  if (!parser->ptr) return NULL;
+ASTNode_t *parse_variable_decl(Parser_t *parser) {
+  if (!parser->ptr)
+    return NULL;
 
-  char* str = parser->ptr->value;
-  if (!(match_value(parser, "INT") || match_value(parser, "BOOL"))) return NULL;
+  char *str = parser->ptr->value;
+  if (!(match_value(parser, "INT") || match_value(parser, "BOOL")))
+    return NULL;
 
   enum TOKEN_TYPE declared_type = str_to_datatype(str);
 
@@ -148,18 +158,19 @@ ASTNode_t* parse_variable_decl(Parser_t* parser) {
     point_error(parser->line, parser->column);
   }
 
-  char* identifier;
+  char *identifier;
   if (!(identifier = match(parser, IDENTIFIER_TOKEN))) {
     fprintf(stderr, "Error: Expected identifier after variable declaration!");
     point_error(parser->line, parser->column);
   }
 
-  ASTNode_t* node = init_ast(VARIABLE_DECL_AST, identifier);
+  ASTNode_t *node = init_ast(VARIABLE_DECL_AST, identifier);
 
   // Set variable definition if applicable
-  if (!match_value(parser, "=")) return node;
+  if (!match_value(parser, "="))
+    return node;
 
-  ASTNode_t* child = parse_expression(parser);
+  ASTNode_t *child = parse_expression(parser);
 
   if (!child) {
     return NULL;
@@ -171,8 +182,9 @@ ASTNode_t* parse_variable_decl(Parser_t* parser) {
 
 // Check if a token can be placed in a list.
 // Only identifiers and literals are allowed in lists.
-bool is_list_compatible(Token* token) {
-  if (!token) return false;
+bool is_list_compatible(Token *token) {
+  if (!token)
+    return false;
 
   if (token->type == IDENTIFIER_TOKEN || token->type == INT_TOKEN ||
       token->type == STR_TOKEN || token->type == BOOL_TOKEN)
@@ -182,31 +194,33 @@ bool is_list_compatible(Token* token) {
 }
 
 // Parse a list into an AST subtree
-ASTNode_t* parse_list(Parser_t* parser) {
-  if (!match(parser, LSQBRACE_TOKEN)) return NULL;
+ASTNode_t *parse_list(Parser_t *parser) {
+  if (!match(parser, LSQBRACE_TOKEN))
+    return NULL;
 
   // Init root
-  ASTNode_t* node = init_ast(LIST_AST, "LIST");
+  ASTNode_t *node = init_ast(LIST_AST, "LIST");
 
   // append everything within the list as children of the list node
   while (is_list_compatible(parser->ptr) && parser->ptr->type != EOF &&
          parser->ptr) {
-    Token* token = parser->ptr;
+    Token *token = parser->ptr;
 
     // If the end of the tokenstream is hit early, quit
-    if (!parser->ptr) return NULL;
+    if (!parser->ptr)
+      return NULL;
 
     AST_TYPE type = PLACEHOLDER_AST;
 
     // Convert token type to AST type
     // TODO: consolidate types or create simpler conversions
     switch (token->type) {
-      case (INT_TOKEN):
-        type = INT_AST;
-        break;
-      case (IDENTIFIER_TOKEN):
-        type = IDEN_AST;
-        break;
+    case (INT_TOKEN):
+      type = INT_AST;
+      break;
+    case (IDENTIFIER_TOKEN):
+      type = IDEN_AST;
+      break;
     }
 
     // Quit if the type is unrecognized for whatever reason
@@ -217,8 +231,9 @@ ASTNode_t* parse_list(Parser_t* parser) {
     }
 
     // Append the child to the list root
-    ASTNode_t* child = init_ast(type, token->value);
-    if (!child) return NULL;
+    ASTNode_t *child = init_ast(type, token->value);
+    if (!child)
+      return NULL;
 
     ast_append(node, child);
 
@@ -235,43 +250,46 @@ ASTNode_t* parse_list(Parser_t* parser) {
 }
 
 // Parse a dependency list
-ASTNode_t* parse_dependency(Parser_t* parser) {
-  if (!match_value(parser, "DEPENDENCIES")) return NULL;
+ASTNode_t *parse_dependency(Parser_t *parser) {
+  if (!match_value(parser, "DEPENDENCIES"))
+    return NULL;
 
-  ASTNode_t* node = init_ast(DEPENDENCY_AST, "DEPENDENCY");
+  ASTNode_t *node = init_ast(DEPENDENCY_AST, "DEPENDENCY");
 
-  ASTNode_t* list = parse_list(parser);
+  ASTNode_t *list = parse_list(parser);
 
-  if (!list || !node) return NULL;
+  if (!list || !node)
+    return NULL;
 
   ast_append(node, list);
 
   return node;
 }
 
-ASTNode_t* parse_macro(Parser_t* parser) {
-  if (!match_value(parser, "MACRO")) return NULL;
+ASTNode_t *parse_macro(Parser_t *parser) {
+  if (!match_value(parser, "MACRO"))
+    return NULL;
 
-  char* macro_name = parser->ptr->value;
+  char *macro_name = parser->ptr->value;
   if (!match(parser, IDENTIFIER_TOKEN)) {
     fprintf(stderr, "Error: Expected identifier");
     point_error(parser->line, parser->column);
   }
 
-  ASTNode_t* value;
+  ASTNode_t *value;
   if (!(value = parse_expression(parser))) {
     fprintf(stderr, "Error: Expression failed to parse");
     point_error(parser->line, parser->column);
   }
 
-  ASTNode_t* node = init_ast(MACRO_AST, macro_name);
+  ASTNode_t *node = init_ast(MACRO_AST, macro_name);
   ast_append(node, value);
 
   return node;
 }
 
-ASTNode_t* parse_statement(Parser_t* parser) {
-  ASTNode_t* node = NULL;
+ASTNode_t *parse_statement(Parser_t *parser) {
+  ASTNode_t *node = NULL;
   if ((node = parse_field(parser)) != NULL)
     return node;
   else if ((node = parse_subsystem(parser)) != NULL)
@@ -288,9 +306,9 @@ ASTNode_t* parse_statement(Parser_t* parser) {
 }
 
 // TODO: Sopport conditional blocks
-ASTNode_t* parse_block(Parser_t* parser) {
+ASTNode_t *parse_block(Parser_t *parser) {
   AST_TYPE type;
-  ASTNode_t* node;
+  ASTNode_t *node;
   if (match_value(parser, "DEFINE")) {
     type = DEFINITION_AST;
   } else if (match_value(parser, "CONFIG")) {
@@ -299,20 +317,24 @@ ASTNode_t* parse_block(Parser_t* parser) {
     return NULL;
   }
 
-  char* block_identifier;
-  if (!(block_identifier = match(parser, IDENTIFIER_TOKEN))) return NULL;
+  char *block_identifier;
+  if (!(block_identifier = match(parser, IDENTIFIER_TOKEN)))
+    return NULL;
 
-  if (!match(parser, LBRACE_TOKEN)) return NULL;
+  if (!match(parser, LBRACE_TOKEN))
+    return NULL;
 
   node = init_ast(type, block_identifier);
 
-  if (!node) return NULL;
+  if (!node)
+    return NULL;
 
   // Parse each statement within a definition
-  ASTNode_t* child;
+  ASTNode_t *child;
 
-  ASTNode_t* block = init_ast(BLOCK_AST, "BLOCK");
-  if (!block) return NULL;
+  ASTNode_t *block = init_ast(BLOCK_AST, "BLOCK");
+  if (!block)
+    return NULL;
 
   while (parser->ptr->type != RBRACE_TOKEN && parser->ptr->type != EOF) {
     child = parse_statement(parser);
@@ -337,11 +359,11 @@ ASTNode_t* parse_block(Parser_t* parser) {
 }
 
 // Returns a project tree
-ASTNode_t* parse(Parser_t* parser) {
-  ASTNode_t* root = init_ast(ROOT_AST, "ROOT");
+ASTNode_t *parse(Parser_t *parser) {
+  ASTNode_t *root = init_ast(ROOT_AST, "ROOT");
 
   while (1) {
-    ASTNode_t* block;
+    ASTNode_t *block;
 
     if (block = parse_variable_decl(parser)) {
       ast_append(root, block);
@@ -350,7 +372,8 @@ ASTNode_t* parse(Parser_t* parser) {
 
     block = parse_block(parser);
 
-    if (!block) break;
+    if (!block)
+      break;
 
     ast_append(root, block);
   }
@@ -364,15 +387,15 @@ ASTNode_t* parse(Parser_t* parser) {
 ///////////////////////////////////////////////////////////
 
 // Parse a literal value (int, bool, char, string)
-ASTNode_t* parse_literal(Parser_t* parser) {
+ASTNode_t *parse_literal(Parser_t *parser) {
   enum TOKEN_TYPE type = parser->ptr->type;
-  char* value = parser->ptr->value;
+  char *value = parser->ptr->value;
 
   if (!(type == INT_TOKEN || type == BOOL_TOKEN || type == STR_TOKEN ||
         type == CHAR_TOKEN))
     return NULL;
 
-  ASTNode_t* node = init_ast(token_to_ast_type(type), value);
+  ASTNode_t *node = init_ast(token_to_ast_type(type), value);
   ;
   advance_parser(parser);
 
@@ -380,19 +403,20 @@ ASTNode_t* parse_literal(Parser_t* parser) {
 }
 
 // Parse a variable call (identifier)
-ASTNode_t* parse_variable_call(Parser_t* parser) {
-  if (parser->ptr->type != IDENTIFIER_TOKEN) return NULL;
+ASTNode_t *parse_variable_call(Parser_t *parser) {
+  if (parser->ptr->type != IDENTIFIER_TOKEN)
+    return NULL;
 
-  ASTNode_t* node = init_ast(IDEN_AST, parser->ptr->value);
+  ASTNode_t *node = init_ast(IDEN_AST, parser->ptr->value);
   advance_parser(parser);
   return node;
 }
 
 // Parse a factor, which consists of either a literal, variable call, or
 // parenthesized expression
-ASTNode_t* parse_factor(Parser_t* parser) {
+ASTNode_t *parse_factor(Parser_t *parser) {
   if (match(parser, LPAR_TOKEN)) {
-    ASTNode_t* expr = parse_expression(parser);
+    ASTNode_t *expr = parse_expression(parser);
 
     if (!match(parser, RPAR_TOKEN)) {
       fprintf(stderr, "Error: Right Parenthesis expected!");
@@ -401,28 +425,30 @@ ASTNode_t* parse_factor(Parser_t* parser) {
     return expr;
   }
 
-  ASTNode_t* node = NULL;
-  if ((node = parse_literal(parser)) != NULL) return node;
-  if ((node = parse_variable_call(parser)) != NULL) return node;
+  ASTNode_t *node = NULL;
+  if ((node = parse_literal(parser)) != NULL)
+    return node;
+  if ((node = parse_variable_call(parser)) != NULL)
+    return node;
 
   fprintf(stderr, "Error: expected a factor");
   point_error(parser->line, parser->column);
 }
 
 // Parse a term, which represents a multiplication or division operation
-ASTNode_t* parse_term(Parser_t* parser) {
-  ASTNode_t* node = parse_factor(parser);
+ASTNode_t *parse_term(Parser_t *parser) {
+  ASTNode_t *node = parse_factor(parser);
   if (node == NULL) {
     fprintf(stderr, "Error: Left side of term is missing!");
     point_error(parser->line, parser->column);
   }
 
   while (1) {
-    Token* token = parser->ptr;
+    Token *token = parser->ptr;
     if (token->type == OPERATOR_TOKEN &&
         (token->value[0] == '*' || token->value[0] == '/')) {
       advance_parser(parser);
-      ASTNode_t* right = parse_factor(parser);
+      ASTNode_t *right = parse_factor(parser);
 
       // Obtain binary operation type
       AST_TYPE type = NULL_AST;
@@ -435,7 +461,7 @@ ASTNode_t* parse_term(Parser_t* parser) {
         point_error(parser->line, parser->column);
       }
 
-      ASTNode_t* operator = init_ast(type, "OPERATOR");
+      ASTNode_t *operator = init_ast(type, "OPERATOR");
       ast_append(operator, node);
       ast_append(operator, right);
 
@@ -447,20 +473,20 @@ ASTNode_t* parse_term(Parser_t* parser) {
 }
 
 // Recursively parse a full expression
-ASTNode_t* parse_expression(Parser_t* parser) {
-  ASTNode_t* node = parse_term(parser);
+ASTNode_t *parse_expression(Parser_t *parser) {
+  ASTNode_t *node = parse_term(parser);
   if (node == NULL) {
     fprintf(stderr, "Error: Left side of term is missing!");
     point_error(parser->line, parser->column);
   }
 
   while (1) {
-    Token* token = parser->ptr;
+    Token *token = parser->ptr;
     if (token->type == OPERATOR_TOKEN &&
         (token->value[0] == '+' || token->value[0] == '-')) {
       advance_parser(parser);
 
-      ASTNode_t* right = parse_term(parser);
+      ASTNode_t *right = parse_term(parser);
 
       // Obtain binary operation type
       AST_TYPE type = NULL_AST;
@@ -473,7 +499,7 @@ ASTNode_t* parse_expression(Parser_t* parser) {
         point_error(parser->line, parser->column);
       }
 
-      ASTNode_t* operator = init_ast(type, "OPERATOR");
+      ASTNode_t *operator = init_ast(type, "OPERATOR");
       ast_append(operator, node);
       ast_append(operator, right);
       node = operator;

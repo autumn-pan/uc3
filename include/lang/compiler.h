@@ -4,5 +4,5 @@
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
 
-void compile(char* file_name);
+void compile(char *file_name);
 #endif

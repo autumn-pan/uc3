@@ -20,12 +20,12 @@ typedef struct {
 } Value_t;
 
 typedef struct {
-  const char* identifier;
+  const char *identifier;
   bool constant;
   uint32_t hash;
   Value_t value;
 
-  ASTNode_t* expr;
+  ASTNode_t *expr;
 } Symbol_t;
 
 typedef struct {
@@ -33,16 +33,16 @@ typedef struct {
 
   // Symbol Nodes come together to form a symbol tree.
   // children represents a node's subscopes
-  HashTable_t* children;
+  HashTable_t *children;
   // symbols represents the values that are in the scope
-  HashTable_t* symbols;
+  HashTable_t *symbols;
 } SymbolNode_t;
 
-SymbolNode_t* symbolize_ast(ASTNode_t* node);
-Symbol_t* init_symbol(ASTNode_t* expr, const char* identifier, bool constant);
+SymbolNode_t *symbolize_ast(ASTNode_t *node);
+Symbol_t *init_symbol(ASTNode_t *expr, const char *identifier, bool constant);
 Value_t init_value(TYPE type, int data);
-Value_t string_to_value(TYPE type, const char* str);
-bool str_to_bool(const char* str);
-int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope);
-void symbolize_fields(HashTable_t* registry, SymbolNode_t* root);
+Value_t string_to_value(TYPE type, const char *str);
+bool str_to_bool(const char *str);
+int eval(ASTNode_t *node, SymbolNode_t *table, SymbolNode_t *scope);
+void symbolize_fields(HashTable_t *registry, SymbolNode_t *root);
 #endif

@@ -1,7 +1,7 @@
 #include "lang/reader.h"
 
-char* read(char* file_name) {
-  FILE* file = fopen(file_name, "r");
+char *read(char *file_name) {
+  FILE *file = fopen(file_name, "r");
   if (!file) {
     fprintf(stderr, "Error: No such file %s", file_name);
     exit(EXIT_FAILURE);
@@ -12,7 +12,7 @@ char* read(char* file_name) {
   uint64_t file_size = ftell(file);
   fseek(file, 0, SEEK_SET);
 
-  char* buffer = (char*)malloc(file_size + 1);
+  char *buffer = (char *)malloc(file_size + 1);
 
   if (!buffer) {
     fprintf(stderr, "Error: Memory allocation failed!");

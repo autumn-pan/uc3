@@ -27,13 +27,14 @@ Value_t init_value(TYPE type, int data) {
 ////////////////////////////////////////////////////////////////////
 
 // Translate a string to a boolean
-bool str_to_bool(const char* str) {
-  if (strcmp(str, "true") == 0 || atoi(str) == 1) return true;
+bool str_to_bool(const char *str) {
+  if (strcmp(str, "true") == 0 || atoi(str) == 1)
+    return true;
   return false;
 }
 
 // Translate a string into a Value_t
-Value_t string_to_value(TYPE type, const char* str) {
+Value_t string_to_value(TYPE type, const char *str) {
   if (type == INT_T)
     return init_value(INT_T, atoi(str));
   else if (type == BOOL_T)
@@ -43,8 +44,8 @@ Value_t string_to_value(TYPE type, const char* str) {
 }
 
 // Constructor for a symbol
-Symbol_t* init_symbol(ASTNode_t* expr, const char* identifier, bool constant) {
-  Symbol_t* symbol = malloc(sizeof(Symbol_t));
+Symbol_t *init_symbol(ASTNode_t *expr, const char *identifier, bool constant) {
+  Symbol_t *symbol = malloc(sizeof(Symbol_t));
   if (!symbol) {
     return NULL;
   }
@@ -58,8 +59,8 @@ Symbol_t* init_symbol(ASTNode_t* expr, const char* identifier, bool constant) {
 }
 
 // Constructor for a symbol node
-SymbolNode_t* init_symbol_node() {
-  SymbolNode_t* node = malloc(sizeof(SymbolNode_t));
+SymbolNode_t *init_symbol_node() {
+  SymbolNode_t *node = malloc(sizeof(SymbolNode_t));
   if (!node) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
@@ -74,30 +75,32 @@ SymbolNode_t* init_symbol_node() {
 
 // Create a Symbol Tree that corresponds to the variables of an Abstract Syntax
 // Tree.
-SymbolNode_t* symbolize_ast(ASTNode_t* node) {
+SymbolNode_t *symbolize_ast(ASTNode_t *node) {
   // Initialize the root symbol
-  SymbolNode_t* symbol_node = init_symbol_node();
+  SymbolNode_t *symbol_node = init_symbol_node();
   int child_index = 0;
 
   // Ensure that the child index is not out of bounds
-  if (child_index >= node->num_children) return NULL;
+  if (child_index >= node->num_children)
+    return NULL;
 
-  ASTNode_t* child = node->children[child_index];
+  ASTNode_t *child = node->children[child_index];
   while (child) {
     // If the child node contains a block, the block will be its first and only
     // child
     if (child->num_children > 0 && child->children[0]->type == BLOCK_AST) {
-      SymbolNode_t* block = symbolize_ast(child->children[0]);
+      SymbolNode_t *block = symbolize_ast(child->children[0]);
 
-      if (!block) continue;
+      if (!block)
+        continue;
 
       // Insert the block into the child list
-      char* element_name = child->data.str;
+      char *element_name = child->data.str;
 
       if (insert_hash(symbol_node->children, block, element_name))
         fprintf(stderr, "\nError: Variable redeclaration detected!");
     } else if (child->type == VARIABLE_DECL_AST) {
-      Symbol_t* symbol;
+      Symbol_t *symbol;
 
       // The value of the symbol is unknowable at compile-time
       symbol = init_symbol(child->children[0], child->data.str, false);
@@ -110,7 +113,8 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node) {
     }
 
     child_index++;
-    if (child_index >= node->num_children) break;
+    if (child_index >= node->num_children)
+      break;
 
     child = node->children[child_index];
   }
@@ -118,21 +122,22 @@ SymbolNode_t* symbolize_ast(ASTNode_t* node) {
   return symbol_node;
 }
 
-void symbolize_fields(HashTable_t* registry, SymbolNode_t* root) {
+void symbolize_fields(HashTable_t *registry, SymbolNode_t *root) {
   for (int i = 0; i < registry->hash_max; i++) {
-    if (registry->contents[i] == NULL) continue;
+    if (registry->contents[i] == NULL)
+      continue;
 
-    Component_t* component = (Component_t*)registry->contents[i]->value;
+    Component_t *component = (Component_t *)registry->contents[i]->value;
     size_t index = get_hash_pos(root->children, component->identifier);
 
-    SymbolNode_t* node = (SymbolNode_t*)root->children->contents[index]->value;
+    SymbolNode_t *node = (SymbolNode_t *)root->children->contents[index]->value;
     if (!node || !node->symbols) {
       fprintf(stderr, "Error: Component not registered!");
     }
 
     for (int j = 0; j < component->num_fields; j++) {
-      Field_t* field = component->fields[j];
-      Symbol_t* symbol = field->variable;
+      Field_t *field = component->fields[j];
+      Symbol_t *symbol = field->variable;
 
       if (insert_hash(node->symbols, symbol, symbol->identifier)) {
         fprintf(stderr, "Error: Variable declaration error!");
@@ -145,9 +150,9 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root) {
 }
 
 // Return the int value of a variable
-Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table,
-                             SymbolNode_t* scope) {
-  char* identifier = node->data.str;
+Value_t get_identifier_value(ASTNode_t *node, SymbolNode_t *symbol_table,
+                             SymbolNode_t *scope) {
+  char *identifier = node->data.str;
 
   if (!identifier) {
     fprintf(stderr, "Error: requested node has no identifier!");
@@ -155,7 +160,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table,
   }
 
   uint64_t var_index;
-  Symbol_t* symbol;
+  Symbol_t *symbol;
 
   if (!symbol_table) {
     fprintf(stderr, "Error: Symbol table cannot be NULL!");
@@ -168,7 +173,8 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table,
     // if it is not found globally, it should be checked in the local scope
     // Sometimes, a local scope is not provided. In that case, the variable is
     // undefined.
-    if (!scope) return init_value(UNKNOWN_T, 0);
+    if (!scope)
+      return init_value(UNKNOWN_T, 0);
 
     var_index = get_hash_pos(scope->symbols, identifier);
 
@@ -184,10 +190,10 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table,
         exit(EXIT_FAILURE);
       }
 
-      symbol = (Symbol_t*)scope->symbols->contents[var_index]->value;
+      symbol = (Symbol_t *)scope->symbols->contents[var_index]->value;
     }
   } else {
-    symbol = (Symbol_t*)symbol_table->symbols->contents[var_index]->value;
+    symbol = (Symbol_t *)symbol_table->symbols->contents[var_index]->value;
 
     if (!symbol) {
       fprintf(stderr, "Error: Identifier '%s'%s", identifier,
@@ -205,7 +211,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table,
 }
 
 // Evaluate an expression AST and return its integer value
-int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope) {
+int eval(ASTNode_t *node, SymbolNode_t *table, SymbolNode_t *scope) {
   // Ensure that the node is not null
   if (!node) {
     fprintf(stderr, "Error: expression can't be null!");
@@ -228,28 +234,29 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope) {
     return -1;
   }
 
-  ASTNode_t* left;
-  ASTNode_t* right;
+  ASTNode_t *left;
+  ASTNode_t *right;
 
   left = node->children[0];
   right = node->children[1];
 
   // Integer operations
-  if (left->type != BOOL_AST && right->type != BOOL_AST) switch (node->type) {
-      case PLUS_AST:
-        return eval(left, table, scope) + eval(right, table, scope);
-      case MINUS_AST:
-        return eval(left, table, scope) - eval(right, table, scope);
-      case MULT_AST:
-        return eval(left, table, scope) * eval(right, table, scope);
-      case DIV_AST:
-        if (right != 0)
-          return eval(left, table, scope) / eval(right, table, scope);
-        else {
-          fprintf(stderr, "Error: Division by zero is undefined!");
-          exit(EXIT_FAILURE);
-        }
-        break;
+  if (left->type != BOOL_AST && right->type != BOOL_AST)
+    switch (node->type) {
+    case PLUS_AST:
+      return eval(left, table, scope) + eval(right, table, scope);
+    case MINUS_AST:
+      return eval(left, table, scope) - eval(right, table, scope);
+    case MULT_AST:
+      return eval(left, table, scope) * eval(right, table, scope);
+    case DIV_AST:
+      if (right != 0)
+        return eval(left, table, scope) / eval(right, table, scope);
+      else {
+        fprintf(stderr, "Error: Division by zero is undefined!");
+        exit(EXIT_FAILURE);
+      }
+      break;
     }
 
   if (left->type != right->type || left->type != BOOL_AST) {
@@ -259,9 +266,9 @@ int eval(ASTNode_t* node, SymbolNode_t* table, SymbolNode_t* scope) {
   }
 
   switch (node->type) {
-    case AND_AST:
-      return eval(left, table, scope) && eval(right, table, scope);
-    case OR_AST:
-      return eval(left, table, scope) || eval(right, table, scope);
+  case AND_AST:
+    return eval(left, table, scope) && eval(right, table, scope);
+  case OR_AST:
+    return eval(left, table, scope) || eval(right, table, scope);
   }
 }
