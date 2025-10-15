@@ -1,1 +1,1 @@
-#define MY_MACRO 128
+#define MY_MACRO 0

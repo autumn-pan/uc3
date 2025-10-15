@@ -35,7 +35,9 @@ void compile(char* file_name)
 
     ///////////////////////////////////////////
     // User Configuration should happen here //
-    ///////////////////////////////////////////    
+    /////////////////////////////////////////// 
+    config(table);
+    
     // Post-Config generation
     append_component_dependencies(table);
     
@@ -106,8 +108,8 @@ void gen_config(HashTable_t* component_registry, SymbolNode_t* global_symbols)
     }
 }
 
-// Prompts the user for config options
-void config(HashTable_t* components, SymbolNode_t* global)
+// Prompts the user for config options and sets FIELD values
+void config(HashTable_t* components)
 {
     for(int i = 0; i < components->hash_max; i++)
     {
@@ -115,6 +117,7 @@ void config(HashTable_t* components, SymbolNode_t* global)
             continue;
 
         Component_t* component = (Component_t*)components->contents[i]->value;
+
         printf("\nConfiguring %s", component->identifier);
         printf("\nFields to Configure: %i", component->num_fields);
         fflush(stdout);
@@ -127,10 +130,21 @@ void config(HashTable_t* components, SymbolNode_t* global)
             Field_t* field = component->fields[j];
             printf("\n\t%s: ", field->variable->identifier);
 
-            char* val;
-            scanf("%s", &val);
+            int val;
+            scanf("%i", &val);
+            char out[16];
+            sprintf(out, "%i", val);
 
-            field->variable->expr->data.str = val;
+            if(!field->variable->expr->data.str)
+            {
+                fprintf(stderr, "Error: Field '%s' has null expression!", field->variable->identifier);
+            }
+
+            
+            field->variable->expr->data.str = out;
+
+            printf("\nVal: %i", atoi(field->variable->expr->data.str));
+            fflush(stdout);
         }
     }
 }
