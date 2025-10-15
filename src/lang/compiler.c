@@ -132,14 +132,14 @@ void config(HashTable_t* components)
 
             int val;
             scanf("%i", &val);
-            char out[16];
+            char* out = malloc(16);
+
             sprintf(out, "%i", val);
 
             if(!field->variable->expr->data.str)
             {
                 fprintf(stderr, "Error: Field '%s' has null expression!", field->variable->identifier);
             }
-
             
             field->variable->expr->data.str = out;
 

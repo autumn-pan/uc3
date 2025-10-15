@@ -151,16 +151,10 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
             fprintf(stderr, "Error: Component not registered!");
         }
 
-        printf("\nNode: %s", component->identifier);
-        fflush(stdout);
-
         for(int j = 0; j < component->num_fields; j++)
         {
             Field_t* field = component->fields[j];
             Symbol_t* symbol = field->variable;
-
-            printf("\nPlaceholder: %s", symbol->identifier);
-            fflush(stdout);
 
             if(insert_hash(node->symbols, symbol, symbol->identifier))
             {
@@ -168,10 +162,7 @@ void symbolize_fields(HashTable_t* registry, SymbolNode_t* root)
                 exit(EXIT_FAILURE);
             }
 
-            // Debug
             int index = get_hash_pos(node->symbols, symbol->identifier);
-            printf("\nIndex: %i", index);
-            fflush(stdout);
         }
     }
 }
@@ -224,6 +215,9 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
                 exit(EXIT_FAILURE);
             }
 
+            printf("\nFlag");
+            fflush(stdout);
+            
             symbol = (Symbol_t*)scope->symbols->contents[var_index]->value;
         }
     }
@@ -238,7 +232,7 @@ Value_t get_identifier_value(ASTNode_t* node, SymbolNode_t* symbol_table, Symbol
         }
     }
 
-    printf(symbol->expr->data.str);
+    printf("\nData: %s", symbol->expr->data.str);
     fflush(stdout);
 
     int val = eval(symbol->expr, symbol_table, scope);
