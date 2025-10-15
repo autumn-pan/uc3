@@ -3,66 +3,55 @@
 #define COMPONENT_MAX_FIELDS 32
 
 #include <string.h>
+
 #include "lang/ast.h"
-#include "lang/util/hash.h"
 #include "lang/symbol/symbol.h"
+#include "lang/util/hash.h"
 #define COMPONENT_REGISTRY_SIZE 8
 
-typedef enum
-{
-    UNVISITED,
-    ONGOING,
-    COMPLETED
-} COMPONENT_STATUS;
+typedef enum { UNVISITED, ONGOING, COMPLETED } COMPONENT_STATUS;
 
-typedef enum
-{
-    UNGRAPHED,
-    GRAPHED
-} GRAPH_STATUS;
+typedef enum { UNGRAPHED, GRAPHED } GRAPH_STATUS;
 
-typedef struct
-{
-    char* identifier;
-    ASTNode_t* expr;
-    int value;
+typedef struct {
+  char* identifier;
+  ASTNode_t* expr;
+  int value;
 } Macro_t;
 
-typedef struct
-{
-    Symbol_t* variable;
-    int default_value;
+typedef struct {
+  Symbol_t* variable;
+  int default_value;
 } Field_t;
 
-typedef struct component
-{
-    char* identifier;
-    int enabled;
-    
-    ASTNode_t* node;
+typedef struct component {
+  char* identifier;
+  int enabled;
 
-    struct component** dependencies;
-    int num_dependencies;
+  ASTNode_t* node;
 
-    // What components this component enables
-    struct component** enables;
+  struct component** dependencies;
+  int num_dependencies;
 
-    // What values are configurable
-    Field_t** fields;
-    size_t num_fields;
+  // What components this component enables
+  struct component** enables;
 
-    // C Macros associated with the component
-    Macro_t** macros;
-    size_t num_macros;
-    
-    // Metadata for graph verificaion
-    COMPONENT_STATUS cyclic_status;
-    GRAPH_STATUS graph_status;
+  // What values are configurable
+  Field_t** fields;
+  size_t num_fields;
+
+  // C Macros associated with the component
+  Macro_t** macros;
+  size_t num_macros;
+
+  // Metadata for graph verificaion
+  COMPONENT_STATUS cyclic_status;
+  GRAPH_STATUS graph_status;
 } Component_t;
 
 typedef struct {
-    Component_t* root;
-    Component_t** disjoint_components;
+  Component_t* root;
+  Component_t** disjoint_components;
 } ComponentGraph_t;
 
 HashTable_t* init_component_registry(ASTNode_t* root);

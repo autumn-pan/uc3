@@ -1,5 +1,5 @@
 INT other_int = 6
-BOOL boolean = true
+BOOL boolean = 1
 
 DEFINE important_block
 {
