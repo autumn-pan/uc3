@@ -1,17 +1,15 @@
 INT other_int = 6
 BOOL boolean = 1
 
-DEFINE important_block
+DEFINE my_func
 {
-    INT my_bool = 2*8 + 1
 
-    FIELD yummy 
-        DEFAULT 128
+    FIELD enabled 
+        DEFAULT 1
 
-    FIELD my_field 
+    FIELD my_num 
         DEFAULT 15
 
-    MACRO MY_MACRO yummy
-    MACRO OTHER_MACRO my_bool
-    MACRO FIELD_MACRO my_field
+    MACRO MY_FUNC_ENABLED enabled
+    MACRO MY_NUM my_num
 }

@@ -122,6 +122,7 @@ SymbolNode_t *symbolize_ast(ASTNode_t *node) {
   return symbol_node;
 }
 
+// Registers component fields into their respective scopes
 void symbolize_fields(HashTable_t *registry, SymbolNode_t *root) {
   for (int i = 0; i < registry->hash_max; i++) {
     if (registry->contents[i] == NULL)
@@ -270,5 +271,8 @@ int eval(ASTNode_t *node, SymbolNode_t *table, SymbolNode_t *scope) {
     return eval(left, table, scope) && eval(right, table, scope);
   case OR_AST:
     return eval(left, table, scope) || eval(right, table, scope);
+  default:
+    fprintf(stderr, "Error: Unexpected operator in boolean expression!");
+    exit(EXIT_FAILURE);
   }
 }

@@ -33,12 +33,11 @@ void compile(char *file_name) {
   HashTable_t *table = init_component_registry(root);
 
   SymbolNode_t *symbol_table = symbolize_ast(root);
+
   append_component_fields(table);
   symbolize_fields(table, symbol_table);
 
-  ///////////////////////////////////////////
-  // User Configuration should happen here //
-  ///////////////////////////////////////////
+  // Prompt the user for configuration options
   config(table);
 
   // Post-Config generation
@@ -52,6 +51,7 @@ void compile(char *file_name) {
   gen_config(table, symbol_table);
 }
 
+// Autogenerate the config.h file
 void gen_config(HashTable_t *component_registry, SymbolNode_t *global_symbols) {
   // Create the file
   FILE *file = fopen("autoconfig.h", "w");

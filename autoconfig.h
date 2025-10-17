@@ -1,3 +1,2 @@
-#define MY_MACRO 7
-#define OTHER_MACRO 17
-#define FIELD_MACRO 9
+#define MY_FUNC_ENABLED 1
+#define MY_NUM 2
