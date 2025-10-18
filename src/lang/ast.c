@@ -38,6 +38,7 @@ void ast_append(ASTNode_t *node, ASTNode_t *child) {
   if (!node->children) {
     fprintf(stderr, "Error: Failed to reallocate memory!");
     return false;
+  }
   
   node->children[node->num_children - 1] = child;
   return true;
