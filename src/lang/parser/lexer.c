@@ -29,13 +29,8 @@ const char *KEYWORDS[] = {
 
 const char *BOOLEAN_KEYWORDS[] = {"true", "false"};
 
-const char *OPERATORS[] = {
-    "=",
-    "||", // OR operator
-    "&&", // AND operator
-    "!",  // NOT operator
-    "==", // Equivalence operator
-    "<",  ">", ">=", "<=", "!=", "!", "*", "/", "+", "-"};
+const char *OPERATORS[] = {"=",  "||", "&&", "!", "==", "<", ">", ">=",
+                           "<=", "!=", "!",  "*", "/",  "+", "-"};
 
 // What characters comprise chars; Necessary for multi-char operators
 const char *OPERATOR_CHARS[] = {"=", "|", "&", "!", "<", ">",
@@ -176,8 +171,7 @@ Token *next_token(Lexer *lexer) {
   // Check if the string is a number
   if (isdigit(lexer->src[lexer->pos])) // Checks for a numeric literal
   {
-    while (isdigit(lexer->src[lexer->pos])) 
-    {
+    while (isdigit(lexer->src[lexer->pos])) {
       cat_char(str, (advance(lexer)));
     }
 
@@ -260,8 +254,7 @@ TokenStream *init_tokenstream() {
 }
 
 bool append_token(TokenStream *ts, Token *token) {
-  if(!ts || !token)
-  {
+  if (!ts || !token) {
     fprintf(stderr, "\nError: tokenstream or token is null in append_token!");
     return false;
   }
@@ -272,9 +265,9 @@ bool append_token(TokenStream *ts, Token *token) {
     ts->head = token;
     ts->tail = token;
   } else {
-    if(!ts->tail)
-    {
-      fprintf(stderr, "\nError: tokenstream is missing a tail in append_token!");
+    if (!ts->tail) {
+      fprintf(stderr,
+              "\nError: tokenstream is missing a tail in append_token!");
       return false;
     }
 
@@ -286,8 +279,12 @@ bool append_token(TokenStream *ts, Token *token) {
   return true;
 }
 
-void free_tokenstream(TokenStream *ts) {
+bool free_tokenstream(TokenStream *ts) {
+  if (!ts)
+    return false;
+
   Token *token = ts->head;
+
   while (token) {
     Token *tmp = token->next;
     free(token);
@@ -295,4 +292,5 @@ void free_tokenstream(TokenStream *ts) {
   }
 
   free(ts);
+  return true;
 }

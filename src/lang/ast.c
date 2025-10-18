@@ -26,8 +26,7 @@ ASTNode_t *init_ast(AST_TYPE type, char *value) {
 
 // Append an ASTNode as a child to a parent node
 void ast_append(ASTNode_t *node, ASTNode_t *child) {
-  if(!node || !child)
-  {
+  if (!node || !child) {
     fprintf(stderr, "\nError: null node or child passed to ast_append!");
     return false;
   }
@@ -36,10 +35,10 @@ void ast_append(ASTNode_t *node, ASTNode_t *child) {
   node->children =
       (realloc(node->children, node->num_children * sizeof(ASTNode_t *)));
   if (!node->children) {
-    fprintf(stderr, "Error: Failed to reallocate memory!");
+    fprintf(stderr, "\nError: Failed to reallocate memory!");
     return false;
   }
-  
+
   node->children[node->num_children - 1] = child;
   return true;
 }
