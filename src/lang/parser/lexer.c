@@ -38,6 +38,9 @@ const char *OPERATOR_CHARS[] = {"=", "|", "&", "!", "<", ">",
 
 // Returns the appropriate data type of a string
 enum TOKEN_TYPE str_to_datatype(char *str) {
+  if(!str)
+    return NULL_TOKEN;
+    
   if (strcmp(str, "INT") == 0)
     return INT_TOKEN;
   else if (strcmp(str, "BOOL") == 0)
@@ -91,10 +94,18 @@ bool is_whitespace(Lexer *lexer) {
   return false;
 }
 
-void skip_whitespace(Lexer *lexer) {
+bool skip_whitespace(Lexer *lexer) {
+  if(!lexer)
+  {
+    fprintf(stderr, "\nError: Lexer passed to skip_whitespace is null!");
+    return false;
+  }
+
   while (is_whitespace(lexer)) {
     advance(lexer);
   }
+
+  return true;
 }
 
 //////////////////////////////////////////////////////////////
@@ -131,6 +142,9 @@ char peek(Lexer *lexer) {
 
 // Move the lexer forward
 char advance(Lexer *lexer) {
+  if (!lexer || lexer->pos + 1 >= lexer->length)
+    return '\0';
+
   char c = lexer->src[lexer->pos];
   lexer->pos++;
   lexer->column++;
