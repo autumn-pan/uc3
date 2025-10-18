@@ -9,19 +9,17 @@ ASTNode_t *init_ast(AST_TYPE type, char *value) {
   ASTNode_t *ast = (malloc(sizeof(ASTNode_t)));
 
   if (!ast) {
-    fprintf(stderr, "Error: Failed to allocate enough memory!");
+    fprintf(stderr, "Fatal: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
   }
 
   ast->children = (calloc(0, sizeof(ASTNode_t *)));
   if (!ast->children) {
-    fprintf(stderr, "Error, Memory allocation failed!");
+    fprintf(stderr, "Fatal: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
   }
 
   ast->num_children = 0;
-
-  // Set AST data based on the AST type
   ast->data.str = value;
   ast->type = type;
 }
@@ -40,7 +38,7 @@ void ast_append(ASTNode_t *node, ASTNode_t *child) {
   if (!node->children) {
     fprintf(stderr, "Error: Failed to reallocate memory!");
     return false;
-  }
+  
   node->children[node->num_children - 1] = child;
   return true;
 }

@@ -55,25 +55,22 @@ enum TOKEN_TYPE str_to_datatype(char *str) {
 Lexer *init_lexer(const char *src) {
   Lexer *lexer = malloc(sizeof(Lexer));
   if (!lexer) {
-    fprintf(stderr, "Error: Failed to allocate enough memory!");
+    fprintf(stderr, "Fatal: Failed to allocate memory!");
     exit(EXIT_FAILURE);
   }
 
   lexer->src = src;
   lexer->length = strlen(src);
-
-  // Set the lexer data
   lexer->pos = 0;
   lexer->line = 1;
   lexer->column = 1;
-
-  // Return the finished lexer
   return lexer;
 };
 
 //////////////////////////////////////////////////////////////
 /// String Utils
 //////////////////////////////////////////////////////////////
+
 void cat_char(char *str, char c) {
   char temp[2] = {c, '\0'};
   strcat(str, temp);
@@ -158,8 +155,6 @@ Token *next_token(Lexer *lexer) {
 
   // The value of the next token, as a string
   char str[32] = "";
-
-  // This will suggest the token type of the next token
   char current_char = lexer->src[lexer->pos];
 
   // Check if the next token is a string
@@ -181,14 +176,12 @@ Token *next_token(Lexer *lexer) {
   // Check if the string is a number
   if (isdigit(lexer->src[lexer->pos])) // Checks for a numeric literal
   {
-    while (isdigit(lexer->src[lexer->pos])) // Initiates the first component of
-                                            // the literal
+    while (isdigit(lexer->src[lexer->pos])) 
     {
       cat_char(str, (advance(lexer)));
     }
 
-    return init_token(INT_TOKEN, str, lexer->line,
-                      lexer->column); // Return int literal
+    return init_token(INT_TOKEN, str, lexer->line, lexer->column);
   }
 
   // Check if the next token is a miscellaneous token
@@ -234,6 +227,7 @@ Token *next_token(Lexer *lexer) {
   fprintf(stderr, "Error: Unknown char '%c'", lexer->src[lexer->pos]);
 }
 
+// Create a tokenstream from a lexer
 TokenStream *tokenize(Lexer *lexer) {
   TokenStream *token_stream = init_tokenstream();
 
@@ -254,9 +248,10 @@ TokenStream *tokenize(Lexer *lexer) {
 TokenStream *init_tokenstream() {
   TokenStream *token_stream = (malloc(sizeof(TokenStream)));
   if (!token_stream) {
-    fprintf(stderr, "Error: Failed to allocate enough memory!");
+    fprintf(stderr, "Fatal: Failed to allocate memory!");
     exit(EXIT_FAILURE);
   }
+
   token_stream->head = NULL;
   token_stream->tail = NULL;
   token_stream->size = 0;
@@ -264,18 +259,31 @@ TokenStream *init_tokenstream() {
   return token_stream;
 }
 
-void append_token(TokenStream *ts, Token *token) {
+bool append_token(TokenStream *ts, Token *token) {
+  if(!ts || !token)
+  {
+    fprintf(stderr, "\nError: tokenstream or token is null in append_token!");
+    return false;
+  }
+
   token->next = NULL;
 
   if (ts->head == NULL) { // Empty list
     ts->head = token;
     ts->tail = token;
   } else {
+    if(!ts->tail)
+    {
+      fprintf(stderr, "\nError: tokenstream is missing a tail in append_token!");
+      return false;
+    }
+
     ts->tail->next = token;
     ts->tail = token;
   }
-  // Track list size
+
   ts->size++;
+  return true;
 }
 
 void free_tokenstream(TokenStream *ts) {
