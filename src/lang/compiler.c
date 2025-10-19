@@ -42,12 +42,9 @@ void compile(char *file_name) {
     return;
   }
 
-  dump_tokenstream(tokenstream);
-
   // Parse and register an abstract syntax tree
   ASTNode_t *root = parse(init_parser(tokenstream, lexer));
   HashTable_t *table = init_component_registry(root);
-
   SymbolNode_t *symbol_table = symbolize_ast(root);
 
   append_component_fields(table);

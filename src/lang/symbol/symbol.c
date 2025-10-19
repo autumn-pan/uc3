@@ -62,7 +62,7 @@ Symbol_t *init_symbol(ASTNode_t *expr, const char *identifier, bool constant) {
 SymbolNode_t *init_symbol_node() {
   SymbolNode_t *node = malloc(sizeof(SymbolNode_t));
   if (!node) {
-    fprintf(stderr, "Error: Failed to allocate enough memory!");
+    fprintf(stderr, "Fatal: Failed to allocate enough memory!\n");
     exit(EXIT_FAILURE);
   }
 
@@ -79,18 +79,20 @@ SymbolNode_t *symbolize_ast(ASTNode_t *node) {
   // Initialize the root symbol
   SymbolNode_t *symbol_node = init_symbol_node();
   int child_index = 0;
-
-  // Ensure that the child index is not out of bounds
-  if (child_index >= node->num_children)
+  if(!node)
+  {
+    fprintf(stderr, "Error: Null value paased to symbolize_ast!");
     return NULL;
+  }
+
+  if (child_index >= node->num_children)
+    return symbol_node;
 
   ASTNode_t *child = node->children[child_index];
   while (child) {
-    // If the child node contains a block, the block will be its first and only
-    // child
     if (child->num_children > 0 && child->children[0]->type == BLOCK_AST) {
       SymbolNode_t *block = symbolize_ast(child->children[0]);
-
+    
       if (!block)
         continue;
 
