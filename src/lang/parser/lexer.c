@@ -243,7 +243,9 @@ TokenStream *tokenize(Lexer *lexer) {
   Token *token = next_token(lexer);
 
   while (token && token->type != NULL_TOKEN) {
-    append_token(token_stream, token);
+    if(!append_token(token_stream, token))
+      return NULL;
+
     token = next_token(lexer);
   }
 

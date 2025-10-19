@@ -14,6 +14,12 @@ void config(HashTable_t *components);
 
 // Writes the entire tokenstream to stdout for debugging
 void dump_tokenstream(TokenStream *tokenstream) {
+  if(!tokenstream)
+  {
+    fprintf(stderr, "Error: null value passed to dump_tokenstream!");
+    return;
+  }
+  
   Token *token = tokenstream->head;
   while (token) {
     printf("\nToken: %s", token->value);
@@ -27,6 +33,13 @@ void compile(char *file_name) {
   char *src = read(file_name);
   Lexer *lexer = init_lexer(src);
   TokenStream *tokenstream = tokenize(lexer);
+  if(!tokenstream)
+  {
+    fprintf(stderr, "Error: Tokenstream failed to tokenize!\n");
+    return;
+  }
+
+  dump_tokenstream(tokenstream);
 
   // Parse and register an abstract syntax tree
   ASTNode_t *root = parse(init_parser(tokenstream, lexer));

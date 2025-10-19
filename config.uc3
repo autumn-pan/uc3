@@ -6,5 +6,5 @@ DEFINE my_func
         DEFAULT 1
 
     FIELD my_num 
-        DEFAULT 15
+        DEFAULT 15  
 }

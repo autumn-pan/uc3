@@ -374,7 +374,7 @@ ASTNode_t *parse_block(Parser_t *parser) {
     parser->pos++;
     parser->ptr = parser->ptr->next;
   } else {
-    fprintf(stderr, "Error: expected ']'");
+    fprintf(stderr, "Error: expected '}'");
     point_error(parser->line, parser->column);
   }
 
