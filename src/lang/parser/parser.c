@@ -329,43 +329,33 @@ ASTNode_t *parse_statement(Parser_t *parser) {
   point_error(parser->line, parser->column);
 }
 
-// TODO: Sopport conditional blocks
 ASTNode_t *parse_block(Parser_t *parser) {
   AST_TYPE type;
   ASTNode_t *node;
-  if (match_value(parser, "DEFINE")) {
-    type = DEFINITION_AST;
-  } else if (match_value(parser, "CONFIG")) {
-    type = CONFIGURATION_AST;
-  } else {
+  if (!match_value(parser, "DEFINE"))
     return NULL;
-  }
 
-  char *block_identifier;
-  if (!(block_identifier = match(parser, IDENTIFIER_TOKEN)))
+  char *block_identifier = match(parser, IDENTIFIER_TOKEN);
+  if (!block_identifier)
     return NULL;
 
   if (!match(parser, LBRACE_TOKEN))
     return NULL;
 
-  node = init_ast(type, block_identifier);
-
+  node = init_ast(DEFINITION_AST, block_identifier);
   if (!node)
     return NULL;
 
   // Parse each statement within a definition
   ASTNode_t *child;
-
   ASTNode_t *block = init_ast(BLOCK_AST, "BLOCK");
   if (!block)
     return NULL;
 
   while (parser->ptr->type != RBRACE_TOKEN && parser->ptr->type != EOF) {
     child = parse_statement(parser);
-
-    if (!child) {
+    if (!child)
       return NULL;
-    }
 
     ast_append(block, child);
   }
@@ -395,7 +385,6 @@ ASTNode_t *parse(Parser_t *parser) {
     }
 
     block = parse_block(parser);
-
     if (!block)
       break;
 

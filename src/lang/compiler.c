@@ -44,7 +44,22 @@ void compile(char *file_name) {
 
   // Parse and register an abstract syntax tree
   ASTNode_t *root = parse(init_parser(tokenstream, lexer));
+  if(!root)
+  {
+    fprintf(stderr, "Error: Failed to parse AST!\n");
+    return;
+  }
+  
   HashTable_t *table = init_component_registry(root);
+  if(!table)
+  {
+    fprintf(stderr, "Error: Component registration failed!\n");
+    return;
+  }
+
+  printf("\nNum Elements: %i", table->num_elements);
+  fflush(stdout);
+
   SymbolNode_t *symbol_table = symbolize_ast(root);
 
   if(!append_component_fields(table))
