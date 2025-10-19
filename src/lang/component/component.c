@@ -103,6 +103,17 @@ bool check_cycles(Component_t *node) {
   return false;
 }
 
+ASTNode_t *get_component_block(Component_t *component)
+{
+  if(!component || !component->node || !component->node->children)
+    return NULL;
+  
+  if(component->node->num_children < 1)
+    return NULL;
+
+  return component->node->children[0];
+}
+
 // Returns true if there is a circular dependency
 bool verify_components(HashTable_t *table) {
   if (!table)
@@ -206,39 +217,51 @@ bool append_component_dependencies(HashTable_t *registry) {
   return true;
 }
 
-void append_component_fields(HashTable_t *registry) {
+bool append_component_fields(HashTable_t *registry) {
+  if(!registry)
+  {
+    fprintf(stderr, "Error: Null value passed to append_component_fields");
+    return false;
+  }
+
   for (int i = 0; i < registry->hash_max; i++) {
     if (registry->contents[i] == NULL)
       continue;
 
     Component_t *component = (Component_t *)registry->contents[i]->value;
-
+    
     ASTNode_t *field_node;
+    ASTNode_t *block = get_component_block(component);
+    if(!block)
+    {
+      fprintf(stderr, "Error: invalid component passed to append_component_field!");
+      return false;
+    }
+    
     for (int j = 0; j < component->node->children[0]->num_children; j++) {
-      if (component->node->children[0]->children[j]->type != FIELD_AST) {
+      if (component->node->children[0]->children[j]->type != FIELD_AST)
         continue;
-      }
 
       field_node = component->node->children[0]->children[j];
 
       // The first child of a FIELD node is its required default
       if (!field_node->children[0])
-        return;
+        return false;
 
       Symbol_t *symbol =
           init_symbol(field_node->children[0], field_node->data.str, false);
-
       if (!symbol)
-        return;
+        return false;
 
       Field_t *field =
           init_field(symbol, atoi(field_node->children[0]->data.str));
-
       if (!field)
-        return;
+        return false;
 
       component->fields[component->num_fields] = field;
       component->num_fields += 1;
     }
   }
+
+  return true;
 }

@@ -48,14 +48,15 @@ void compile(char *file_name) {
   SymbolNode_t *symbol_table = symbolize_ast(root);
 
   append_component_fields(table);
-  symbolize_fields(table, symbol_table);
+  printf("\nFlag");
+  fflush(stdout);
 
+  symbolize_fields(table, symbol_table);
   // Prompt the user for configuration options
   config(table);
 
   // Post-Config generation
   append_component_dependencies(table);
-
   if (verify_components(table) == 1) {
     fprintf(stderr, "Error: Circular dependency detected!");
     exit(EXIT_FAILURE);
