@@ -66,10 +66,17 @@ Token *get_next_token(Parser_t *p) {
   if (p->pos < p->len - 1) {
     return p->ptr->next;
   }
+
   return NULL;
 }
 
 bool advance_parser(Parser_t *parser) {
+  if(!parser)
+  {
+    fprintf(stderr, "Error: Null parser passed to advance_parser!\n");
+    return false;
+  }
+
   if (parser->pos < parser->len && parser->ptr) {
     parser->pos++;
     parser->ptr = parser->ptr->next;
@@ -85,11 +92,17 @@ bool advance_parser(Parser_t *parser) {
   return false;
 }
 
-char *match(Parser_t *p, enum TOKEN_TYPE type) {
-  if (p->pos < p->len && p->ptr->type == type) {
-    char *tmp = p->ptr->value;
+char *match(Parser_t *parser, enum TOKEN_TYPE type) {
+  if(!parser)
+  {
+    fprintf(stderr, "Error: null parser passed to match!\n");
+    return NULL;
+  }
 
-    advance_parser(p);
+  if (parser->pos < parser->len && parser->ptr->type == type) {
+    char *tmp = parser->ptr->value;
+
+    advance_parser(parser);
     return tmp;
   }
   return NULL;
@@ -97,19 +110,27 @@ char *match(Parser_t *p, enum TOKEN_TYPE type) {
 
 // Advance parser and return true if the current token matches the key
 bool match_value(Parser_t *p, char *value) {
+  if(!p || !value)
+  {
+    fprintf(stderr, "Error: null parser or value passed to match_value!");
+    return false;
+  }
+
   if (p->pos < p->len && strcmp(p->ptr->value, value) == 0 && p->ptr) {
     advance_parser(p);
     return true;
   }
+
   return false;
 }
 
+// Parse a FIELD node
 ASTNode_t *parse_field(Parser_t *parser) {
   if (!match_value(parser, "FIELD"))
     return NULL;
 
-  char *node_identifier;
-  if (!(node_identifier = match(parser, IDENTIFIER_TOKEN)))
+  char *node_identifier = match(parser, IDENTIFIER_TOKEN);
+  if (!(node_identifier))
     return NULL;
 
   if (!match_value(parser, "DEFAULT")) {
@@ -122,7 +143,6 @@ ASTNode_t *parse_field(Parser_t *parser) {
     return NULL;
 
   ASTNode_t *node = init_ast(FIELD_AST, node_identifier);
-
   if (!node)
     return NULL;
 
@@ -134,8 +154,8 @@ ASTNode_t *parse_subsystem(Parser_t *parser) {
   if (!match_value(parser, "SUBSYSTEM"))
     return NULL;
 
-  char *node_identifier;
-  if (!(node_identifier = match(parser, IDENTIFIER_TOKEN)))
+  char *node_identifier = match(parser, IDENTIFIER_TOKEN);
+  if (!(node_identifier))
     return NULL;
 
   ASTNode_t *node = init_ast(SUBSYSTEM_AST, node_identifier);
@@ -158,8 +178,8 @@ ASTNode_t *parse_variable_decl(Parser_t *parser) {
     point_error(parser->line, parser->column);
   }
 
-  char *identifier;
-  if (!(identifier = match(parser, IDENTIFIER_TOKEN))) {
+  char *identifier = match(parser, IDENTIFIER_TOKEN);
+  if (!(identifier)) {
     fprintf(stderr, "Error: Expected identifier after variable declaration!");
     point_error(parser->line, parser->column);
   }
@@ -210,21 +230,26 @@ ASTNode_t *parse_list(Parser_t *parser) {
     if (!parser->ptr)
       return NULL;
 
-    AST_TYPE type = PLACEHOLDER_AST;
+    AST_TYPE type = NULL_AST;
 
     // Convert token type to AST type
-    // TODO: consolidate types or create simpler conversions
     switch (token->type) {
     case (INT_TOKEN):
       type = INT_AST;
       break;
+    case (BOOL_TOKEN):
+      type = BOOL_AST;
+      break;
     case (IDENTIFIER_TOKEN):
       type = IDEN_AST;
+      break;
+    default:
+      type = NULL_AST;
       break;
     }
 
     // Quit if the type is unrecognized for whatever reason
-    if (type == NULL_TOKEN) {
+    if (type == NULL_AST) {
       fprintf(stderr,
               "\nError: List contents must be identifiers or literals!");
       point_error(parser->line, parser->column);
@@ -236,7 +261,6 @@ ASTNode_t *parse_list(Parser_t *parser) {
       return NULL;
 
     ast_append(node, child);
-
     advance_parser(parser);
   }
 

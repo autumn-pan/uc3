@@ -72,5 +72,5 @@ typedef struct {
 } ProjectHeader_t;
 
 ASTNode_t *init_ast(AST_TYPE type, char *value);
-void ast_append(ASTNode_t *node, ASTNode_t *child);
+bool ast_append(ASTNode_t *node, ASTNode_t *child);
 #endif

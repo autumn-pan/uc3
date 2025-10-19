@@ -1,5 +1,6 @@
 #include "lang/reader.h"
 
+// Return the contents of a file as a string
 char *read(char *file_name) {
   FILE *file = fopen(file_name, "r");
   if (!file) {

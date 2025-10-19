@@ -65,9 +65,9 @@ Token *init_token(enum TOKEN_TYPE type, char *value, uint32_t line,
                   uint32_t column);
 TokenStream *tokenize(Lexer *lexer);
 TokenStream *init_tokenstream();
-void append_token(TokenStream *ts, Token *token);
+bool append_token(TokenStream *ts, Token *token);
 
-void free_tokenstream(TokenStream *ts);
+bool free_tokenstream(TokenStream *ts);
 char *to_string(const char character);
 
 bool in_array(const char *arr[], const char *key, uint8_t size);

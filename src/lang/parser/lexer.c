@@ -142,7 +142,7 @@ char peek(Lexer *lexer) {
 
 // Move the lexer forward
 char advance(Lexer *lexer) {
-  if (!lexer || lexer->pos + 1 >= lexer->length)
+  if (!lexer || lexer->pos >= lexer->length)
     return '\0';
 
   char c = lexer->src[lexer->pos];
@@ -162,6 +162,9 @@ char advance(Lexer *lexer) {
 Token *next_token(Lexer *lexer) {
   skip_whitespace(lexer);
 
+  if (lexer->src[lexer->pos] == '\0' || lexer->pos >= lexer->length)
+    return NULL;
+  
   // The value of the next token, as a string
   char str[32] = "";
   char current_char = lexer->src[lexer->pos];
@@ -229,10 +232,8 @@ Token *next_token(Lexer *lexer) {
   if (misc_token_type != NULL_TOKEN)
     return init_token(misc_token_type, temp, lexer->line, lexer->column);
 
-  if (lexer->src[lexer->pos] == '\0')
-    return NULL;
-
   fprintf(stderr, "Error: Unknown char '%c'", lexer->src[lexer->pos]);
+  return NULL;
 }
 
 // Create a tokenstream from a lexer
@@ -241,7 +242,7 @@ TokenStream *tokenize(Lexer *lexer) {
 
   Token *token = next_token(lexer);
 
-  while (token) {
+  while (token && token->type != NULL_TOKEN) {
     append_token(token_stream, token);
     token = next_token(lexer);
   }

@@ -1,15 +1,10 @@
 INT other_int = 6
-BOOL boolean = 1
 
 DEFINE my_func
 {
-
     FIELD enabled 
         DEFAULT 1
 
     FIELD my_num 
         DEFAULT 15
-
-    MACRO MY_FUNC_ENABLED enabled
-    MACRO MY_NUM my_num
 }
