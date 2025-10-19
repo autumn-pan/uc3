@@ -25,6 +25,9 @@ void dump_tokenstream(TokenStream *tokenstream) {
     printf("\nToken: %s", token->value);
     token = token->next;
   }
+
+  // Flush stdout so that no information is omitted in the event of a crash
+  fflush(stdout);
 }
 
 // Compiles a uc3 script
