@@ -47,9 +47,8 @@ void compile(char *file_name) {
   HashTable_t *table = init_component_registry(root);
   SymbolNode_t *symbol_table = symbolize_ast(root);
 
-  append_component_fields(table);
-  printf("\nFlag");
-  fflush(stdout);
+  if(!append_component_fields(table))
+    return;
 
   symbolize_fields(table, symbol_table);
   // Prompt the user for configuration options

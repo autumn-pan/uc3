@@ -234,10 +234,10 @@ bool append_component_fields(HashTable_t *registry) {
     ASTNode_t *block = get_component_block(component);
     if(!block)
     {
-      fprintf(stderr, "Error: invalid component passed to append_component_field!");
+      fprintf(stderr, "Error: invalid component passed to append_component_field!\n");
       return false;
     }
-    
+
     for (int j = 0; j < component->node->children[0]->num_children; j++) {
       if (component->node->children[0]->children[j]->type != FIELD_AST)
         continue;
