@@ -1,13 +1,11 @@
 #include "lang/compiler.h"
-
-#include <stdio.h>
-
 #include "lang/ast.h"
 #include "lang/component/component.h"
 #include "lang/parser/parser.h"
 #include "lang/reader.h"
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
+#include <stdio.h>
 
 void gen_config(HashTable_t *component_registry, SymbolNode_t *global_symbols);
 void config(HashTable_t *components);
@@ -33,12 +31,13 @@ void dump_tokenstream(TokenStream *tokenstream) {
 void compile(char *file_name) {
   // Tokenize the source code
   char *src = read(file_name);
+  if (!src)
+    return;
+
   Lexer *lexer = init_lexer(src);
   TokenStream *tokenstream = tokenize(lexer);
-  if (!tokenstream) {
-    fprintf(stderr, "Error: Tokenstream failed to tokenize!\n");
+  if (!tokenstream)
     return;
-  }
 
   // Parse and register an abstract syntax tree
   ASTNode_t *root = parse(init_parser(tokenstream, lexer));

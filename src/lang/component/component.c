@@ -64,7 +64,7 @@ Component_t *init_component(ASTNode_t *node) {
 
   if (!component) {
     fprintf(stderr, "Error: Failed to allocate critical memory!");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
 
   component->enabled = true;
@@ -101,7 +101,6 @@ bool check_cycles(Component_t *node) {
 ASTNode_t *get_component_block(Component_t *component) {
   if (!component || !component->node || !component->node->children)
     return NULL;
-
   if (component->node->num_children < 1)
     return NULL;
 
@@ -131,7 +130,6 @@ bool verify_components(HashTable_t *table) {
 // Register the components of a project
 HashTable_t *init_component_registry(ASTNode_t *root) {
   HashTable_t *table = init_hash_table(COMPONENT_REGISTRY_SIZE);
-
   if (!table)
     return NULL;
 
@@ -146,7 +144,9 @@ HashTable_t *init_component_registry(ASTNode_t *root) {
 
     if (insert_hash(table, child, child->identifier)) {
       fprintf(stderr, "Error: Component redeclaration detected!");
-      exit(EXIT_FAILURE);
+      free(child);
+      free(table);
+      return NULL;
     }
   }
 

@@ -5,7 +5,7 @@ char *read(char *file_name) {
   FILE *file = fopen(file_name, "r");
   if (!file) {
     fprintf(stderr, "Error: No such file %s", file_name);
-    exit(EXIT_FAILURE);
+    return NULL;
   }
 
   // find file size
@@ -14,9 +14,9 @@ char *read(char *file_name) {
   fseek(file, 0, SEEK_SET);
 
   char *buffer = (char *)malloc(file_size + 1);
-
   if (!buffer) {
     fprintf(stderr, "Error: Memory allocation failed!");
+    return NULL;
   }
 
   fread(buffer, 1, file_size, file);

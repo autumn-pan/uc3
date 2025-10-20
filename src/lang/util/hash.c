@@ -121,7 +121,7 @@ unsigned long get_hash_pos(HashTable_t *table, const char *key) {
 // Removes and frees a symbol from a hash table
 void delete_symbol(HashTable_t *table, char *key) {
   if (get_hash_pos(table, key) == ULONG_MAX)
-    exit(EXIT_FAILURE);
+    return;
 
   unsigned long index = get_hash_pos(table, key);
 

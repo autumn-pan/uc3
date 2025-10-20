@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "symbol.h": "c"
+        "symbol.h": "c",
+        "ast.h": "c",
+        "hash.h": "c"
     }
 }

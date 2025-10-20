@@ -7,14 +7,12 @@
 
 ASTNode_t *init_ast(AST_TYPE type, char *value) {
   ASTNode_t *ast = (malloc(sizeof(ASTNode_t)));
-
   if (!ast) {
     fprintf(stderr, "Fatal: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
   }
 
   ast->children = NULL;
-
   ast->num_children = 0;
   ast->data.str = value;
   ast->type = type;
@@ -30,7 +28,6 @@ void free_ast(ASTNode_t *ast) {
   if(ast->data.str)
     free(ast->data.str);
   */
-
   free(ast);
 }
 
