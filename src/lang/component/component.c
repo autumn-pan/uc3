@@ -87,11 +87,10 @@ Component_t *init_component(ASTNode_t *node) {
 bool check_cycles(Component_t *node) {
   node->cyclic_status = ONGOING;
   for (int i = 0; i < node->num_dependencies; i++) {
-    bool cyclic = false;
-
     if (node->dependencies[i]->cyclic_status == ONGOING)
       return true;
-    else if (check_cycles(node->dependencies[i]))
+    else if (check_cycles(node->dependencies[i]) &&
+             node->dependencies[i]->cyclic_status == UNVISITED)
       return true;
   }
 
