@@ -1,16 +1,16 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
-#define COMPONENT_MAX_FIELDS 32
 
 #include <string.h>
-
 #include "lang/ast.h"
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
+
+#define COMPONENT_MAX_FIELDS 32
 #define COMPONENT_REGISTRY_SIZE 8
+#define COMPONENT_MAX_MACROS 4
 
 typedef enum { UNVISITED, ONGOING, COMPLETED } COMPONENT_STATUS;
-
 typedef enum { UNGRAPHED, GRAPHED } GRAPH_STATUS;
 
 typedef struct {

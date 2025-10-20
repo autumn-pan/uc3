@@ -57,9 +57,6 @@ void compile(char *file_name) {
     return;
   }
 
-  printf("\nNum Elements: %i", table->num_elements);
-  fflush(stdout);
-
   SymbolNode_t *symbol_table = symbolize_ast(root);
 
   if(!append_component_fields(table))

@@ -32,7 +32,7 @@ HashTable_t *init_hash_table(int hash_max) {
   // Maximum number of hash elements in the table
   table->hash_max = hash_max;
 
-  table->contents = malloc(sizeof(HashElement_t *) * table->hash_max);
+  table->contents = calloc(table->hash_max, sizeof(HashElement_t *));
   if (!table->contents) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);

@@ -6,9 +6,6 @@
 
 #include "lang/symbol/symbol.h"
 
-// How many macros that a component is assumed to have at first
-#define INITIAL_MACRO_NUM 4
-
 Field_t *init_field(Symbol_t *symbol, int value) {
   Field_t *field = malloc(sizeof(Field_t));
 
@@ -84,7 +81,7 @@ Component_t *init_component(ASTNode_t *node) {
   component->fields = calloc(COMPONENT_MAX_FIELDS, sizeof(Field_t *));
 
   component->num_macros = 0;
-  component->macros = calloc(INITIAL_MACRO_NUM, sizeof(Macro_t *));
+  component->macros = calloc(COMPONENT_MAX_MACROS, sizeof(Macro_t *));
   return component;
 }
 
@@ -99,6 +96,7 @@ bool check_cycles(Component_t *node) {
     else if (check_cycles(node->dependencies[i]))
       return true;
   }
+  
   node->cyclic_status = COMPLETED;
   return false;
 }
@@ -131,7 +129,6 @@ bool verify_components(HashTable_t *table) {
     if (check_cycles(table->contents[i]->value))
       return true;
   }
-
   return false;
 }
 
@@ -148,18 +145,15 @@ HashTable_t *init_component_registry(ASTNode_t *root) {
       continue;
 
     Component_t *child = init_component(root->children[i]);
-
     if (!child)
       return NULL;
 
-    bool duplicate_key = insert_hash(table, child, child->identifier);
-
-    // Quit if there's a duplicate key (redefinition error)
-    if (duplicate_key) {
-      fprintf(stderr, "Error: Component declaration detected!");
+    if(insert_hash(table, child, child->identifier)) {
+      fprintf(stderr, "Error: Component redeclaration detected!");
       exit(EXIT_FAILURE);
     }
   }
+
   return table;
 }
 
@@ -220,21 +214,25 @@ bool append_component_dependencies(HashTable_t *registry) {
 bool append_component_fields(HashTable_t *registry) {
   if(!registry)
   {
-    fprintf(stderr, "Error: Null value passed to append_component_fields");
+    fprintf(stderr, "Error: Null value passed to append_component_fields\n");
     return false;
   }
+
+  if(registry->num_elements == 0)
+    return true;
 
   for (int i = 0; i < registry->hash_max; i++) {
     if (registry->contents[i] == NULL)
       continue;
 
     Component_t *component = (Component_t *)registry->contents[i]->value;
-    
     ASTNode_t *field_node;
+    printf("\nIdentifier: %s", component->identifier);
+    fflush(stdout);
     ASTNode_t *block = get_component_block(component);
     if(!block)
     {
-      fprintf(stderr, "Error: invalid component passed to append_component_field!\n");
+      fprintf(stderr, "Error: invalid component passed to append_component_fields!\n");
       return false;
     }
 
