@@ -1,10 +1,8 @@
 #include "lang/component/component.h"
-
+#include "lang/symbol/symbol.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "lang/symbol/symbol.h"
 
 Field_t *init_field(Symbol_t *symbol, int value) {
   Field_t *field = malloc(sizeof(Field_t));
@@ -96,17 +94,16 @@ bool check_cycles(Component_t *node) {
     else if (check_cycles(node->dependencies[i]))
       return true;
   }
-  
+
   node->cyclic_status = COMPLETED;
   return false;
 }
 
-ASTNode_t *get_component_block(Component_t *component)
-{
-  if(!component || !component->node || !component->node->children)
+ASTNode_t *get_component_block(Component_t *component) {
+  if (!component || !component->node || !component->node->children)
     return NULL;
-  
-  if(component->node->num_children < 1)
+
+  if (component->node->num_children < 1)
     return NULL;
 
   return component->node->children[0];
@@ -148,7 +145,7 @@ HashTable_t *init_component_registry(ASTNode_t *root) {
     if (!child)
       return NULL;
 
-    if(insert_hash(table, child, child->identifier)) {
+    if (insert_hash(table, child, child->identifier)) {
       fprintf(stderr, "Error: Component redeclaration detected!");
       exit(EXIT_FAILURE);
     }
@@ -212,13 +209,12 @@ bool append_component_dependencies(HashTable_t *registry) {
 }
 
 bool append_component_fields(HashTable_t *registry) {
-  if(!registry)
-  {
+  if (!registry) {
     fprintf(stderr, "Error: Null value passed to append_component_fields\n");
     return false;
   }
 
-  if(registry->num_elements == 0)
+  if (registry->num_elements == 0)
     return true;
 
   for (int i = 0; i < registry->hash_max; i++) {
@@ -230,9 +226,9 @@ bool append_component_fields(HashTable_t *registry) {
     printf("\nIdentifier: %s", component->identifier);
     fflush(stdout);
     ASTNode_t *block = get_component_block(component);
-    if(!block)
-    {
-      fprintf(stderr, "Error: invalid component passed to append_component_fields!\n");
+    if (!block) {
+      fprintf(stderr,
+              "Error: invalid component passed to append_component_fields!\n");
       return false;
     }
 

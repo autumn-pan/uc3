@@ -38,9 +38,9 @@ const char *OPERATOR_CHARS[] = {"=", "|", "&", "!", "<", ">",
 
 // Returns the appropriate data type of a string
 enum TOKEN_TYPE str_to_datatype(char *str) {
-  if(!str)
+  if (!str)
     return NULL_TOKEN;
-    
+
   if (strcmp(str, "INT") == 0)
     return INT_TOKEN;
   else if (strcmp(str, "BOOL") == 0)
@@ -95,8 +95,7 @@ bool is_whitespace(Lexer *lexer) {
 }
 
 bool skip_whitespace(Lexer *lexer) {
-  if(!lexer)
-  {
+  if (!lexer) {
     fprintf(stderr, "\nError: Lexer passed to skip_whitespace is null!");
     return false;
   }
@@ -164,7 +163,7 @@ Token *next_token(Lexer *lexer) {
 
   if (lexer->src[lexer->pos] == '\0' || lexer->pos >= lexer->length)
     return NULL;
-  
+
   // The value of the next token, as a string
   char str[32] = "";
   char current_char = lexer->src[lexer->pos];
@@ -243,7 +242,7 @@ TokenStream *tokenize(Lexer *lexer) {
   Token *token = next_token(lexer);
 
   while (token && token->type != NULL_TOKEN) {
-    if(!append_token(token_stream, token))
+    if (!append_token(token_stream, token))
       return NULL;
 
     token = next_token(lexer);

@@ -71,8 +71,7 @@ Token *get_next_token(Parser_t *p) {
 }
 
 bool advance_parser(Parser_t *parser) {
-  if(!parser)
-  {
+  if (!parser) {
     fprintf(stderr, "Error: Null parser passed to advance_parser!\n");
     return false;
   }
@@ -93,8 +92,7 @@ bool advance_parser(Parser_t *parser) {
 }
 
 char *match(Parser_t *parser, enum TOKEN_TYPE type) {
-  if(!parser)
-  {
+  if (!parser) {
     fprintf(stderr, "Error: null parser passed to match!\n");
     return NULL;
   }
@@ -110,8 +108,7 @@ char *match(Parser_t *parser, enum TOKEN_TYPE type) {
 
 // Advance parser and return true if the current token matches the key
 bool match_value(Parser_t *p, char *value) {
-  if(!p || !value)
-  {
+  if (!p || !value) {
     fprintf(stderr, "Error: null parser or value passed to match_value!");
     return false;
   }

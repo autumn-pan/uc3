@@ -79,8 +79,7 @@ SymbolNode_t *symbolize_ast(ASTNode_t *node) {
   // Initialize the root symbol
   SymbolNode_t *symbol_node = init_symbol_node();
   int child_index = 0;
-  if(!node)
-  {
+  if (!node) {
     fprintf(stderr, "Error: Null value paased to symbolize_ast!");
     return NULL;
   }
@@ -92,7 +91,7 @@ SymbolNode_t *symbolize_ast(ASTNode_t *node) {
   while (child) {
     if (child->num_children > 0 && child->children[0]->type == BLOCK_AST) {
       SymbolNode_t *block = symbolize_ast(child->children[0]);
-    
+
       if (!block)
         continue;
 

@@ -1,10 +1,10 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include <string.h>
 #include "lang/ast.h"
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
+#include <string.h>
 
 #define COMPONENT_MAX_FIELDS 32
 #define COMPONENT_REGISTRY_SIZE 8

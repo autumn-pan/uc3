@@ -14,12 +14,11 @@ void config(HashTable_t *components);
 
 // Writes the entire tokenstream to stdout for debugging
 void dump_tokenstream(TokenStream *tokenstream) {
-  if(!tokenstream)
-  {
+  if (!tokenstream) {
     fprintf(stderr, "Error: null value passed to dump_tokenstream!");
     return;
   }
-  
+
   Token *token = tokenstream->head;
   while (token) {
     printf("\nToken: %s", token->value);
@@ -36,30 +35,27 @@ void compile(char *file_name) {
   char *src = read(file_name);
   Lexer *lexer = init_lexer(src);
   TokenStream *tokenstream = tokenize(lexer);
-  if(!tokenstream)
-  {
+  if (!tokenstream) {
     fprintf(stderr, "Error: Tokenstream failed to tokenize!\n");
     return;
   }
 
   // Parse and register an abstract syntax tree
   ASTNode_t *root = parse(init_parser(tokenstream, lexer));
-  if(!root)
-  {
+  if (!root) {
     fprintf(stderr, "Error: Failed to parse AST!\n");
     return;
   }
-  
+
   HashTable_t *table = init_component_registry(root);
-  if(!table)
-  {
+  if (!table) {
     fprintf(stderr, "Error: Component registration failed!\n");
     return;
   }
 
   SymbolNode_t *symbol_table = symbolize_ast(root);
 
-  if(!append_component_fields(table))
+  if (!append_component_fields(table))
     return;
 
   symbolize_fields(table, symbol_table);
