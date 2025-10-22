@@ -42,10 +42,10 @@ int token_to_ast_type(enum TOKEN_TYPE type) {
 //////////////////////////////////////////////////////////////
 
 Parser_t *init_parser(TokenStream *ts, Lexer *lexer) {
-  Parser_t *parser = (malloc(sizeof(Parser_t)));
+  Parser_t *parser = malloc(sizeof(Parser_t));
   if (!parser) {
     fprintf(stderr, "Error: Failed to allocate memory!");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
 
   parser->ts = ts;
@@ -55,12 +55,13 @@ Parser_t *init_parser(TokenStream *ts, Lexer *lexer) {
   parser->ptr = ts->head;
 
   // Free the lexer, as it will no longer be used
+
   free(lexer);
   return parser;
 }
 
 Token *get_next_token(Parser_t *p) {
-  if (!p->ptr)
+  if (!p || !p->ptr)
     return NULL;
 
   if (p->pos < p->len - 1) {

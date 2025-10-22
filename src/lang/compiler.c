@@ -53,11 +53,10 @@ void compile(char *file_name) {
   }
 
   SymbolNode_t *symbol_table = symbolize_ast(root);
-
   if (!append_component_fields(table))
     return;
-
   symbolize_fields(table, symbol_table);
+
   // Prompt the user for configuration options
   config(table);
 
@@ -68,6 +67,7 @@ void compile(char *file_name) {
     exit(EXIT_FAILURE);
   }
 
+  // Autogenerates a C header file with the corresponding macros
   gen_config(table, symbol_table);
 }
 
@@ -81,7 +81,6 @@ void gen_config(HashTable_t *component_registry, SymbolNode_t *global_symbols) {
   }
 
   uint8_t num_macros = 0;
-  // Measures which component the generator is on
   size_t current_component = -1;
   for (int i = 0; i < component_registry->hash_max; i++) {
     // Get the next component

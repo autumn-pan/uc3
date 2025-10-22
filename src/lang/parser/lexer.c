@@ -1,11 +1,9 @@
 #include "lang/parser/lexer.h"
-
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "lang/symbol/symbol.h"
 
 const char *KEYWORDS[] = {
@@ -238,9 +236,10 @@ Token *next_token(Lexer *lexer) {
 // Create a tokenstream from a lexer
 TokenStream *tokenize(Lexer *lexer) {
   TokenStream *token_stream = init_tokenstream();
+  if(!token_stream)
+    return NULL;
 
   Token *token = next_token(lexer);
-
   while (token && token->type != NULL_TOKEN) {
     if (!append_token(token_stream, token))
       return NULL;
@@ -259,13 +258,12 @@ TokenStream *init_tokenstream() {
   TokenStream *token_stream = (malloc(sizeof(TokenStream)));
   if (!token_stream) {
     fprintf(stderr, "Fatal: Failed to allocate memory!");
-    exit(EXIT_FAILURE);
+    return NULL;
   }
 
   token_stream->head = NULL;
   token_stream->tail = NULL;
   token_stream->size = 0;
-
   return token_stream;
 }
 
@@ -276,7 +274,6 @@ bool append_token(TokenStream *ts, Token *token) {
   }
 
   token->next = NULL;
-
   if (ts->head == NULL) { // Empty list
     ts->head = token;
     ts->tail = token;
@@ -300,7 +297,6 @@ bool free_tokenstream(TokenStream *ts) {
     return false;
 
   Token *token = ts->head;
-
   while (token) {
     Token *tmp = token->next;
     free(token);

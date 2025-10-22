@@ -1,12 +1,11 @@
 #include "lang/util/hash.h"
-
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 #include "lang/symbol/symbol.h"
+
 ////////////////////////////////////////////////////
 // HASHING
 ////////////////////////////////////////////////////
@@ -29,31 +28,27 @@ HashTable_t *init_hash_table(int hash_max) {
     fprintf(stderr, "Error: Failed to allocate enough memory!");
     exit(EXIT_FAILURE);
   }
-  // Maximum number of hash elements in the table
-  table->hash_max = hash_max;
 
+  table->hash_max = hash_max;
   table->contents = calloc(table->hash_max, sizeof(HashElement_t *));
   if (!table->contents) {
-    fprintf(stderr, "Error: Failed to allocate enough memory!");
-    exit(EXIT_FAILURE);
+    fprintf(stderr, "Error: Failed to allocate memory!");
+    return NULL;
   }
 
   table->num_elements = 0;
-
   return table;
 }
 
 HashElement_t *init_hash_element(void *value, const char *key) {
   HashElement_t *element = malloc(sizeof(HashElement_t));
-
   if (!element) {
-    fprintf(stderr, "Error: Failed to allocate enough memory!");
-    exit(EXIT_FAILURE);
+    fprintf(stderr, "Error: Failed to allocate memory!");
+    return NULL;
   }
 
   element->value = value;
   element->key = key;
-
   return element;
 }
 
@@ -63,7 +58,6 @@ bool insert_hash(HashTable_t *table, void *value, const char *key) {
 
   uint32_t index = hash(key, table->hash_max);
   HashElement_t *symbol = init_hash_element(value, key);
-
   while (table->contents[index] != NULL) {
     if (strcmp(table->contents[index]->key, key) == 0)
       return true;
@@ -77,7 +71,12 @@ bool insert_hash(HashTable_t *table, void *value, const char *key) {
   while (table->num_elements >= table->hash_max / 2) {
     table->hash_max *= 2;
     HashElement_t **tmp = malloc(sizeof(HashElement_t *) * table->hash_max);
-
+    if(!tmp)
+    {
+      fprintf(stderr, "Error: Failed to allocate memory!\n");
+      return false;
+    }
+    
     // Rehash all symbols
     for (int i = 0; i < table->hash_max / 2; i++) {
       if (table->contents[i] != NULL) {
@@ -124,10 +123,6 @@ void delete_symbol(HashTable_t *table, char *key) {
     return;
 
   unsigned long index = get_hash_pos(table, key);
-
-  // Free the symbol
   free(table->contents[index - 1]);
-
-  // Clear the symbol
   table->contents[index - 1] = NULL;
 }
