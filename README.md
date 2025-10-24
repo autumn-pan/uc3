@@ -47,11 +47,10 @@ This states that a component depends on `foo`, `bar`, and `baz`. At the current 
 #### DEPENDENCIES
 A component can declare its dependencies using the ```DEPENDENCIES []``` statement. It must always be followed by a list full of identifiers, which declares what other components it depends on. They also must be defined somewhere else in the source code. Whether or not it has been defined at that point is irrelevant however, because of how components are registered. An example of this statement was shown above.
 ### Variables
-There are two supported data types currently: `INT` and `BOOL`. A variable definition goes as such:
+There are two supported data types currently: `INT`. Booleans exist within the source code, though I highly recommend against using them as they are meant for testing purposes. A variable definition goes as such:
 
 ```<DATA_TYPE> <IDENTIFIER> = <VALUE>```
 Examples
-```BOOL my_bool = true```
 ```INT my_int = 128```
 
 Defining a variable is not necessary, and a declaration may also suffice, such as
@@ -81,3 +80,14 @@ DEFINE camera
 The `MACRO` keyword defines a macro with a name, and a value. They are of the form
 ```MACRO <macro_name> <macro_value>```
 A macro value can be of any type that a c macro can hold.
+
+## Story
+This is UC3. A configuration tool for enabling, disabling, and configuring entire sections of code.
+
+I made UC3 because I could. I knew that I needed a way to configure my programs. Nearly all of my major projects are highly modular and configurable. My old method of doing this was simply using preprocessor macros, but this didn't work perfectly. UC3 is a system that can define entire components of code, and allows you to define dependencies, variables, and other metadata that makes configuration easier and automatic. I spent nearly 100 hours on this. 
+
+This project was accomplished through identifying KConfigs flaws and proposing solutions to them. Luckily, I had already created two parsers on my own before this project, so I already knew how to accomplish that. One major improvement compared to my old parsers is that this one was a lot more concise because I only have a single AST struct. I learned graph theory this summer, which was instrumental in analyzing the dependencies through graphical algorithms. I added only one data type technically, because integers are very powerful in regards to configuration and can be mapped directly to booleans. It took me approximately two weeks to code most of this, dedicated several hours per day. I used more advanced data structures to improve the efficiency compared to other languages, and I spent an entire week rewriting, refactoring, and optimizing the code. I decided to use recursive descent parsing for expressions. Integer arithmetic is currently supported through this method.
+
+One of the biggest challenges was keeping track of symbols, components, and not forgetting who or where they are. This was accomplished using a network of arrays and hash tables, which added a lot of abstraction which led to a lot of bugs initially. I learned how to deal with higher abstraction and how to make better error checking and hash tables, though. The code quality has improved significantly since commit #1.
+
+[![Athena Award Badge](https://img.shields.io/endpoint?url=https%3A%2F%2Faward.athena.hackclub.com%2Fapi%2Fbadge)](https://award.athena.hackclub.com?utm_source=readme)

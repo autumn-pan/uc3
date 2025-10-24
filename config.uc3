@@ -1,13 +1,14 @@
 DEFINE my_func
 {
+    INT my_integer = 4 * 3 + 2
+
     FIELD enabled 
         DEFAULT 1
 
     FIELD my_num 
         DEFAULT 15  
     
-    bool my_bool = true || false
-
     MACRO MY_FUNC_ENABLED enabled
     MACRO MY_NUM my_num
+    MACRO MY_INTEGER my_integer
 }

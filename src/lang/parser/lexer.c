@@ -101,7 +101,6 @@ bool skip_whitespace(Lexer *lexer) {
   while (is_whitespace(lexer)) {
     advance(lexer);
   }
-
   return true;
 }
 
