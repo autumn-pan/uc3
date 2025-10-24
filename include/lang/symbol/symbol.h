@@ -1,17 +1,15 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 
-#include <stdbool.h>
-#include <stdlib.h>
-
 #include "lang/ast.h"
 #include "lang/util/hash.h"
 
-#define STRINGIFY(x) #x
+#include <stdbool.h>
+#include <stdlib.h>
+
 #define SYMBOL_CHILDREN_SIZE 8
 
 typedef enum { INT_T, BOOL_T, UNKNOWN_T } TYPE;
-
 typedef enum { FALSE = 0, NEUTRAL = -1, TRUE = 1 } TRISTATE;
 
 typedef struct {
@@ -24,13 +22,11 @@ typedef struct {
   bool constant;
   uint32_t hash;
   Value_t value;
-
   ASTNode_t *expr;
 } Symbol_t;
 
 typedef struct {
   size_t num_children;
-
   // Symbol Nodes come together to form a symbol tree.
   // children represents a node's subscopes
   HashTable_t *children;

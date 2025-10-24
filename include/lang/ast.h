@@ -3,6 +3,7 @@
 
 #define AST_MAX_CHILDREN 16
 #define PROJECT_HEADER_MAX_CHILDREN 32
+
 #include <stdbool.h>
 
 #include "parser/lexer.h"

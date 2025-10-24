@@ -24,10 +24,6 @@ void free_ast(ASTNode_t *ast) {
   if (!ast)
     return;
 
-  /* The AST doesn't own the string, but it will in the future
-  if(ast->data.str)
-    free(ast->data.str);
-  */
   free(ast);
 }
 

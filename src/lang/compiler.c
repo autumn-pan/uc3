@@ -5,6 +5,7 @@
 #include "lang/reader.h"
 #include "lang/symbol/symbol.h"
 #include "lang/util/hash.h"
+
 #include <stdio.h>
 
 void gen_config(HashTable_t *component_registry, SymbolNode_t *global_symbols);
@@ -151,10 +152,9 @@ void config(HashTable_t *components) {
       sprintf(out, "%i", val);
 
       // Write config to the appropriate field expression
-      if (!field->variable->expr->data.str) {
+      if (!field->variable->expr->data.str)
         fprintf(stderr, "Error: Field '%s' has null expression!",
                 field->variable->identifier);
-      }
 
       field->variable->expr->data.str = out;
     }

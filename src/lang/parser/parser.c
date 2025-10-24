@@ -1,10 +1,9 @@
 #include "lang/parser/parser.h"
+#include "lang/parser/lexer.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "lang/parser/lexer.h"
 
 ASTNode_t *parse_expression(Parser_t *parser);
 

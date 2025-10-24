@@ -1,13 +1,12 @@
 #include "lang/symbol/symbol.h"
+#include "lang/ast.h"
+#include "lang/component/component.h"
 
 #include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "lang/ast.h"
-#include "lang/component/component.h"
 
 ////////////////////////////////////////////////////////////////////
 // Value_t

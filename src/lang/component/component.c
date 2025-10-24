@@ -1,5 +1,6 @@
 #include "lang/component/component.h"
 #include "lang/symbol/symbol.h"
+
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

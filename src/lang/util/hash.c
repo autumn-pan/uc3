@@ -1,10 +1,11 @@
 #include "lang/util/hash.h"
+#include "lang/symbol/symbol.h"
+
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lang/symbol/symbol.h"
 
 ////////////////////////////////////////////////////
 // HASHING
@@ -71,12 +72,11 @@ bool insert_hash(HashTable_t *table, void *value, const char *key) {
   while (table->num_elements >= table->hash_max / 2) {
     table->hash_max *= 2;
     HashElement_t **tmp = malloc(sizeof(HashElement_t *) * table->hash_max);
-    if(!tmp)
-    {
+    if (!tmp) {
       fprintf(stderr, "Error: Failed to allocate memory!\n");
       return false;
     }
-    
+
     // Rehash all symbols
     for (int i = 0; i < table->hash_max / 2; i++) {
       if (table->contents[i] != NULL) {

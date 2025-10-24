@@ -2,6 +2,8 @@
     "files.associations": {
         "symbol.h": "c",
         "ast.h": "c",
-        "hash.h": "c"
+        "hash.h": "c",
+        "component.h": "c",
+        "string.h": "c"
     }
 }

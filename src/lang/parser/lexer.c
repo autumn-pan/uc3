@@ -1,10 +1,11 @@
 #include "lang/parser/lexer.h"
+#include "lang/symbol/symbol.h"
+
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lang/symbol/symbol.h"
 
 const char *KEYWORDS[] = {
     "DEFINE",  // Define a module
@@ -235,7 +236,7 @@ Token *next_token(Lexer *lexer) {
 // Create a tokenstream from a lexer
 TokenStream *tokenize(Lexer *lexer) {
   TokenStream *token_stream = init_tokenstream();
-  if(!token_stream)
+  if (!token_stream)
     return NULL;
 
   Token *token = next_token(lexer);
